@@ -69,6 +69,8 @@ $ws->on('ready', function ($discord) use ($ws){
                 $message->reply("All cookies belong to his pumpkinness Rune!");
             }
         }
+        
+        
         #
         #   Debugging purposes
         #
