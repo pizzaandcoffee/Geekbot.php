@@ -8,9 +8,8 @@ use Discord\WebSockets\WebSocket;
 use Victoria\VictoriaSettings;
 
 $envjson = file_get_contents('env.json');
-$usrpw = json_decode($envjson);
-
-$discord = new Discord($usrpw->username, $usrpw->password);
+$settings = json_decode($envjson);
+$discord = new Discord($settings->username, $settings->password);
 $ws = new WebSocket($discord);
 
 
@@ -46,6 +45,8 @@ $ws->on('ready', function ($discord) use ($ws){
         $author = $message->author->username;
         $authorid = $message->author->id;
 
+        global $settings;
+
         #
         #   reaction strings
         #
@@ -62,8 +63,8 @@ $ws->on('ready', function ($discord) use ($ws){
             $message->reply('DEDEST');
         }
 
-        if ($author !== "Geek Bot" &&
-            $author !== "Rune"){
+        if ($author !== $settings->botname &&
+            $author !== $settings->ownername){
             if (strpos(strtolower($message->content), 'cookies') !== false){
                 $message->reply("All cookies belong to his pumpkinness Rune!");
             }
@@ -144,7 +145,7 @@ $ws->on('ready', function ($discord) use ($ws){
             if($a[1] == 'set'){
                 if(startsWith($a[2], '<@')){
                     $rpgclasses = ['geek', 'nerd', 'gamer', 'neko', 'furry','laladin', 'yandere'];
-                    if(in_array($a[3], $rpgclasses) || $author == 'Rune'){
+                    if(in_array($a[3], $rpgclasses) || $author == $settings->ownername){
                         $db->put($a[2].'-class', $a[3]);
                         $message->reply($a[2].' is now a '. $a[3]);
                     }
@@ -216,7 +217,7 @@ $ws->on('ready', function ($discord) use ($ws){
         #   Say command
         #
 
-        if (startsWith($message->content, '%say') && $message->author->username == "Rune"){
+        if (startsWith($message->content, '%say') && $message->author->username == $settings->ownername){
             $data = explode(" ", $message->content);
             if (startsWith($data[1], "<@")){
                 $message->reply($message->author->avatar);
