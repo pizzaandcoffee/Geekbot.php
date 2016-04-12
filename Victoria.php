@@ -135,7 +135,6 @@ class VictoriaDB
         }
         else {
             print $table.' | ';
-            die('Data not found (get_all)');
         }
     }
 

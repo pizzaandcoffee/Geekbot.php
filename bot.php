@@ -5,6 +5,7 @@ include __DIR__.'/Victoria.php';
 use Discord\Discord;
 use Discord\WebSockets\Event;
 use Discord\WebSockets\WebSocket;
+use Victoria\VictoriaDB;
 use Victoria\VictoriaSettings;
 
 $envjson = file_get_contents('env.json');
@@ -32,8 +33,10 @@ $ws->on('ready', function ($discord) use ($ws){
         #   Strings
         #
 
-        #   Get message Count
+        #   db Stuff
         $db = new VictoriaSettings();
+        $idb = new VictoriaDB();
+        #   Get message Count
         $db_messagesname = $message->author->id.'-'.$message->full_channel->guild->id.'-messages';
         $amountofmessages = $db->get($db_messagesname);
         $newamountofmessages = $amountofmessages + 1;
@@ -147,7 +150,8 @@ $ws->on('ready', function ($discord) use ($ws){
 
         if($a[0] == '!class'){
 
-            $rpgclasses = ['geek', 'neckbeard', 'console-peasant', 'neko', 'furry','laladin', 'yandere', 'script-kiddie', 'zweihorn', 'affe-mit-waffe', 'glitzertier'];
+            $rpgclasses = ['geek', 'neckbeard', 'console-peasant', 'neko', 'furry','laladin', 'yandere', 'script-kiddie', 
+                            'zweihorn', 'affe-mit-waffe', 'glitzertier'];
             $classes2 = implode(", ",$rpgclasses);
 
             if($a[1] == 'set'){
@@ -199,12 +203,49 @@ $ws->on('ready', function ($discord) use ($ws){
         #   Weapons
         #
         
-        if($a[0] == 'weapon'){
+        if($a[0] == '!weapon'){
+            $allweapons = $idb->get_all('aura');
+            $allweaponsarray = [];
+            foreach ($allweapons as $w){
+                $allweaponsarray[] = $w->name;
+            }
             if($a[1] == 'use'){
-                //some code here
+                $message->reply('This function is still in development');
+            }
+            elseif ($a[1] == 'show'){
+                if($a[2] == 'all'){
+                    $allweaponsstring = implode("\n",$allweaponsarray);
+                    $message->reply("here is a list of all weapons\n".$allweaponsstring);
+                }
+                else{
+
+                }
             }
         }
-        
+
+        #
+        #   Locations command
+        #
+
+        if($a[0] == '!location'){
+            $alllocations = $idb->get_all('locations');
+            $alllocationsarray = [];
+            foreach ($alllocations as $w){
+                $alllocationsarray[] = $w->name;
+            }
+            if($a[1] == 'show'){
+                if($a[2] == 'all'){
+                    $alllocationsstring = implode("\n",$alllocationsarray);
+                    $message->reply("here is a list of all locations\n".$alllocationsstring);
+                }
+                else{
+                    if(in_array($a[2], $alllocationsarray)){
+
+                    }
+                }
+            }
+        }
+
         #
         #   Stats command
         #
@@ -255,7 +296,7 @@ $ws->on('ready', function ($discord) use ($ws){
             if(isset($a[1]) && $a[1] == 'help'){
                 $message->reply("Ask the allknowingly 8ball a question\n
                 usage:
-                !ball [question]");
+                !8ball [question]");
             }
             elseif(isset($a[1])) {
                 $ballanswers = ['It is certain', 'It is decidedly so', 'Without a doubt', 'Yes, definitely', 'You may rely on it',
@@ -270,9 +311,58 @@ $ws->on('ready', function ($discord) use ($ws){
         }
 
         if($a[0] == '!choose'){
-            unset($a[0]);
-            $thechoice = "my choice is '".$a[array_rand($a)]."'";
-            $message->reply($thechoice);
+            if(isset($a[1]) && $a[1] == 'help'){
+                $message->reply("Let Geek Bot make the choice for you!\n
+                usage:
+                !choose [option1] [option2] ([option3] ...)");
+            }
+            elseif(isset($a[1]) && isset($a[2])) {
+                unset($a[0]);
+                $thechoice = "my choice is '" . $a[array_rand($a)] . "'";
+                $message->reply($thechoice);
+            }
+            else{
+                $message->reply('please provide atleast 2 options');
+            }
+        }
+
+        #
+        #   Pokedex
+        #
+
+        if($a[0] == '!pokedex'){
+            $pokedexoptions = ['all', 'image', 'type'];
+            if(isset($a[1]) && $a[1] == 'help'){
+                $message->reply("this return all information about a pokemon\n
+                usage:
+                !pokedex [name|number] [all|image|type]");
+            }
+            elseif (isset($a[1]) && isset($a[2]) && in_array($a[2], $pokedexoptions)){
+                $message->reply('please wait a moment while i fetch all the information');
+                $getrawpkdata = file_get_contents("http://pokeapi.co/api/v2/pokemon/".$a[1]);
+                if (startsWith($getrawpkdata, '{')){
+                    $pkd = \GuzzleHttp\json_decode($getrawpkdata);
+                    if($a[2] == 'image'){
+                        $message->reply($pkd->sprites->front_default);
+                    }
+                    elseif($a[2] == 'type'){
+                        $message->reply("this is still in development");
+                    }
+                    else{ // all
+                        $message->reply("here is all the information about #".$pkd->id." ".$pkd->name."
+                        type: ".$pkd->types[0]->type->name." ".$pkd->types[1]->type->name."
+                        weight: ".$pkd->weight."lbs
+                        height: ".$pkd->height."inch
+                        ".$pkd->sprites->front_default);
+                    }
+                }
+                else{
+                    $message->reply("that is not a pokemon...");
+                }
+            }
+            else{
+                $message->reply('That command in not valid, please see !pokedex help');
+            }
         }
 
         #
