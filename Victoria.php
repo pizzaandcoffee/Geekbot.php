@@ -2,6 +2,8 @@
 
 namespace Victoria;
 
+use Ratchet\Wamp\Exception;
+
 class VictoriaDB
 {
 
@@ -201,7 +203,12 @@ class VictoriaSettings
         $where = __DIR__.'/Victoria/options.json';
         $get_settings = file_get_contents($where);
         $decode_settings = json_decode($get_settings);
-        $value = $decode_settings->{$name};
-        return $value;
+        try {
+            $value = $decode_settings->{$name};
+            return $value;
+        }
+        catch(Exception $e){
+            return 0;
+        }
     }
 }

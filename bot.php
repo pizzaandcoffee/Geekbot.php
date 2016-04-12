@@ -39,7 +39,8 @@ $ws->on('ready', function ($discord) use ($ws){
         $newamountofmessages = $amountofmessages + 1;
         $db->put($db_messagesname, $newamountofmessages);
         #   split message in array
-        $a = explode(' ', strtolower($message->content));
+        $oa = preg_replace('/\s+/', ' ',strtolower($message->content));
+        $a = explode(' ', $oa);
         $ac = strtolower($message->content);
         #other shortcuts
         $author = $message->author->username;
@@ -75,8 +76,8 @@ $ws->on('ready', function ($discord) use ($ws){
         #   Debugging purposes
         #
 
-        if($message->content == '%array' && $message->author->username == 'Rune' && $message->full_channel->guild->name == "Swiss Geeks"){
-            print_r($message).PHP_EOL;
+        if($a[0] == '%array' && $message->author->username == $settings->ownername && $message->full_channel->guild->name == "Swiss Geeks"){
+            print_r($newdiscord).PHP_EOL;
             print_r($a);
         }
 
@@ -90,6 +91,8 @@ $ws->on('ready', function ($discord) use ($ws){
             !class - class settings for each user
             !stats - show stats for each user
             !atts - attribute setttings
+            !cat - shows a random cat picture
+            !8ball - let the allknowingly 8ball answer your question
             Geekbot also knows how to respond to several words\n
             for more info about each command use
             ![command] help");
@@ -144,15 +147,17 @@ $ws->on('ready', function ($discord) use ($ws){
 
         if($a[0] == '!class'){
 
+            $rpgclasses = ['geek', 'neckbeard', 'console-peasant', 'neko', 'furry','laladin', 'yandere', 'script-kiddie', 'zweihorn', 'affe-mit-waffe', 'glitzertier'];
+            $classes2 = implode(", ",$rpgclasses);
+
             if($a[1] == 'set'){
                 if(startsWith($a[2], '<@')){
-                    $rpgclasses = ['geek', 'nerd', 'gamer', 'neko', 'furry','laladin', 'yandere'];
+                    
                     if(in_array($a[3], $rpgclasses) || $author == $settings->ownername){
                         $db->put($a[2].'-class', $a[3]);
-                        $message->reply($a[2].' is now a '. $a[3]);
+                        $message->reply($a[2].' is now a '. ucfirst($a[3]));
                     }
                     else{
-                        $classes2 = implode(", ",$rpgclasses);
                         $message->reply('that class does not exist, please use one of the following:'."\n".$classes2);
                     }
                 }
@@ -160,7 +165,7 @@ $ws->on('ready', function ($discord) use ($ws){
 
             if($a[1] == 'show'){
                 $class = $db->get($a[2].'-class');
-                $message->reply($a[2].' is a '.$class);
+                $message->reply($a[2].' is a '.ucfirst($class));
             }
 
             if ($a[1] == 'help'){
@@ -168,7 +173,9 @@ $ws->on('ready', function ($discord) use ($ws){
                 set - set someones class
                 show - show someones class\n
                 usage:
-                !class [command] [mention] [class]");
+                !class [command] [mention] [class]\n
+                useable classes:
+                {$classes2}");
             }
         }
 
@@ -207,7 +214,7 @@ $ws->on('ready', function ($discord) use ($ws){
                 $statsuserid =  trim($a[1], '<@>');
                 $statsmessages222 = $statsuserid.'-'.$message->full_channel->guild->id.'-messages';
                 $statsmessages = $db->get($statsmessages222);
-                $message->reply($a[1].' has send '.$statsmessages.' messages');
+                $message->reply($a[1].' has sent '.$statsmessages.' messages');
             }
             else{
                 $message->reply("this command uses the following syntax:
@@ -219,11 +226,53 @@ $ws->on('ready', function ($discord) use ($ws){
         #   Say command
         #
 
-        if (startsWith($message->content, '%say') && $message->author->username == $settings->ownername){
-            $data = explode(" ", $message->content);
-            if (startsWith($data[1], "<@")){
-                $message->reply($message->author->avatar);
+        if (startsWith($message->content, '!say') && $message->author->username == $settings->ownername){
+            unset($a[0]);
+            $newsayarray = implode(' ',$a);
+            print_r($newsayarray);
+            $message->reply($newsayarray);
+
+        }
+
+        #
+        #   useless commands
+        #
+
+        if($a[0] == '!cat'){
+            if(isset($a[1]) && $a[1] == 'help'){
+                $message->reply("Return a random image of a cat\n
+                usage:
+                !cat");
             }
+            else {
+                $catsource = file_get_contents('http://random.cat/meow');
+                $catcontent = json_decode($catsource);
+                $message->reply($catcontent->file);
+            }
+        }
+
+        if($a[0] == '!8ball'){
+            if(isset($a[1]) && $a[1] == 'help'){
+                $message->reply("Ask the allknowingly 8ball a question\n
+                usage:
+                !ball [question]");
+            }
+            elseif(isset($a[1])) {
+                $ballanswers = ['It is certain', 'It is decidedly so', 'Without a doubt', 'Yes, definitely', 'You may rely on it',
+                    'As I see it, yes', 'Most likely', 'Outlook good', 'Yes', 'Signs point to yes', 'Reply hazy try again',
+                    'Ask again later', 'Better not tell you now', 'Cannot predict now', 'Concentrate and ask again', "Don't count on it",
+                    'My reply is no', 'My sources say no', 'Outlook not so good', 'Very doubtful'];
+                $message->reply($ballanswers[array_rand($ballanswers)]);
+            }
+            else{
+                $message->reply('you must ask a question!');
+            }
+        }
+
+        if($a[0] == '!choose'){
+            unset($a[0]);
+            $thechoice = "my choice is '".$a[array_rand($a)]."'";
+            $message->reply($thechoice);
         }
 
         #
