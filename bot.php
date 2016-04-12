@@ -18,6 +18,12 @@ function startsWith($haystack, $needle) {
     return $needle === "" || strrpos($haystack, $needle, -strlen($haystack)) !== false;
 }
 
+function xml_attribute($object, $attribute)
+{
+    if(isset($object[$attribute]))
+        return (string) $object[$attribute];
+}
+
 $ws->on('ready', function ($discord) use ($ws){
     $discord->updatePresence($ws, "PhpStorm 2016.1 Debugger", 0);
     echo "bot is ready!".PHP_EOL;
@@ -323,6 +329,18 @@ $ws->on('ready', function ($discord) use ($ws){
             }
             else{
                 $message->reply('please provide atleast 2 options');
+            }
+        }
+
+        if($a[0] == '!porn'){
+            if(isset($a[1])) {
+                $getgelbooru = file_get_contents('http://gelbooru.com/index.php?page=dapi&s=post&q=index&tags=' . $a[1]);
+                $xmlgelbooru = new SimpleXMLElement($getgelbooru);
+                $randomnumberporn = rand(1, 100);
+                $message->reply(xml_attribute($xmlgelbooru->post[$randomnumberporn], 'file_url'));
+            }
+            else{
+                $message->reply('Please use atleast one tag');
             }
         }
 
