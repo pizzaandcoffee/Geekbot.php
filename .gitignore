@@ -1,6 +1,7 @@
 .idea
-/vendor
+/vendor.old
 /composer.lock
 /Victoria
+/vendor
 /discord
 /env.json

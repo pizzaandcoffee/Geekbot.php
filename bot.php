@@ -24,7 +24,17 @@ function xml_attribute($object, $attribute)
         return (string) $object[$attribute];
 }
 
-$ws->on('ready', function ($discord) use ($ws){
+#
+if($settings->leveldb == 'true') {
+    echo("using leveldb...\n");
+    $db = new LevelDB(__DIR__ . '/db');
+}else{
+    echo("using victoriadb...\n");
+    $db = new VictoriaSettings();
+}
+$idb = new VictoriaDB();
+
+$ws->on('ready', function ($discord) use ($ws, $settings, $db, $idb){
     $discord->updatePresence($ws, "PhpStorm 2016.1 Debugger", 0);
     echo "bot is ready!".PHP_EOL;
 
@@ -33,15 +43,12 @@ $ws->on('ready', function ($discord) use ($ws){
         $message->reply('There is no point in sending me messages yet');
     });
 
-    $ws->on(Event::MESSAGE_CREATE, function ($message, $discord, $newdiscord) {
+    $ws->on(Event::MESSAGE_CREATE, function ($message, $discord, $newdiscord) use ($settings, $db, $idb, $ws){
 
         #
         #   Strings
         #
 
-        #   db Stuff
-        $db = new VictoriaSettings();
-        $idb = new VictoriaDB();
         #   Get message Count
         $db_messagesname = $message->author->id.'-'.$message->full_channel->guild->id.'-messages';
         $amountofmessages = $db->get($db_messagesname);
@@ -55,7 +62,7 @@ $ws->on('ready', function ($discord) use ($ws){
         $author = $message->author->username;
         $authorid = $message->author->id;
 
-        global $settings;
+
 
         #
         #   reaction strings
@@ -65,15 +72,23 @@ $ws->on('ready', function ($discord) use ($ws){
             $message->reply('pong!');
         }
 
-        if ($ac == 'marco') {
+        elseif ($ac == 'marco') {
             $message->reply('polo!');
         }
 
-        if ($ac == 'deder') {
+        elseif ($ac == 'deder') {
             $message->reply('DEDEST');
         }
 
-        if ($author !== $settings->botname &&
+        elseif ($a[0] == '!idiot'){
+            if($author == 'Zenos'){
+                $message->reply('die Halluzination findet euch alle BEKLOPPT!');
+            } else {
+                $message->reply('du bist KEINE HALLUZINATION *triggered*');
+            }
+        }
+
+        elseif ($author !== $settings->botname &&
             $author !== $settings->ownername){
             if (strpos(strtolower($message->content), 'cookies') !== false){
                 $message->reply("All cookies belong to his pumpkinness Rune!");
@@ -85,7 +100,7 @@ $ws->on('ready', function ($discord) use ($ws){
         #   Debugging purposes
         #
 
-        if($a[0] == '%array' && $message->author->username == $settings->ownername && $message->full_channel->guild->name == "Swiss Geeks"){
+        elseif($a[0] == '%array' && $message->author->username == $settings->ownername && $message->full_channel->guild->name == "Swiss Geeks"){
             print_r($newdiscord).PHP_EOL;
             print_r($a);
         }
@@ -94,7 +109,7 @@ $ws->on('ready', function ($discord) use ($ws){
         #   Help Command
         #
 
-        if ($a[0] == '!help'){
+        elseif ($a[0] == '!help'){
             $message->reply("here is a list of all commands:
             !level - level settings for each user
             !class - class settings for each user
@@ -102,6 +117,8 @@ $ws->on('ready', function ($discord) use ($ws){
             !atts - attribute setttings
             !cat - shows a random cat picture
             !8ball - let the allknowingly 8ball answer your question
+            !pokedex - does what a pokedex does
+            !porn - :smirk:
             Geekbot also knows how to respond to several words\n
             for more info about each command use
             ![command] help");
@@ -111,7 +128,7 @@ $ws->on('ready', function ($discord) use ($ws){
         #   Level Command
         #
 
-        if($a[0] == '!level') {
+        elseif($a[0] == '!level') {
 
             if ($a[1] == 'add') {
                 if (startsWith($a[2], '<@')) {
@@ -124,7 +141,7 @@ $ws->on('ready', function ($discord) use ($ws){
                 }
             }
 
-            if ($a[1] == 'drop') {
+            elseif ($a[1] == 'drop') {
                 if (startsWith($a[2], '<@')) {
                     if (is_numeric($a[3])) {
                         $oldlevel = $db->get($a[2] . '-level');
@@ -135,12 +152,23 @@ $ws->on('ready', function ($discord) use ($ws){
                 }
             }
 
-            if ($a[1] == 'show') {
+            elseif ($a[1] == 'set') {
+                if(startsWith($a[2], '<@')){
+                    if(is_numeric($a[3])){
+                        $oldlevel = $db->get($a[2] . '-level');
+                        $level = $a[3];
+                        $db->put($a[2] . '-level', $level);
+                        $message->reply($a[2] . ' went from level ' . $oldlevel . ' to level ' . $level);
+                    }
+                }
+            }
+
+            elseif ($a[1] == 'show') {
                 $level = $db->get($a[2] . '-level');
                 $message->reply($a[2] . "'s level is " . $level);
             }
 
-            if ($a[1] == 'help'){
+            elseif ($a[1] == 'help'){
                 $message->reply("here are the commands for !level
                 add - add a level to someone
                 drop - lower someones level
@@ -148,13 +176,16 @@ $ws->on('ready', function ($discord) use ($ws){
                 usage:
                 !level [command] [mention] [value]");
             }
+            else{
+                $message->reply("Wrong syntax for the command !level, please see !level help to see how the command works");
+            }
         }
 
         #
         #   Class Command
         #
 
-        if($a[0] == '!class'){
+        elseif($a[0] == '!class'){
 
             $rpgclasses = ['geek', 'neckbeard', 'console-peasant', 'neko', 'furry','laladin', 'yandere', 'script-kiddie', 
                             'zweihorn', 'affe-mit-waffe', 'glitzertier'];
@@ -165,7 +196,7 @@ $ws->on('ready', function ($discord) use ($ws){
                     
                     if(in_array($a[3], $rpgclasses) || $author == $settings->ownername){
                         $db->put($a[2].'-class', $a[3]);
-                        $message->reply($a[2].' is now a '. ucfirst($a[3]));
+                        $message->reply($a[2].' ist jetzt ein '. ucfirst($a[3]));
                     }
                     else{
                         $message->reply('that class does not exist, please use one of the following:'."\n".$classes2);
@@ -173,12 +204,12 @@ $ws->on('ready', function ($discord) use ($ws){
                 }
             }
 
-            if($a[1] == 'show'){
+            elseif($a[1] == 'show'){
                 $class = $db->get($a[2].'-class');
                 $message->reply($a[2].' is a '.ucfirst($class));
             }
 
-            if ($a[1] == 'help'){
+            elseif ($a[1] == 'help'){
                 $message->reply("here are the commands for !class
                 set - set someones class
                 show - show someones class\n
@@ -187,13 +218,16 @@ $ws->on('ready', function ($discord) use ($ws){
                 useable classes:
                 {$classes2}");
             }
+            else{
+                $message->reply("Wrong syntax for the command !class, please see !class help to see how the command works");
+            }
         }
 
         #
         #   Attributes Stuff
         #
 
-        if($a[0] == '!atts'){
+        elseif($a[0] == '!atts'){
 
             $message->reply('this function is still in development');
 
@@ -208,8 +242,8 @@ $ws->on('ready', function ($discord) use ($ws){
         #
         #   Weapons
         #
-        
-        if($a[0] == '!weapon'){
+
+        elseif($a[0] == '!weapon'){
             $allweapons = $idb->get_all('aura');
             $allweaponsarray = [];
             foreach ($allweapons as $w){
@@ -233,7 +267,7 @@ $ws->on('ready', function ($discord) use ($ws){
         #   Locations command
         #
 
-        if($a[0] == '!location'){
+        elseif($a[0] == '!location'){
             $alllocations = $idb->get_all('locations');
             $alllocationsarray = [];
             foreach ($alllocations as $w){
@@ -256,7 +290,7 @@ $ws->on('ready', function ($discord) use ($ws){
         #   Stats command
         #
 
-        if ($a[0] == '!stats'){
+        elseif ($a[0] == '!stats'){
             if (isset($a[1]) && startsWith($a[1], "<@")){
                 $statsuserid =  trim($a[1], '<@>');
                 $statsmessages222 = $statsuserid.'-'.$message->full_channel->guild->id.'-messages';
@@ -273,7 +307,7 @@ $ws->on('ready', function ($discord) use ($ws){
         #   Say command
         #
 
-        if (startsWith($message->content, '!say') && $message->author->username == $settings->ownername){
+        elseif (startsWith($message->content, '!say') && $message->author->username == $settings->ownername){
             unset($a[0]);
             $newsayarray = implode(' ',$a);
             print_r($newsayarray);
@@ -285,7 +319,7 @@ $ws->on('ready', function ($discord) use ($ws){
         #   useless commands
         #
 
-        if($a[0] == '!cat'){
+        elseif($a[0] == '!cat'){
             if(isset($a[1]) && $a[1] == 'help'){
                 $message->reply("Return a random image of a cat\n
                 usage:
@@ -298,7 +332,7 @@ $ws->on('ready', function ($discord) use ($ws){
             }
         }
 
-        if($a[0] == '!8ball'){
+        elseif($a[0] == '!8ball'){
             if(isset($a[1]) && $a[1] == 'help'){
                 $message->reply("Ask the allknowingly 8ball a question\n
                 usage:
@@ -316,7 +350,7 @@ $ws->on('ready', function ($discord) use ($ws){
             }
         }
 
-        if($a[0] == '!choose'){
+        elseif($a[0] == '!choose'){
             if(isset($a[1]) && $a[1] == 'help'){
                 $message->reply("Let Geek Bot make the choice for you!\n
                 usage:
@@ -332,8 +366,13 @@ $ws->on('ready', function ($discord) use ($ws){
             }
         }
 
-        if($a[0] == '!porn'){
-            if(isset($a[1])) {
+        elseif($a[0] == '!porn'){
+            if(isset($a[1]) && $a[1] == 'help'){
+                $message->reply("shows some porn :smirk:\n
+                usage:
+                !porn [tags]");
+            }
+            elseif(isset($a[1])) {
                 $getgelbooru = file_get_contents('http://gelbooru.com/index.php?page=dapi&s=post&q=index&tags=' . $a[1]);
                 $xmlgelbooru = new SimpleXMLElement($getgelbooru);
                 $randomnumberporn = rand(1, 100);
@@ -348,7 +387,7 @@ $ws->on('ready', function ($discord) use ($ws){
         #   Pokedex
         #
 
-        if($a[0] == '!pokedex'){
+        elseif($a[0] == '!pokedex'){
             $pokedexoptions = ['all', 'image', 'type'];
             if(isset($a[1]) && $a[1] == 'help'){
                 $message->reply("this return all information about a pokemon\n
@@ -387,7 +426,7 @@ $ws->on('ready', function ($discord) use ($ws){
         #   Mention Geek Bot replies with Cleverbot
         #
 
-        if (startsWith($message->content, '<@120230450277908480>')){
+        elseif (startsWith($message->content, '<@120230450277908480>')){
             $message->reply("i'm not smart enough to do that yet");
         }
 
