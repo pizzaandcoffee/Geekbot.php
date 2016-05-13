@@ -1,6 +1,6 @@
 <?php
 include __DIR__.'/vendor/autoload.php';
-include __DIR__.'/victoria.php';
+include __DIR__.'/Victoria.php';
 
 use Discord\Discord;
 use Discord\Voice\VoiceClient;
@@ -430,7 +430,7 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $idb, $discord) {
                 !porn [tags]");
             }
             elseif(isset($a[1])) {
-                $getgelbooru = file_get_contents('http://gelbooru.com/index.php?page=dapi&s=post&q=index&tags=' . $a[1]);
+                $getgelbooru = file_get_contents('http://gelbooru.com/index.php?page=dapi&s=post&q=index&tags=rating:explicit ' . substr($ac, 5));
                 $xmlgelbooru = new SimpleXMLElement($getgelbooru);
                 $randomnumberporn = rand(1, 100);
                 $message->reply(xml_attribute($xmlgelbooru->post[$randomnumberporn], 'file_url'));
