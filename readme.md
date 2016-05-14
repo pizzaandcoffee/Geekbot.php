@@ -2,7 +2,8 @@
 
 #### Description 
 
-just a random bot i wrote to have some fun
+just a random discord bot i wrote to have some fun__
+This code was never meant to go public and it is one big mess, please excuse me for that
 
 #### Commands 
 
@@ -41,8 +42,7 @@ If you are on linux and using php 5.6 or older, try using LevelDB, it is A LOT f
 
 **VictoriaDB spits out a bunch of warnings for some reason**
 
-It does that when it can't find a certain Value because there is no error handling
-
+It does that when it can't find a certain Value because there is no error handling__
 Originally it was just meant to replace LevelDB on PHP7
 
 **The bot dies after some time for no reason**
@@ -51,6 +51,5 @@ This occurs due to a library bug which should be fixed soon (according to the de
 
 #### Contributing
 
-Everyone is welcome to contribute!
-
+Everyone is welcome to contribute!__
 Make a pull request whenever you want to and i'll review it
