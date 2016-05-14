@@ -54,7 +54,6 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $idb, $discord) {
         $authorid = $message->author->id;
         #   Get message Count
         $db_messagesname = $authorid . '-' . $message->channel->guild_id . '-messages';
-        //$db_messagesname = $message->author->id.'-'.$message->full_channel->guild->id.'-messages';
         $amountofmessages = $db->get($db_messagesname);
         $newamountofmessages = $amountofmessages + 1;
         $db->put($db_messagesname, $newamountofmessages);
@@ -140,7 +139,7 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $idb, $discord) {
                         $oldlevel = $db->get($a[2] . '-level');
                         $level = $oldlevel + $a[3];
                         $db->put($a[2] . '-level', $level);
-                        $message->reply($a[2] . ' leveled up with ' . $a[3] . ' levels and is now level ' . $level);
+                        $message->reply("{$a[2]} leveled up with {$a[3]} levels and is now level {$level}");
                     }
                 }
             } elseif ($a[1] == 'drop') {
@@ -149,7 +148,7 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $idb, $discord) {
                         $oldlevel = $db->get($a[2] . '-level');
                         $level = $oldlevel - $a[3];
                         $db->put($a[2] . '-level', $level);
-                        $message->reply($a[2] . ' dropped down with ' . $a[3] . ' levels and is now level ' . $level);
+                        $message->reply("{$a[2]} dropped down with {$a[3]} levels and is now level {$level}");
                     }
                 }
             } elseif ($a[1] == 'set') {
@@ -158,12 +157,12 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $idb, $discord) {
                         $oldlevel = $db->get($a[2] . '-level');
                         $level = $a[3];
                         $db->put($a[2] . '-level', $level);
-                        $message->reply($a[2] . ' went from level ' . $oldlevel . ' to level ' . $level);
+                        $message->reply("{$a[2]} went from level {$oldlevel} to level {$level}");
                     }
                 }
             } elseif ($a[1] == 'show') {
                 $level = $db->get($a[2] . '-level');
-                $message->reply($a[2] . "'s level is " . $level);
+                $message->reply("{$a[2]}'s level is {$level}");
             } elseif ($a[1] == 'help') {
                 $message->reply("here are the commands for !level
                 add - add a level to someone
@@ -191,14 +190,14 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $idb, $discord) {
 
                     if (in_array($a[3], $rpgclasses) || $author == $settings->ownername) {
                         $db->put($a[2] . '-class', $a[3]);
-                        $message->reply($a[2] . ' ist jetzt ein ' . ucfirst($a[3]));
+                        $message->reply("{$a[2]} ist jetzt ein " . ucfirst($a[3]));
                     } else {
-                        $message->reply('that class does not exist, please use one of the following:' . "\n" . $classes2);
+                        $message->reply("that class does not exist, please use one of the following: \n {$classes2}");
                     }
                 }
             } elseif ($a[1] == 'show') {
                 $class = $db->get($a[2] . '-class');
-                $message->reply($a[2] . ' is a ' . ucfirst($class));
+                $message->reply("{$a[2]} is a ".ucfirst($class));
             } elseif ($a[1] == 'help') {
                 $message->reply("here are the commands for !class
                 set - set someones class
@@ -212,64 +211,6 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $idb, $discord) {
             }
         }
 
-
-        #   Attributes Stuff
-        #
-
-        if ($a[0] == '!atts') {
-
-            $message->reply('this function is still in development');
-        }
-
-        #
-        #   Items
-        #
-
-        //item code here
-        #
-        #   Weapons
-        #
-
-        if ($a[0] == '!weapon') {
-            $allweapons = $idb->get_all('aura');
-            $allweaponsarray = [];
-            foreach ($allweapons as $w) {
-                $allweaponsarray[] = $w->name;
-            }
-            if ($a[1] == 'use') {
-                $message->reply('This function is still in development');
-            } elseif ($a[1] == 'show') {
-                if ($a[2] == 'all') {
-                    $allweaponsstring = implode("\n", $allweaponsarray);
-                    $message->reply("here is a list of all weapons\n" . $allweaponsstring);
-                } else {
-                    
-                }
-            }
-        }
-
-        #
-        #   Locations command
-        #
-
-        if ($a[0] == '!location') {
-            $alllocations = $idb->get_all('locations');
-            $alllocationsarray = [];
-            foreach ($alllocations as $w) {
-                $alllocationsarray[] = $w->name;
-            }
-            if ($a[1] == 'show') {
-                if ($a[2] == 'all') {
-                    $alllocationsstring = implode("\n", $alllocationsarray);
-                    $message->reply("here is a list of all locations\n" . $alllocationsstring);
-                } else {
-                    if (in_array($a[2], $alllocationsarray)) {
-                        
-                    }
-                }
-            }
-        }
-
         #
         #   Last online
         #
@@ -278,7 +219,7 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $idb, $discord) {
             if (startsWith($a[1], '<@')) {
                 $user = trim($a[1], '<@>');
                 $last = $db->get($user . '-last');
-                $message->reply($a[1] . ' sent his last message on ' . $last);
+                $message->reply("{$a[1]} sent his last message on {$last}");
             } else {
                 $message->reply('please mention someone');
             }
@@ -317,7 +258,7 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $idb, $discord) {
             if (isset($a[1]) && $a[1] == 'show') {
                 if (isset($a[2]) && startsWith($a[2], '<@')) {
                     $bads = $db->get($a[2] . '-badjokes');
-                    $message->reply($a[2] . ' made ' . $bads . ' bad jokes');
+                    $message->reply("{$a[2]} made {$bads} bad jokes");
                 } else {
                     $message->reply('please specify a user');
                 }
@@ -325,7 +266,7 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $idb, $discord) {
                 $old = $db->get($a[1] . '-badjokes');
                 $new = $old + 1;
                 $db->put($a[1] . '-badjokes', $new);
-                $message->reply($a[1] . ' made a bad joke');
+                $message->reply("{$a[1]} made a bad joke");
             } else {
                 $message->reply("the bad joke counter
                 show - shows the amount of bad jokes
@@ -385,7 +326,7 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $idb, $discord) {
                 !choose [option1] [option2] ([option3] ...)");
             } elseif (isset($a[1]) && isset($a[2])) {
                 unset($a[0]);
-                $thechoice = "my choice is '" . $a[array_rand($a)] . "'";
+                $thechoice = "my choice is '{$a[array_rand($a)]}'";
                 $message->reply($thechoice);
             } else {
                 $message->reply('please provide atleast 2 options');
@@ -419,7 +360,7 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $idb, $discord) {
                 !pokedex [name|number] [all|image|type]");
             } elseif (isset($a[1]) && isset($a[2]) && in_array($a[2], $pokedexoptions)) {
                 $message->reply('please wait a moment while i fetch all the information');
-                $getrawpkdata = file_get_contents("http://pokeapi.co/api/v2/pokemon/" . $a[1]);
+                $getrawpkdata = file_get_contents("http://pokeapi.co/api/v2/pokemon/{$a[1]}");
                 if (startsWith($getrawpkdata, '{')) {
                     $pkd = \GuzzleHttp\json_decode($getrawpkdata);
                     if ($a[2] == 'image') {
@@ -427,11 +368,11 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $idb, $discord) {
                     } elseif ($a[2] == 'type') {
                         $message->reply("this is still in development");
                     } else { // all
-                        $message->reply("here is all the information about #" . $pkd->id . " " . $pkd->name . "
-                        type: " . $pkd->types[0]->type->name . " " . $pkd->types[1]->type->name . "
-                        weight: " . $pkd->weight . "lbs
-                        height: " . $pkd->height . "inch
-                        " . $pkd->sprites->front_default);
+                        $message->reply("here is all the information about #{$pkd->id} {$pkd->name}
+                        type: {$pkd->types[0]->type->name} {$pkd->types[1]->type->name}
+                        weight: {$pkd->weight}lbs
+                        height: {$pkd->height}inch
+                        {$pkd->sprites->front_default}");
                     }
                 } else {
                     $message->reply("that is not a pokemon...");
@@ -446,10 +387,14 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $idb, $discord) {
         #
 
         if ($a[0] == '!fortune') {
-            $fortunes = file_get_contents('fortunes');
-            $array = explode('%', $fortunes);
-            $fortune = $array[array_rand($array)];
-            $message->reply($fortune);
+            if($a[1] == 'help'){
+                $message->reply("!fortune return a random random forune");
+            } else {
+                $fortunes = file_get_contents('fortunes');
+                $array = explode('%', $fortunes);
+                $fortune = $array[array_rand($array)];
+                $message->reply($fortune);
+            }
         }
 
         #
@@ -466,7 +411,6 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $idb, $discord) {
                 )
             );
             $curlcontext = stream_context_create($curloptions);
-
             $boards = '[a / b / c / d / e / f / g / gif / h / hr / k / m / o / p / r / s / t / u / v / vg / vr / w / wg] [i / ic] [r9k] [s4s] [cm / hm / lgbt / y] [3 / aco / adv / an / asp / biz / cgl / ck / co / diy / fa / fit / gd / hc / his / int / jp / lit / mlp / mu / n / news / out / po / pol / qst / sci / soc / sp / tg / toy / trv / tv / vp / wsg / wsr / x]';
             $boardstrim = str_replace(array('[',']', '/'), '',$boards);
             $boardspreg = preg_replace('/\s+/', ' ',$boardstrim);
@@ -479,22 +423,16 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $idb, $discord) {
             if(in_array($theboard, $boardsarray)) {
                 $board = $theboard;
 
-                $catalogjson = file_get_contents('https://a.4cdn.org/' . $board . '/catalog.json', false, $curlcontext);
+                $catalogjson = file_get_contents("https://a.4cdn.org/{$board}/catalog.json", false, $curlcontext);
                 $catalog = json_decode($catalogjson);
-
                 $randompage = $catalog[array_rand($catalog)];
-
                 $whatever = $randompage->threads;
-
-                $randomthreat = $whatever[array_rand($whatever)];
-
-                $stuff = $randomthreat->no;
-
-                $getthreat = file_get_contents('https://a.4cdn.org/' . $board . '/thread/' . $stuff . '.json', false, $curlcontext);
-                $threat = json_decode($getthreat);
-
+                $randomthread= $whatever[array_rand($whatever)];
+                $stuff = $randomthread->no;
+                $getthread = file_get_contents("https://a.4cdn.org/{$board}/thread/{$stuff}.json", false, $curlcontext);
+                $thread = json_decode($getthread);
                 $hasimage = 0;
-                $postnumbers = count($threat->posts);
+                $postnumbers = count($thread->posts);
                 $image = null;
                 $triednr = [];
                 $i = 0;
@@ -506,8 +444,8 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $idb, $discord) {
                             $hasimage = 2;
                         }
                     } else {
-                        if (isset($threat->posts[$postnr]->tim)) {
-                            $image = $threat->posts[$postnr]->tim . $threat->posts[$postnr]->ext;
+                        if (isset($thread->posts[$postnr]->tim)) {
+                            $image = $thread->posts[$postnr]->tim . $thread->posts[$postnr]->ext;
                             $hasimage = 1;
                         } else {
                             $triednr[] = $postnr;
@@ -517,7 +455,7 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $idb, $discord) {
                 }
                 print("{$i}\n");
                 if($hasimage == 1) {
-                    $file = 'http://i.4cdn.org/' . $board . '/' . $image;
+                    $file = "http://i.4cdn.org/{$board}/{$image}";
                     $message->reply($file.' from '.$originalthread);
                 } else {
                     $message->reply('there are no images in this thread!');
@@ -530,19 +468,15 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $idb, $discord) {
                 $message->reply("that is not a valid board");
             }
         }
+
         #
-        #   Mention Geek Bot replies with Cleverbot
+        #   Output message to console
         #
 
-        if (startsWith($message->content, '<@120230450277908480>')) {
-            $message->reply("i'm not smart enough to do that yet");
-        }
-
-        $reply = $message->timestamp->format('d/m/y H:i:s') . ' - '; // Format the message timestamp.
-        //$reply .= ($message->channel->is_private ? 'PM' : $message->channel->guild->name).' - ';
-        $reply .= $message->author->username . ' - '; // Add the message author's username onto the string.
-        $reply .= $message->content; // Add the message content.
-        echo $reply . PHP_EOL; // Finally, echo the message with a PHP end of line.
+        $reply = $message->timestamp->format('d/m/y H:i:s') . ' - ';
+        $reply .= $message->author->username . ' - ';
+        $reply .= $message->content;
+        echo $reply . PHP_EOL;
     });
 }
 );
@@ -553,5 +487,4 @@ $ws->on('error', function ($error, $ws) {
 }
 );
 
-// Now we will run the ReactPHP Event Loop!
 $ws->run();
