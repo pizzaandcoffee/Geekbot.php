@@ -30,21 +30,27 @@ just a random bot i wrote to have some fun
 #### Q&A
 
 **LevelDB? False or True?**
+
 If you are on linux and using php 5.6 or older, try using LevelDB, it is A LOT faster than VictoriaDB.
 
 **I want to use LevelDB, but i don't know how...**
+
 1. compile the [LevelDB Binary](https://github.com/google/leveldb)
 2. compile the [php zend extension](https://github.com/reeze/php-leveldb)
 3. Enable the zend extension in your php.ini (the cli one, not the apache one)
 
 **VictoriaDB spits out a bunch of warnings for some reason**
+
 It does that when it can't find a certain Value because there is no error handling
+
 Originally it was just meant to replace LevelDB on PHP7
 
 **The bot dies after some time for no reason**
+
 This occurs due to a library bug which should be fixed soon (according to the developer)
 
 #### Contributing
 
 Everyone is welcome to contribute!
+
 Make a pull request whenever you want to and i'll review it
