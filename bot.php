@@ -28,6 +28,25 @@ function dump($nope) {
     print($nope);
 }
 
+function calculateLevel($messages){
+    $total = 0;
+    $levels = [];
+    for ($i = 1; $i < 100; $i++)
+    {
+        $total += floor($i + 300 * pow(2, $i / 7.0));
+        $levels[] = floor($total / 4);
+    }
+    $level = 1;
+    foreach($levels as $l){
+        if ($l < $messages){
+            $level++;
+        } else {
+            break;
+        }
+    }
+    return $level;
+}
+
 if ($settings->leveldb == 'true') {
     echo("using leveldb...\n");
     $db = new LevelDB(__DIR__ . '/db');
@@ -90,7 +109,17 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $discord) {
 
         if ($a[0] == '%array' && $message->author->username == $settings->ownername) {
             print_r($message) . PHP_EOL;
+            $guild = $discord->guilds->first();
+            $member = $guild->members->first();
+            $role = $member->roles->first();
+            print_r($guild).PHP_EOL;
+            print_r($member).PHP_EOL;
+            print_r($role).PHP_EOL;
             print_r($a);
+        }
+
+        if ($a[0] == '%level'){
+            $message->reply(calculateLevel($newamountofmessages));
         }
 
         #
@@ -229,8 +258,9 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $discord) {
                 Messages sent: " . $statsmessages . " 
                 Bad jokes made: " . $badjokes . " 
                 Level: " . $level . " 
+                Actual Level: " . calculateLevel($newamountofmessages) . "
                 Class: " . $class . " 
-                Letzte Nachricht: 
+                Last Message: 
                 " . $db->get($statsuserid . '-last') . " ");
             } else {
                 $message->reply("this command uses the following syntax:
