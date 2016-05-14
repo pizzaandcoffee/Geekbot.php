@@ -498,6 +498,7 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $idb, $discord) {
                 $image = null;
                 $triednr = [];
                 $i = 0;
+                $originalthread = "https://boards.4chan.org/{$board}/thread/{$stuff}";
                 while ($hasimage == 0) {
                     $postnr = random_int(0, $postnumbers);
                     if(in_array($postnr, $triednr)){
@@ -517,7 +518,7 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $idb, $discord) {
                 print("{$i}\n");
                 if($hasimage == 1) {
                     $file = 'http://i.4cdn.org/' . $board . '/' . $image;
-                    $message->reply($file);
+                    $message->reply($file.' from '.$originalthread);
                 } else {
                     $message->reply('there are no images in this thread!');
                 }
