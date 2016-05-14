@@ -2,8 +2,6 @@
 
 namespace Victoria;
 
-use Ratchet\Wamp\Exception;
-
 class VictoriaDB
 {
 

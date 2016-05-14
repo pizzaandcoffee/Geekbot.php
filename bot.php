@@ -4,10 +4,7 @@ include __DIR__ . '/vendor/autoload.php';
 include __DIR__ . '/victoria.php';
 
 use Discord\Discord;
-use Discord\Voice\VoiceClient;
-use Discord\Parts\Channel\Message;
 use Discord\WebSockets\Event;
-use Victoria\VictoriaDB;
 use Victoria\VictoriaSettings;
 
 $envjson = file_get_contents('env.json');
@@ -39,13 +36,12 @@ if ($settings->leveldb == 'true') {
     echo("using victoriadb...\n");
     $db = new VictoriaSettings();
 }
-$idb = new VictoriaDB();
 
-$ws->on('ready', function ($discord) use ($ws, $settings, $db, $idb, $discord) {
+$ws->on('ready', function ($discord) use ($ws, $settings, $db, $discord) {
     $discord->updatePresence($ws, "Ping Pong", 0);
     echo "bot is ready!" . PHP_EOL;
 
-    $ws->on(Event::MESSAGE_CREATE, function ($message) use ($settings, $db, $idb, $ws, $discord) {
+    $ws->on(Event::MESSAGE_CREATE, function ($message) use ($settings, $db, $ws, $discord) {
 
         #
         #   Strings
@@ -115,13 +111,12 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $idb, $discord) {
             !bad - a bad joke counter
             !last - see when the mentioned user last sent something
             !stats - show stats for each user
-            !atts - attribute setttings
             !cat - shows a random cat picture
             !8ball - let the allknowingly 8ball answer your question
             !pokedex - does what a pokedex does
             !porn - :smirk:
             !fortune - get a fortune or quote
-            !4chan - get a totally random image from 4chan
+            !4chan - get a totally random image from 4chan (be aware of shitposts)
             Geekbot also knows how to respond to several words\n
             for more info about each command use
             ![command] help");
