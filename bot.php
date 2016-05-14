@@ -4,15 +4,14 @@ include __DIR__ . '/vendor/autoload.php';
 include __DIR__ . '/victoria.php';
 
 use Discord\Discord;
-use Discord\WebSockets\Event;
+use Discord\WebSockets\WebSocket;
 use Victoria\VictoriaSettings;
 
 $envjson = file_get_contents('env.json');
 $settings = json_decode($envjson);
 
-$discord = new Discord(['token' => $settings->token]);
-
-$ws = $discord->getWebsocket();
+$discord = new Discord($settings->token);
+$ws = new WebSocket($discord);
 
 date_default_timezone_set('Europe/Amsterdam');
 
@@ -41,7 +40,7 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $discord) {
     $discord->updatePresence($ws, "Ping Pong", 0);
     echo "bot is ready!" . PHP_EOL;
 
-    $ws->on(Event::MESSAGE_CREATE, function ($message) use ($settings, $db, $ws, $discord) {
+    $ws->on('message', function ($message) use ($settings, $db, $ws, $discord) {
 
         #
         #   Strings
@@ -84,13 +83,7 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $discord) {
                 $message->reply('du bist KEINE HALLUZINATION *triggered*');
             }
         }
-
-//        if ($author !== $settings->botname &&
-//            $author !== $settings->ownername){
-//            if (strpos(strtolower($message->content), 'cookies') !== false){
-//                $message->reply("All cookies belong to his pumpkinness Rune!");
-//            }
-//        }
+        
         #
         #   Debugging purposes
         #
