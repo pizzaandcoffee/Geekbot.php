@@ -37,7 +37,7 @@ function calculateLevel($messages)
     $levels = [];
     for ($i = 1; $i < 100; $i++) {
         $total += floor($i + 300 * pow(2, $i / 7.0));
-        $levels[] = floor($total / 4);
+        $levels[] = floor($total / 16);
     }
     $level = 1;
     foreach ($levels as $l) {
@@ -285,7 +285,7 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $discord) {
                 } elseif (isset($a[1]) && startsWith($a[1], '@here')){
                     $message->reply("Stats for this server:
                     Messages sent: {$amountofmessages_guild}
-                    Actual Level:". calculateLevel($amountofmessages_guild)."
+                    Actual Level: ". calculateLevel($amountofmessages_guild)."
                     (counting start 15 May 2016)");
                 } else {
                     $message->reply("this command uses the following syntax:
