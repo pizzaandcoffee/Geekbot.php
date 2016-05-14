@@ -258,7 +258,7 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $discord) {
                 Messages sent: " . $statsmessages . " 
                 Bad jokes made: " . $badjokes . " 
                 Level: " . $level . " 
-                Actual Level: " . calculateLevel($newamountofmessages) . "
+                Actual Level: " . calculateLevel($statsmessages) . "
                 Class: " . $class . " 
                 Last Message: 
                 " . $db->get($statsuserid . '-last') . " ");
