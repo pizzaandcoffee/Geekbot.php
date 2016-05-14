@@ -74,6 +74,12 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $discord) {
         $amountofmessages = $db->get($db_messagesname);
         $newamountofmessages = $amountofmessages + 1;
         $db->put($db_messagesname, $newamountofmessages);
+        #   Get message Count for Server Stats
+        $db_messagesname_guild = $message->channel->guild_id . '-messages';
+        $amountofmessages_guild = $db->get($db_messagesname_guild);
+        $newamountofmessages_guild = $amountofmessages_guild + 1;
+        $db->put($db_messagesname_guild, $newamountofmessages_guild);
+        #   update last message
         $now = date(DATE_RFC2822);
         $db->put($authorid . '-last', $now);
         #   split message in array
@@ -178,6 +184,17 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $discord) {
                             $message->reply("{$a[2]} went from level {$oldlevel} to level {$level}");
                         }
                     }
+                } elseif ($a[1] == 'actual'){
+                    if (startsWith($a[2], '<@')){
+                        $userid = trim($a[2], '<@>');
+                        $messagesdbstring = $userid . '-' . $message->channel->guild_id . '-messages';
+                        $messages = $db->get($messagesdbstring);
+                        $thelevel = calculateLevel($messages);
+                        $message->reply("{$a[2]}'s level is {$thelevel}");
+                    } elseif ($a[2] == '@here'){
+                        $thelevel = calculateLevel($newamountofmessages_guild);
+                        $message->reply("the server level is {$thelevel}");
+                    }
                 } elseif ($a[1] == 'show') {
                     $level = $db->get($a[2] . '-level');
                     $message->reply("{$a[2]}'s level is {$level}");
@@ -185,6 +202,7 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $discord) {
                     $message->reply("here are the commands for !level
                     add - add a level to someone
                     drop - lower someones level
+                    actual - gets your level calculated by the amount of messages you sent
                     show - show someones level\n
                     usage:
                     !level [command] [mention] [value]");
@@ -251,8 +269,8 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $discord) {
             case '!stats':
                 if (isset($a[1]) && startsWith($a[1], "<@")) {
                     $statsuserid = trim($a[1], '<@>');
-                    $statsmessages222 = $statsuserid . '-' . $message->channel->guild_id . '-messages';
-                    $statsmessages = $db->get($statsmessages222);
+                    $statsmessagesdbstring = $statsuserid . '-' . $message->channel->guild_id . '-messages';
+                    $statsmessages = $db->get($statsmessagesdbstring);
                     $badjokes = $db->get($a[1] . '-badjokes');
                     $level = $db->get($a[1] . '-level');
                     $class = $db->get($a[1] . '-class');
@@ -264,9 +282,15 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $discord) {
                     Class: " . $class . " 
                     Last Message: 
                     " . $db->get($statsuserid . '-last') . " ");
+                } elseif (isset($a[1]) && startsWith($a[1], '@here')){
+                    $message->reply("Stats for this server:
+                    Messages sent: {$amountofmessages_guild}
+                    Actual Level:". calculateLevel($amountofmessages_guild)."
+                    (counting start 15 May 2016)");
                 } else {
                     $message->reply("this command uses the following syntax:
-                    !stats [mention]");
+                    !stats [mention]
+                    use @here for server stats");
                 }
                 break;
 
