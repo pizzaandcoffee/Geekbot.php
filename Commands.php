@@ -66,7 +66,7 @@ class Commands {
     public function help() {
             $this->message->reply("here is a list of all commands:
             !level - level settings for each user
-            !klasse - class settings for each user
+            !classes - class settings for each user
             !bad - a bad joke counter
             !last - see when the mentioned user last sent something
             !stats - show stats for each user
