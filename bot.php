@@ -2,6 +2,7 @@
 
 include __DIR__ . '/vendor/autoload.php';
 include __DIR__ . '/victoria.php';
+include __DIR__ . '/Commands.php';
 
 use Discord\Discord;
 use Discord\WebSockets\WebSocket;
@@ -63,7 +64,23 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $discord) {
     echo "bot is ready!" . PHP_EOL;
 
     $ws->on('message', function ($message) use ($settings, $db, $ws, $discord) {
+    
+    $commands = new Victoria\Commands($message, $db);
+    
+    try {
+        if(substr($commands->getA()[0], 0, 1)  == "!") {
+            $commands->{"!" . $commands->getA()[0]}();
+        } else {
+            $commands->{$commands->getA()[0]}(); 
+        }
+        $message = $commands->getMessage();
+    } catch (Exception $exc) {
+        echo $exc->getTraceAsString();
+    }
 
+
+
+    /*
         #
         #   Strings
         #
@@ -87,32 +104,14 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $discord) {
         $a = explode(' ', $oa);
         $ac = strtolower($message->content);
 
-
+        
         switch ($a[0]) {
 
             #
             #   reaction strings
             #
 
-            case 'ping':
-                $message->reply('pong!');
-                break;
-
-            case 'marco':
-                $message->reply('polo!');
-                break;
-
-            case 'deder':
-                $message->reply('DEDEST');
-                break;
-
-            case '!idiot':
-                if ($authorid == '93421536890859520') {
-                    $message->reply('die Halluzination findet euch alle BEKLOPPT!');
-                } else {
-                    $message->reply('du bist KEINE HALLUZINATION *triggered*');
-                }
-                break;
+            
 
             #
             #   Debugging purposes
@@ -517,7 +516,7 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $discord) {
                 }
                 break;
         }
-
+*/
         #
         #   Output message to console
         #
