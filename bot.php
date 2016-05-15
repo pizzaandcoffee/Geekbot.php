@@ -65,10 +65,15 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $discord) {
 
     $ws->on('message', function ($message) use ($settings, $db, $ws, $discord) {
     
-    $commands = new Commands($message, $db);
+    $commands = new Commands($message, $db, $settings);
     
 
         if(substr($commands->getA()[0], 0, 1)  == "!") {
+            if(method_exists($commands, substr($commands->getA()[0], 1))) {
+                $commands->{substr($commands->getA()[0], 1)}();
+            }
+            
+        } elseif(substr($commands->getA()[0], 0, 1)  == "%") {
             if(method_exists($commands, substr($commands->getA()[0], 1))) {
                 $commands->{substr($commands->getA()[0], 1)}();
             }
@@ -120,38 +125,12 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $discord) {
             #   Debugging purposes
             #
 
-            case '%array':
-                if ($a[0] == '%array' && $message->author->username == $settings->ownername) {
-                    print_r($message) . PHP_EOL;
-                    print_r($a);
-                }
-                break;
-
-            case '%level':
-                $message->reply(calculateLevel($newamountofmessages));
-                break;
 
             #
             #   Help Command
             #
 
-            case '!help':
-                $message->reply("here is a list of all commands:
-                !level - level settings for each user
-                !class - class settings for each user
-                !bad - a bad joke counter
-                !last - see when the mentioned user last sent something
-                !stats - show stats for each user
-                !cat - shows a random cat picture
-                !8ball - let the allknowingly 8ball answer your question
-                !pokedex - does what a pokedex does
-                !porn - :smirk:
-                !fortune - get a fortune or quote
-                !4chan - get a totally random image from 4chan (be aware of shitposts)
-                Geekbot also knows how to respond to several words\n
-                for more info about each command use
-                ![command] help");
-                break;
+            
 
             #
             #   Level Command
