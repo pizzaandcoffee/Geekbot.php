@@ -80,6 +80,8 @@ class Commands {
             for more info about each command use
             !anime - looks up an anime from myanimelist
             !manga - looks up a a manga from myanimelist
+            !coin - flips a coin
+            !dice - rolls a dice
             ![command] help");
     }
     //-------------------------------------------------------------------------
@@ -292,6 +294,20 @@ class Commands {
             $this->message->reply('please provide atleast 2 options');
         }
     }
+
+    public function coin(){
+        $number = random_int(1, 2);
+        $this->message->reply($number);
+    }
+
+    public function dice(){
+        $number = random_int(1, 6);
+        $this->message->reply($number);
+    }
+
+    public function wow(){
+        $this->message->reply('http://i.imgur.com/xXk71Hn.png');
+    }
     
     public function say(){
         if ($this->message->author->username == $this->settings->ownername) {
@@ -445,7 +461,7 @@ class Commands {
     
     function manga(){
         $a = $this->a;
-        
+
         if($a[1] == "help") {
             $this->message->reply("command to look up manga from my animelist
             usage:
@@ -455,7 +471,7 @@ class Commands {
             unset($a[0]);
             $searchString = implode("+", $a);
 
-            $dom = new Dom;  
+            $dom = new Dom;
             $dom->loadFromUrl("http://myanimelist.net/manga.php?q=". $searchString);
             $table = $dom->find("table")[2];
             $result = $table->find("tr")[1]->find("a")[0]->getAttribute("href");
