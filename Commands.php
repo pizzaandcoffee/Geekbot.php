@@ -1,6 +1,8 @@
 <?php
 namespace Geekbot;
 
+use PHPHtmlParser\Dom;
+
 class Commands {
     //construct parameters
     private $message;
@@ -20,9 +22,7 @@ class Commands {
     private $oa;
     private $a;
     private $ac;
-   
-    
-            
+           
     function __construct($message, $db, $settings, $utils) {
         $this->db = $db;
         $this->message = $message;
@@ -78,6 +78,8 @@ class Commands {
             !chan - get a totally random image from 4chan (be aware of shitposts)
             Geekbot also knows how to respond to several words\n
             for more info about each command use
+            !anime - looks up an anime from myanimelist
+            !manga - looks up a a manga from myanimelist
             ![command] help");
     }
     //-------------------------------------------------------------------------
@@ -414,6 +416,46 @@ class Commands {
             !4chan ([board])");
         } else {
             $this->message->reply("that is not a valid board");
+        }
+    }
+    
+    function anime(){
+        $a = $this->a;
+        
+        if($a[1] == "help") {
+            $this->message->reply("command to look up animes from my animelist
+            usage:
+            !anime [name]");
+        }
+        else {
+            unset($a[0]);
+            $searchString = implode("+", $a);
+
+            $dom = new Dom;  
+            $dom->loadFromUrl("http://myanimelist.net/anime.php?q=". $searchString);
+            $table = $dom->find("table")[2];
+            $result = $table->find("tr")[1]->find("a")[0]->getAttribute("href");
+            $this->message->reply($result . "\n" . "For more Results : ". "http://myanimelist.net/anime.php?q=". $searchString);
+        }
+    }
+    
+    function manga(){
+        $a = $this->a;
+        
+        if($a[1] == "help") {
+            $this->message->reply("command to look up manga from my animelist
+            usage:
+            !manga [name]");
+        }
+        else {
+            unset($a[0]);
+            $searchString = implode("+", $a);
+
+            $dom = new Dom;  
+            $dom->loadFromUrl("http://myanimelist.net/manga.php?q=". $searchString);
+            $table = $dom->find("table")[2];
+            $result = $table->find("tr")[1]->find("a")[0]->getAttribute("href");
+            $this->message->reply($result . "\n" . "For more Results : ". "http://myanimelist.net/manga.php?q=". $searchString);
         }
     }
     

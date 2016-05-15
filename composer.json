@@ -3,6 +3,7 @@
   "prefer-stable" : true,
   "require": {
     "team-reflex/discord-php": "dev-master",
-    "symfony/yaml": "^3.0"
+    "symfony/yaml": "^3.0",
+    "paquettg/php-html-parser": "1.7.0"
   }
 }
