@@ -330,9 +330,9 @@ class Commands {
                 !porn [tags]");
         } elseif (isset($this->a[1])) {
             $getgelbooru = file_get_contents('http://gelbooru.com/index.php?page=dapi&s=post&q=index&tags=rating:explicit ' . substr($this->ac, 5));
-            $xmlgelbooru = new SimpleXMLElement($getgelbooru);
+            $xmlgelbooru = new $this->utils->SimpleXMLElement($getgelbooru);
             $randomnumberporn = rand(1, 100);
-            $this->message->reply(xml_attribute($xmlgelbooru->post[$randomnumberporn], 'file_url'));
+            $this->message->reply($this->utils->xml_attribute($xmlgelbooru->post[$randomnumberporn], 'file_url'));
         } else {
             $this->message->reply('Please use atleast one tag');
         }
