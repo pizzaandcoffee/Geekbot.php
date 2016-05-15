@@ -4,25 +4,25 @@
 
 just a random discord bot i wrote to have some fun
 
-This code was never meant to go public and it is one big mess, please excuse me for that
+Don't ask why it can do certain things, i don't know either...
 
 #### Commands 
 
 * !level - level settings for each user
-* !class - class settings for each user
+* !classes - class settings for each user
 * !bad - a bad joke counter
 * !last - see when the mentioned user last sent something
 * !stats - show stats for each user
 * !cat - shows a random cat picture
-* !8ball - let the allknowingly 8ball answer your question
+* !ball - let the allknowingly 8ball answer your question
 * !pokedex - does what a pokedex does
 * !porn - :smirk:
 * !fortune - get a fortune or quote
-* !4chan - get a totally random image from 4chan (be aware of shitposts)
+* !chan - get a totally random image from 4chan (be aware of shitposts)
 
 #### How to use
 
-1. git clone git@github.com:runebaas/geekbot.git 
+1. git clone https://github.com/runebaas/geekbot 
 2. cd geekbot
 3. composer install
 4. cp env.json.env env.json
