@@ -19,6 +19,8 @@ Don't ask why it can do certain things, i don't know either...
 * !porn - :smirk:
 * !fortune - get a fortune or quote
 * !chan - get a totally random image from 4chan (be aware of shitposts)
+* !anime - looks up an anime from myanimelist
+* !manga - looks up a a manga from myanimelist
 
 #### How to use
 
