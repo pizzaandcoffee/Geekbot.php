@@ -2,6 +2,7 @@
 namespace Geekbot;
 
 use PHPHtmlParser\Dom;
+use SimpleXMLElement;
 
 class Commands {
     //construct parameters
@@ -330,7 +331,7 @@ class Commands {
                 !porn [tags]");
         } elseif (isset($this->a[1])) {
             $getgelbooru = file_get_contents('http://gelbooru.com/index.php?page=dapi&s=post&q=index&tags=rating:explicit ' . substr($this->ac, 5));
-            $xmlgelbooru = new $this->utils->SimpleXMLElement($getgelbooru);
+            $xmlgelbooru = new SimpleXMLElement($getgelbooru);
             $randomnumberporn = rand(1, 100);
             $this->message->reply($this->utils->xml_attribute($xmlgelbooru->post[$randomnumberporn], 'file_url'));
         } else {
