@@ -308,6 +308,10 @@ class Commands {
     public function wow(){
         $this->message->reply('http://i.imgur.com/xXk71Hn.png');
     }
+
+    public function johncena(){
+        $this->message->return("https://www.youtube.com/watch?v=WnhvR_6oC9s");
+    }
     
     public function say(){
         if ($this->message->author->username == $this->settings->ownername) {
