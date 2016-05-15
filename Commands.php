@@ -76,12 +76,12 @@ class Commands {
             !porn - :smirk:
             !fortune - get a fortune or quote
             !chan - get a totally random image from 4chan (be aware of shitposts)
-            Geekbot also knows how to respond to several words\n
-            for more info about each command use
             !anime - looks up an anime from myanimelist
             !manga - looks up a a manga from myanimelist
             !coin - flips a coin
             !dice - rolls a dice
+            Geekbot also knows how to respond to several words\n
+            for more info about each command use            
             ![command] help");
     }
     //-------------------------------------------------------------------------
