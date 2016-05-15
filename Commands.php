@@ -310,7 +310,7 @@ class Commands {
     }
 
     public function johncena(){
-        $this->message->return("https://www.youtube.com/watch?v=WnhvR_6oC9s");
+        $this->message->reply("https://www.youtube.com/watch?v=WnhvR_6oC9s");
     }
     
     public function say(){
