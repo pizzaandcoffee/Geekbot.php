@@ -1,5 +1,7 @@
 .idea
 /composer.lock
-/Victoria
+/db
 /vendor
 /env.json
+.c9
+StackTrace.txt
