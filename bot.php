@@ -65,18 +65,21 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $discord) {
 
     $ws->on('message', function ($message) use ($settings, $db, $ws, $discord) {
     
-    $commands = new Victoria\Commands($message, $db);
+    $commands = new Commands($message, $db);
     
-    try {
+
         if(substr($commands->getA()[0], 0, 1)  == "!") {
-            $commands->{"!" . $commands->getA()[0]}();
+            if(method_exists($commands, substr($commands->getA()[0], 1))) {
+                $commands->{substr($commands->getA()[0], 1)}();
+            }
+            
         } else {
-            $commands->{$commands->getA()[0]}(); 
+            if(method_exists($commands, $commands->getA()[0])) {
+               $commands->{$commands->getA()[0]}(); 
+            }
         }
         $message = $commands->getMessage();
-    } catch (Exception $exc) {
-        echo $exc->getTraceAsString();
-    }
+    
 
 
 

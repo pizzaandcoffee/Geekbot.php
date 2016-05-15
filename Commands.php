@@ -6,7 +6,6 @@
  * and open the template in the editor.
  */
 
-namespace Victoria;
 
 /**
  * Description of Commands
@@ -75,10 +74,12 @@ class Commands {
     }
 
     public function idiot(){
-        if ($this->authorid == '93421536890859520') {
-            $this->message->reply('die Halluzination findet euch alle BEKLOPPT!');
-        } else {
-            $this->message->reply('du bist KEINE HALLUZINATION *triggered*');
+        if(substr($this->a[0], 0, 1) == "!") {
+            if ($this->authorid == '93421536890859520') {
+                $this->message->reply('die Halluzination findet euch alle BEKLOPPT!');
+            } else {
+                $this->message->reply('du bist KEINE HALLUZINATION *triggered*');
+            }
         }
     }
     public function hui(){
