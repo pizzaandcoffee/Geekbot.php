@@ -242,6 +242,10 @@ class Commands {
             !bad [show|@mention] ([@mention])");
         }
     }
+
+    public function shit(){
+        $this->bad();
+    }
     
     //-------------------------------------------------------------------------
     // Useless Commands 

@@ -29,4 +29,8 @@ class Reactions {
     public function hui(){
         $this->message->reply("hui!");
     }
+    
+    public function fuck(){
+        $this->message->reply("Aso nei, da seit mer also nid :rage:");
+    }
 }
