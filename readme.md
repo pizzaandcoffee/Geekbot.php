@@ -1,6 +1,7 @@
 # Geekbot
 
 ### Description 
+----------------
 
 A php bot for Discord.
 
@@ -9,6 +10,7 @@ Originally created to mess around but now open for everyone to use and learn fro
 Don't ask why it can do certain things, i don't know either...
 
 ### Commands 
+----------------
 
 * !level - level settings for each user
 * !classes - class settings for each user
@@ -25,6 +27,7 @@ Don't ask why it can do certain things, i don't know either...
 * !manga - looks up a a manga from myanimelist
 
 ### How to use
+----------------
 
 1. git clone https://github.com/runebaas/geekbot 
 2. cd geekbot
@@ -34,6 +37,7 @@ Don't ask why it can do certain things, i don't know either...
 6. php bot.php
 
 ### Q&A
+----------------
 
 **LevelDB? False or True?**
 
@@ -56,6 +60,7 @@ Originally it was just meant to replace LevelDB on PHP7
 This occurs due to a library bug which should be fixed soon (according to the developer)
 
 ### Contributing
+----------------
 
 Everyone is welcome to contribute!
 
@@ -73,10 +78,12 @@ Make a pull request whenever you want to and i'll review it
 | fortunes      | huge list of fortunes for the fortunes command |
 
 ### Creators
+----------------
 
 * [Daan Boerlage](https://github.com/runebaas)
 * [Alex Fence](https://github.com/AlexFence)
 
 ### License
+----------------
 
 Geekbot is open for everyone under the [GNU Public License v3](http://www.gnu.org/licenses/gpl-3.0.html)
