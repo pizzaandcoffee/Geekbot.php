@@ -66,16 +66,16 @@ class Commands {
     public function help() {
             $this->message->reply("here is a list of all commands:
             !level - level settings for each user
-            !class - class settings for each user
+            !klasse - class settings for each user
             !bad - a bad joke counter
             !last - see when the mentioned user last sent something
             !stats - show stats for each user
             !cat - shows a random cat picture
-            !8ball - let the allknowingly 8ball answer your question
+            !ball - let the allknowingly 8ball answer your question
             !pokedex - does what a pokedex does
             !porn - :smirk:
             !fortune - get a fortune or quote
-            !4chan - get a totally random image from 4chan (be aware of shitposts)
+            !chan - get a totally random image from 4chan (be aware of shitposts)
             Geekbot also knows how to respond to several words\n
             for more info about each command use
             ![command] help");
@@ -129,7 +129,6 @@ class Commands {
     // Classes Command
     //-------------------------------------------------------------------------   
     public function classes() {
-        print("nyan");
         $rpgclasses = ['geek', 'neckbeard', 'console-peasant', 'neko', 'furry', 'laladin', 'yandere', 'script-kiddie',
             'zweihorn', 'affe-mit-waffe', 'glitzertier'];
         $classes2 = implode(", ", $rpgclasses);
@@ -145,8 +144,8 @@ class Commands {
                 }
             }
         } elseif ($this->a[1] == 'show') {
-            $class = $this->db->get($a[2] . '-class');
-            $this->message->reply("{$a[2]} is a " . ucfirst($class));
+            $class = $this->db->get($this->a[2] . '-class');
+            $this->message->reply("{$this->a[2]} is a " . ucfirst($class));
         } elseif ($this->a[1] == 'help') {
             $this->message->reply("here are the commands for !class
             set - set someones class
@@ -207,8 +206,8 @@ class Commands {
             " . $this->db->get($statsuserid . '-last') . " ");
         } elseif (isset($this->a[1]) && $this->utils->startsWith($this->a[1], 'server')){
             $this->message->reply("Stats for this server:
-            Messages sent: {$amountofmessages_guild}
-            Actual Level: ". $this->utils->calculateLevel($amountofmessages_guild)."
+            Messages sent: {$this->amountofmessages_guild}
+            Actual Level: ". $this->utils->calculateLevel($this->amountofmessages_guild)."
             (counting start 15 May 2016)");
         } else {
             $this->message->reply("this command uses the following syntax:
@@ -280,7 +279,7 @@ class Commands {
                 usage:
                 !choose [option1] [option2] ([option3] ...)");
         } elseif (isset($this->a[1]) && isset($this->a[2])) {
-            unset($a[0]);
+            unset($this->a[0]);
             $thechoice = "my choice is '{$this->a[array_rand($this->a)]}'";
             $this->message->reply($thechoice);
         } else {
@@ -407,9 +406,9 @@ class Commands {
                 $file = "http://i.4cdn.org/{$board}/{$image}";
                 $this->message->reply($file . ' from ' . $originalthread);
             } else {
-                $message->reply('there are no images in this thread!');
+                $this->message->reply('there are no images in this thread!');
             }
-        } else if ($a[1] == 'help') {
+        } else if ($this->a[1] == 'help') {
             $this->message->reply("get a totally random image or from a specified board
             Usage:
             !4chan ([board])");
