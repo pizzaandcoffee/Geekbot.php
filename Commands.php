@@ -270,7 +270,7 @@ class Commands {
     
     //-------------------------------------------------------------------------
     // Useless Commands 
-    // Cat, 8ball, choose
+    // Cat, 8ball, choose, johncena, coin, dice
     //-------------------------------------------------------------------------   
     public function cat(){
         if (isset($this->a[1]) && $this->a[1] == 'help') {
@@ -369,7 +369,7 @@ class Commands {
         } elseif (isset($this->a[1]) && isset($this->a[2]) && in_array($this->a[2], $pokedexoptions)) {
             $this->message->reply('please wait a moment while i fetch all the information');
             $getrawpkdata = file_get_contents("http://pokeapi.co/api/v2/pokemon/".$this->a[1]);
-            if (startsWith($getrawpkdata, '{')) {
+            if ($this->utils->startsWith($getrawpkdata, '{')) {
                 $pkd = \GuzzleHttp\json_decode($getrawpkdata);
                 if ($this->a[2] == 'image') {
                     $this->message->reply($pkd->sprites->front_default);
@@ -392,8 +392,7 @@ class Commands {
     
     //-------------------------------------------------------------------------
     // 4chan Command
-    //-------------------------------------------------------------------------      
-    
+    //-------------------------------------------------------------------------
     public function chan(){
         $curloptions = array(
             'http' => array(
@@ -461,7 +460,10 @@ class Commands {
             $this->message->reply("that is not a valid board");
         }
     }
-    
+
+    //-------------------------------------------------------------------------
+    // Anime & Manga Command
+    //-------------------------------------------------------------------------
     function anime(){
         $a = $this->a;
         
