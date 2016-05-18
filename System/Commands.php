@@ -30,7 +30,7 @@ class CommandsContainer {
     }
 
     private function includeCommands() {
-        Utils::includeFolder(__DIR__ . '/Commands/core');
+        Utils::includeFolder(__DIR__ . '/../Commands/core');
     }
     
     private function loadCommands() {

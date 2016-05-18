@@ -1,4 +1,8 @@
 <?php
+/**
+ * The Interfaces for writting a plugin command for Geekbot
+ * message refers to Discord\Parts\Channel\Message
+ */
 
 /*
  *   This file is part of Geekbot.
@@ -17,16 +21,43 @@
  *   along with Geekbot.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 namespace Geekbot\Commands;
-
+/**
+ * The most basic command Interface, YOU MUST NOT IMPLEMENT IT!
+ */
 interface command {
-    public static function getName();
+    /**
+     * @return string name of the command
+     */
+    public function getName();
+    /**
+     * @return string short description of what your command does
+     */
+    public function getDiscription();
+    /**
+     * @return string how your command is used
+     */
+    public function getHelp();
 }
 
+/**
+ * The Interace for a basic command that doesn't need any parameters
+ */
 interface basicCommand extends command {
-    public static function runCommand($message);
+    /**
+     * @return string|message has to return a string or message object 
+     */
+    public static function runCommand();
 }
 
-interface DataBaseCommand extends command {
-    public static function runCommand($message, $db);
+/**
+ * The Interace for a command that needs one parameter
+ */
+interface messageCommand extends command {
+    /**
+     * @param message|string $message
+     * @return string|message has to return a string or message object
+     */
+    public static function runCommand($message);
 }

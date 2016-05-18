@@ -18,16 +18,17 @@
  */
 
 include __DIR__ . '/vendor/autoload.php';
-include __DIR__ . '/DB.php';
-include __DIR__ . '/Commands.php';
-include __DIR__ . '/Reactions.php';
-include __DIR__ . '/Utils.php';
+include __DIR__ . '/System/Database.php';
+include __DIR__ . '/System/Commands.php';
+include __DIR__ . '/System/Reactions.php';
+include __DIR__ . '/System/Utils.php';
 include __DIR__ . '/Commands/commandInterface.php';
 
 use Discord\Discord;
 use Discord\WebSockets\WebSocket;
 use Geekbot\KeyStorage;
 use Geekbot\CommandsContainer;
+use Geekbot\Database;
 
 $envjson = file_get_contents('env.json');
 $settings = json_decode($envjson);
@@ -40,13 +41,15 @@ $cc = new CommandsContainer('nya');
 
 date_default_timezone_set('Europe/Amsterdam');
 
-if ($settings->leveldb == 'true') {
-    echo("using leveldb...\n");
-    $db = new LevelDB(__DIR__ . '/db');
-} else {
-    echo("using victoriadb...\n");
-    $db = new KeyStorage();
-}
+$gbdb = new Database('victoriadb');
+
+// if ($settings->leveldb == 'true') {
+//     echo("using leveldb...\n");
+//     $db = new LevelDB(__DIR__ . '/db');
+// } else {
+//     echo("using victoriadb...\n");
+//     $db = new KeyStorage();
+// }
 
 
 $ws->on('ready', function ($discord) use ($ws, $settings, $db, $discord, $cc) {
@@ -59,9 +62,14 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $discord, $cc) {
         if($cc->commandExists($cm)){
             $nya = $cc->getCommands();
             if(in_array('Geekbot\Commands\basicCommand', class_implements($cc->getCommand($cm)))) {
-                $message->reply($nya[$cm]::runCommand($message));
-            } else if(in_array('Geekbot\Commands\DataBaseCommand', class_implements($cc->getCommand($cm)))) {
-                $message->reply($nya[$cm]::runCommand($message, $db));
+                $message->reply($nya[$cm]::runCommand());
+            } else if(in_array('Geekbot\Commands\messageCommand', class_implements($cc->getCommand($cm)))) {
+                $result = $nya[$cm]::runCommand($message);
+                if(is_string($command)){
+                    $message->reply($result);
+                } else {
+                    $message = $result;
+                }
             }         
         }
         else {

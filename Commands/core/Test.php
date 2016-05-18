@@ -24,17 +24,29 @@ class Test implements basicCommand{
         return "!test";
     }
 
-    public static function runCommand($message) {
+    public static function runCommand() {
         return "test";
     }
 }
 
-class Test2 implements DataBaseCommand{
+class Test2 implements messageCommand{
     public static function getName() {
         return "!test2";
     }
 
-    public static function runCommand($message, $db) {
+    public static function runCommand($message) {
         return "test2";
+    }
+}
+
+class MessageTest implements messageCommand{
+    public static function getName() {
+        return "!msg";
+    }
+
+    public static function runCommand($message) {
+        $m = $message;
+        $m->reply("message!");
+        return $m;
     }
 }

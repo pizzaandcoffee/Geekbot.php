@@ -19,20 +19,26 @@
 
 namespace Geekbot;
 
-class KeyStorage
+class VictoriaDB
 {
+    private $folder;
+    
+    function __construct($folder){
+        $this->folder = $folder;
+    }
+    
     private function check(){
-        if(!file_exists(__DIR__.'/db')){
-            mkdir(__DIR__.'/db');
+        if(!file_exists($this->folder)){
+            mkdir($this->folder);
         }
-        if(!file_exists(__DIR__.'/db/db.json')){
-            fopen(__DIR__.'/db/db.json', 'w');
+        if(!file_exists($this->folder.'/db.json')){
+            fopen($this->folder.'/db.json', 'w');
         }
         return true;
     }
 
     public function put($name, $data){
-        $where = __DIR__.'/db/db.json';
+        $where = $this->folder.'/db.json';
         if($this->check()) {
             $get_settings = file_get_contents($where);
             $decode_settings = json_decode($get_settings);
@@ -43,7 +49,7 @@ class KeyStorage
     }
 
     public function get($name){
-        $where = __DIR__.'/db/db.json';
+        $where = $this->folder.'/db.json';
         $get_settings = file_get_contents($where);
         $decode_settings = json_decode($get_settings);
         try {
@@ -53,5 +59,19 @@ class KeyStorage
         catch(Exception $e){
             return 0;
         }
+    }
+    
+    /**
+     *  NOPE!!!!!!!!!
+     *  TODO: FIX THIS SHIT
+     */
+    
+    public function del($name){
+        $where = $this->folder.'/db.json';
+        $get_settings = file_get_contents($where);
+        $decode_settings = json_decode($get_settings);
+        //$new = unset($decode_settings->{$name});
+        $new = json_encode($decode_settings);
+        file_put_contents($where, $new);
     }
 }
