@@ -48,4 +48,15 @@ class Utils{
         }
         return $level;
     }
+    
+    public static function includeFolder($folder) {
+        $dir = $folder;
+        $commands = scandir($dir);
+        array_shift($commands);
+        array_shift($commands);
+        print_r($commands);
+        foreach($commands as $command){
+            include $dir.'/'.$command;
+        }
+    }
 }

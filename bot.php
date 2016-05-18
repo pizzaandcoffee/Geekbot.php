@@ -22,17 +22,21 @@ include __DIR__ . '/DB.php';
 include __DIR__ . '/Commands.php';
 include __DIR__ . '/Reactions.php';
 include __DIR__ . '/Utils.php';
+include __DIR__ . '/Commands/commandInterface.php';
 
 use Discord\Discord;
 use Discord\WebSockets\WebSocket;
 use Geekbot\KeyStorage;
-use Geekbot\Commands;
+use Geekbot\CommandsContainer;
 
 $envjson = file_get_contents('env.json');
 $settings = json_decode($envjson);
 
 $discord = new Discord($settings->token);
 $ws = new WebSocket($discord);
+$cc = new CommandsContainer('nya');
+//print_r($cc->getCommands());
+
 
 date_default_timezone_set('Europe/Amsterdam');
 
@@ -44,39 +48,30 @@ if ($settings->leveldb == 'true') {
     $db = new KeyStorage();
 }
 
-$ws->on('ready', function ($discord) use ($ws, $settings, $db, $discord) {
+
+$ws->on('ready', function ($discord) use ($ws, $settings, $db, $discord, $cc) {
     $discord->updatePresence($ws, "Ping Pong", 0);
     echo "bot is ready!" . PHP_EOL;
 
-    $ws->on('message', function ($message) use ($settings, $db, $ws, $discord) {
+    $ws->on('message', function ($message) use ($settings, $db, $ws, $discord, $cc) {
         
-        #
-        #   Command Handler
-        #
-        
-        if ($message->author->id != $settings->botid){
-            $commands = new Geekbot\Commands($message, $db, $settings, new Geekbot\Utils);
-            $reactions = new Geekbot\Reactions($message);
-            
-            //is Command or Debug Command
-            if(substr($commands->getA()[0], 0, 1) == "!") {
-                if(method_exists($commands, substr($commands->getA()[0], 1))) {
-                    $commands->{substr($commands->getA()[0], 1)}();
-                    $message = $commands->getMessage();
-                }
-            } else {
-                if(method_exists($reactions, $commands->getA()[0])) {
-                   $reactions->{$commands->getA()[0]}();
-                   $message = $reactions->getMessage();
-                }
-            }
-            
+        $cm = CommandsContainer::checkCommand($message);
+        if($cc->commandExists($cm)){
+            $nya = $cc->getCommands();
+            if(in_array('Geekbot\Commands\basicCommand', class_implements($cc->getCommand($cm)))) {
+                $message->reply($nya[$cm]::runCommand($message));
+            } else if(in_array('Geekbot\Commands\DataBaseCommand', class_implements($cc->getCommand($cm)))) {
+                $message->reply($nya[$cm]::runCommand($message, $db));
+            }         
         }
-
-        #
-        #   Output message to console
-        #
-
+        else {
+            $reactions = new Geekbot\Reactions($message);   
+            if(method_exists($reactions, $cm)) {
+                $reactions->{$cm}();
+                $message = $reactions->getMessage();
+            }
+        }
+        
         $reply = $message->timestamp->format('d/m/y H:i:s') . ' - ';
         $reply .= $message->author->username . ' - ';
         $reply .= $message->content;
