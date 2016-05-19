@@ -104,50 +104,5 @@ class Bot {
     }
 }
 
-/*
-$ws->on('ready', function ($discord) use ($ws, $settings, $db, $discord, $commands) {
-    $discord->updatePresence($ws, "Ping Pong", 0);
-    echo "bot is ready!" . PHP_EOL;
-
-    $ws->on('message', function ($message) use ($settings, $db, $ws, $discord, $commands) {
-        
-        $cm = CommandsContainer::checkCommand($message);
-        if($commands->commandExists($cm)){
-            $nya = $commands->getCommands();
-            if(in_array('Geekbot\Commands\basicCommand', class_implements($commands->getCommand($cm)))) {
-                $message->reply($nya[$cm]->runCommand());
-            } else if(in_array('Geekbot\Commands\messageCommand', class_implements($commands->getCommand($cm)))) {
-                $result = $nya[$cm]->runCommand($message);
-                if(is_string($result)){
-                    $message->reply($result);
-                } else {
-                    $message = $result;
-                }
-            }         
-        }
-        else {
-            $reactions = new Geekbot\Reactions($message);   
-            if(method_exists($reactions, $cm)) {
-                $reactions->{$cm}();
-                $message = $reactions->getMessage();
-            }
-        }
-        
-        $reply = $message->timestamp->format('d/m/y H:i:s') . ' - ';
-        $reply .= $message->author->username . ' - ';
-        $reply .= $message->content;
-        echo $reply . PHP_EOL;
-    });
-}
-);
-
-$ws->on('error', function ($error, $ws) {
-    print($error);
-    exit(1);
-}
-);
-
-$ws->run();*/
-
 $bot = new Bot();
 $bot->run();
