@@ -27,8 +27,8 @@ class Database{
     private $type;
     private $connection;
     
-    function __construct($type, $host='localhost', $username='geekbot', $password='geekbot', $post='3306', $location=null){
-        $types = ['redis', 'leveldb', 'victoriadb'];
+    function __construct($type, $host='localhost', $port='6379', $password='geekbot', $location=__DIR__ . '/db'){
+        $types = ['redis', 'leveldb', 'victoriadb', 'memcached'];
         
         if(in_array($type, $types)){
             $this->type = $type;
@@ -36,23 +36,45 @@ class Database{
         
         switch($type){
             case "redis":
+                print_r("using redis as database\n");
                 try{
-                    //init redis here
+                    $redis = new \Redis();
+                    if($redis->connect($host, $port)){
+                        $this->connection = $redis;
+                        print_r("successfully connected to redis!\n");
+                    } else {
+                        die("failed to connect to Redis\n");
+                    }
                 } catch (Exception $e) {
                     die("Redis PHP Extension is not Installed\n {$e}");
                 }
                 break;
-            
+
+            case 'memcached':
+                print_r("using memcached as database\n");
+                $mem = new \Memcached();
+                if($mem->addServer($host, $port)){
+                    $this->connection = $mem;
+                    print_r("successfully connected to memcached\n");
+                } else {
+                    die("failed to connect to memcached \n");
+                }
+                break;
+
             case "leveldb":
+                $this->type = 'leveldb';
+                print_r("using leveldb as database\n");
                 try {
-                    $this->connection = new LevelDB(__DIR__ . '/db');
+                    $this->connection = new LevelDB($location);
                 } catch (Exception $e) {
                     die("LevelDB PHP Extension is not Installed\n {$e}");
                 }
                 break;
             
             case "victoriadb":
-                $this->connection = new VictoriaDB(__DIR__.'/db');
+                $this->type = 'victoriadb';
+                print_r("using victoriadb as database\n");
+                $this->connection = new VictoriaDB($location);
                 break;
         }
     }
@@ -60,6 +82,9 @@ class Database{
         public function put($key, $value){
             switch ($this->type){
                 case "redis":
+                    $this->connection->set($key, $value);
+                    break;
+                case "memcached":
                     $this->connection->set($key, $value);
                     break;
                 case "leveldb":
@@ -74,13 +99,16 @@ class Database{
         public function get($key){
             switch ($this->type){
                 case "redis":
-                    $this->connection->get($key);
+                    return $this->connection->get($key);
+                    break;
+                case "memcached":
+                    return $this->connection->get($key);
                     break;
                 case "leveldb":
-                    $this->connection->get($key);
+                    return $this->connection->get($key);
                     break;
                 case "victoriadb":
-                    $this->connection->get($key);
+                    return $this->connection->get($key);
                     break;
             }
         }
@@ -88,6 +116,9 @@ class Database{
         public function delete($key){
             switch ($this->type){
                 case "redis":
+                    $this->connection->del($key);
+                    break;
+                case "memcached":
                     $this->connection->del($key);
                     break;
                 case "leveldb":

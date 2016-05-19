@@ -60,17 +60,12 @@ class VictoriaDB
             return 0;
         }
     }
-    
-    /**
-     *  NOPE!!!!!!!!!
-     *  TODO: FIX THIS SHIT
-     */
-    
+
     public function del($name){
         $where = $this->folder.'/db.json';
         $get_settings = file_get_contents($where);
         $decode_settings = json_decode($get_settings);
-        //$new = unset($decode_settings->{$name});
+        unset($decode_settings->{$name});
         $new = json_encode($decode_settings);
         file_put_contents($where, $new);
     }

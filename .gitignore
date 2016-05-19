@@ -1,6 +1,7 @@
+/test
+/System/db
 .idea
 /composer.lock
-/db
 /vendor
 /env.json
 .c9

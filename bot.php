@@ -41,16 +41,7 @@ $cc = new CommandsContainer('nya');
 
 date_default_timezone_set('Europe/Amsterdam');
 
-$gbdb = new Database('victoriadb');
-
-// if ($settings->leveldb == 'true') {
-//     echo("using leveldb...\n");
-//     $db = new LevelDB(__DIR__ . '/db');
-// } else {
-//     echo("using victoriadb...\n");
-//     $db = new KeyStorage();
-// }
-
+$gbdb = new Database($settings->database);
 
 $ws->on('ready', function ($discord) use ($ws, $settings, $db, $discord, $cc) {
     $discord->updatePresence($ws, "Ping Pong", 0);

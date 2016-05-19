@@ -34,7 +34,7 @@ interface command {
     /**
      * @return string short description of what your command does
      */
-    public function getDiscription();
+    public function getDescription();
     /**
      * @return string how your command is used
      */
