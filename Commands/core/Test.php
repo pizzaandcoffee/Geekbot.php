@@ -24,9 +24,18 @@ class Test implements basicCommand{
         return "!test";
     }
 
-    public static function runCommand() {
+    public function runCommand() {
         return "test";
     }
+
+    public function getDescription() {
+        return "test";
+    }
+
+    public function getHelp() {
+        return "!test";
+    }
+
 }
 
 class Test2 implements messageCommand{
@@ -34,9 +43,18 @@ class Test2 implements messageCommand{
         return "!test2";
     }
 
-    public static function runCommand($message) {
+    public function runCommand($message) {
         return "test2";
     }
+
+    public function getDescription() {
+        return "test2";
+    }
+
+    public function getHelp() {
+         return "!test2";
+    }
+
 }
 
 class MessageTest implements messageCommand{
@@ -44,9 +62,18 @@ class MessageTest implements messageCommand{
         return "!msg";
     }
 
-    public static function runCommand($message) {
+    public function runCommand($message) {
         $m = $message;
         $m->reply("message!");
         return $m;
     }
+
+    public function getDescription() {
+        return message;
+    }
+
+    public function getHelp() {
+        return "!msg";
+    }
+
 }

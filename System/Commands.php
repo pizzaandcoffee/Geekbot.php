@@ -22,11 +22,11 @@ namespace Geekbot;
 class CommandsContainer {
     private $commands;
     
-    function __construct($nya) {
+    function __construct() {
         $this->commands = [];
         $this->includeCommands();
         $this->loadCommands();
-        //print_r($this->commands);
+        
     }
 
     private function includeCommands() {
@@ -34,11 +34,14 @@ class CommandsContainer {
     }
     
     private function loadCommands() {
+        echo "Loading Commands:" . PHP_EOL;
         foreach (get_declared_classes() as $className) {
             if (in_array('Geekbot\Commands\command', class_implements($className))) {
-                $this->commands[$className::getName()] = $className;
+                echo "   - $className" . PHP_EOL;
+                $this->commands[$className::getName()] = new $className();
             }
         }
+        echo " " . PHP_EOL;
     }
     
     public function commandExists($name) {

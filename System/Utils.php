@@ -54,7 +54,6 @@ class Utils{
         $commands = scandir($dir);
         array_shift($commands);
         array_shift($commands);
-        print_r($commands);
         foreach($commands as $command){
             include $dir.'/'.$command;
         }

@@ -30,33 +30,95 @@ use Geekbot\KeyStorage;
 use Geekbot\CommandsContainer;
 use Geekbot\Database;
 
-$envjson = file_get_contents('env.json');
-$settings = json_decode($envjson);
+echo 'Geekbot' .PHP_EOL;
+echo '' .PHP_EOL;
 
-$discord = new Discord($settings->token);
-$ws = new WebSocket($discord);
-$cc = new CommandsContainer('nya');
-//print_r($cc->getCommands());
+class Bot {
+    private $settings;
+    private $discord;
+    private $ws;
+    private $commands;
+    private $db;
+    
+    function __construct() {
+        
+        $envjson = file_get_contents('env.json');
+        $this->settings = json_decode($envjson);
+        $this->discord = new Discord($this->settings->token);
+        $this->ws = new WebSocket($this->discord);
+        $this->commands = new CommandsContainer();
+        $this->db = new Database($this->settings->database);
 
+        date_default_timezone_set('Europe/Amsterdam');
+        
+        $this->initSocket();
+    }
+    
+    
+    function initSocket() {
+        $this->ws->on('ready', function ($discord){
+            $discord->updatePresence($this->ws, "Ping Pong", 0);
+            echo "bot is ready!" . PHP_EOL;
 
-date_default_timezone_set('Europe/Amsterdam');
+            $this->ws->on('message', function ($message) {
 
-$gbdb = new Database($settings->database);
+                $cm = CommandsContainer::checkCommand($message);
+                if($this->commands->commandExists($cm)){
+                    $nya = $this->commands->getCommands();
+                    if(in_array('Geekbot\Commands\basicCommand', class_implements($this->commands->getCommand($cm)))) {
+                        $message->reply($nya[$cm]->runCommand());
+                    } else if(in_array('Geekbot\Commands\messageCommand', class_implements($this->commands->getCommand($cm)))) {
+                        $result = $nya[$cm]->runCommand($message);
+                        if(is_string($result)){
+                            $message->reply($result);
+                        } else {
+                            $message = $result;
+                        }
+                    }         
+                }
+                else {
+                    $reactions = new Geekbot\Reactions($message);   
+                    if(method_exists($reactions, $cm)) {
+                        $reactions->{$cm}();
+                        $message = $reactions->getMessage();
+                    }
+                }
 
-$ws->on('ready', function ($discord) use ($ws, $settings, $db, $discord, $cc) {
+                $reply = $message->timestamp->format('d/m/y H:i:s') . ' - ';
+                $reply .= $message->author->username . ' - ';
+                $reply .= $message->content;
+                echo $reply . PHP_EOL;
+            });
+        }
+        );
+
+        $this->ws->on('error', function ($error, $ws) {
+            print($error);
+            exit(1);
+        }
+        );
+    }
+   
+    function run(){
+        $this->ws->run();
+    }
+}
+
+/*
+$ws->on('ready', function ($discord) use ($ws, $settings, $db, $discord, $commands) {
     $discord->updatePresence($ws, "Ping Pong", 0);
     echo "bot is ready!" . PHP_EOL;
 
-    $ws->on('message', function ($message) use ($settings, $db, $ws, $discord, $cc) {
+    $ws->on('message', function ($message) use ($settings, $db, $ws, $discord, $commands) {
         
         $cm = CommandsContainer::checkCommand($message);
-        if($cc->commandExists($cm)){
-            $nya = $cc->getCommands();
-            if(in_array('Geekbot\Commands\basicCommand', class_implements($cc->getCommand($cm)))) {
-                $message->reply($nya[$cm]::runCommand());
-            } else if(in_array('Geekbot\Commands\messageCommand', class_implements($cc->getCommand($cm)))) {
-                $result = $nya[$cm]::runCommand($message);
-                if(is_string($command)){
+        if($commands->commandExists($cm)){
+            $nya = $commands->getCommands();
+            if(in_array('Geekbot\Commands\basicCommand', class_implements($commands->getCommand($cm)))) {
+                $message->reply($nya[$cm]->runCommand());
+            } else if(in_array('Geekbot\Commands\messageCommand', class_implements($commands->getCommand($cm)))) {
+                $result = $nya[$cm]->runCommand($message);
+                if(is_string($result)){
                     $message->reply($result);
                 } else {
                     $message = $result;
@@ -85,4 +147,7 @@ $ws->on('error', function ($error, $ws) {
 }
 );
 
-$ws->run();
+$ws->run();*/
+
+$bot = new Bot();
+$bot->run();

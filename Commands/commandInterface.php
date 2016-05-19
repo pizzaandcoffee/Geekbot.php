@@ -30,7 +30,7 @@ interface command {
     /**
      * @return string name of the command
      */
-    public function getName();
+    public static function getName();
     /**
      * @return string short description of what your command does
      */
