@@ -48,7 +48,7 @@ interface basicCommand extends command {
     /**
      * @return string|message has to return a string or message object 
      */
-    public static function runCommand();
+    public function runCommand();
 }
 
 /**
@@ -59,5 +59,15 @@ interface messageCommand extends command {
      * @param message|string $message
      * @return string|message has to return a string or message object
      */
-    public static function runCommand($message);
+    public function runCommand($message);
+}
+
+/**
+* By implementing this Interface your command will be an extension of the stats command
+*/
+interface hasStats {
+    /**
+    * @return string the string will be shown when the !stats command is called
+    */
+    public function getStats();
 }
