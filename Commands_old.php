@@ -252,23 +252,7 @@ class Commands {
     // Useless Commands 
     // Cat, 8ball, choose, johncena, coin, dice
     //-------------------------------------------------------------------------   
-    
-    public function ball(){
-        if (isset($this->a[1]) && $this->a[1] == 'help') {
-            $this->message->reply("Ask the allknowingly 8ball a question\n
-            usage:
-            !8ball [question]");
-        } elseif (isset($this->a[1])) {
-            $ballanswers = ['It is certain', 'It is decidedly so', 'Without a doubt', 'Yes, definitely', 'You may rely on it',
-                'As I see it, yes', 'Most likely', 'Outlook good', 'Yes', 'Signs point to yes', 'Reply hazy try again',
-                'Ask again later', 'Better not tell you now', 'Cannot predict now', 'Concentrate and ask again', "Don't count on it",
-                'My reply is no', 'My sources say no', 'Outlook not so good', 'Very doubtful'];
-            $this->message->reply($ballanswers[array_rand($ballanswers)]);
-        } else {
-            $this->message->reply('you must ask a question!');
-        }
-    }
-    
+
     public function choose(){
         if (isset($this->a[1]) && $this->a[1] == 'help') {
             $this->message->reply("Let Geek Bot make the choice for you!\n
@@ -282,17 +266,7 @@ class Commands {
             $this->message->reply('please provide atleast 2 options');
         }
     }
-
-    public function coin(){
-        $number = random_int(1, 2);
-        $this->message->reply($number);
-    }
-
-    public function dice(){
-        $number = random_int(1, 6);
-        $this->message->reply($number);
-    }
-
+    
     public function wow(){
         $this->message->reply('http://i.imgur.com/xXk71Hn.png');
     }
@@ -362,73 +336,7 @@ class Commands {
     //-------------------------------------------------------------------------
     // 4chan Command
     //-------------------------------------------------------------------------
-    public function chan(){
-        $curloptions = array(
-            'http' => array(
-                'method' => "GET",
-                'header' => "Accept-language: en\r\n" .
-                    "Cookie: foo=bar\r\n" .
-                    "User-Agent: Mozilla/5.0 (iPad; U; CPU OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/4.0.4 Mobile/7B334b Safari/531.21.102011-10-16 20:23:10\r\n" // i.e. An iPad
-            )
-        );
-        $curlcontext = stream_context_create($curloptions);
-        $boards = '[a / b / c / d / e / f / g / gif / h / hr / k / m / o / p / r / s / t / u / v / vg / vr / w / wg] [i / ic] [r9k] [s4s] [cm / hm / lgbt / y] [3 / aco / adv / an / asp / biz / cgl / ck / co / diy / fa / fit / gd / hc / his / int / jp / lit / mlp / mu / n / news / out / po / pol / qst / sci / soc / sp / tg / toy / trv / tv / vp / wsg / wsr / x]';
-        $boardstrim = str_replace(array('[', ']', '/'), '', $boards);
-        $boardspreg = preg_replace('/\s+/', ' ', $boardstrim);
-        $boardsarray = explode(' ', $boardspreg);
-        if (!isset($this->a[1])) {
-            $theboard = $boardsarray[array_rand($boardsarray)];
-        } else {
-            $theboard = $this->a[1];
-        }
-        if (in_array($theboard, $boardsarray)) {
-            $board = $theboard;
 
-            $catalogjson = file_get_contents("https://a.4cdn.org/{$board}/catalog.json", false, $curlcontext);
-            $catalog = json_decode($catalogjson);
-            $randompage = $catalog[array_rand($catalog)];
-            $whatever = $randompage->threads;
-            $randomthread = $whatever[array_rand($whatever)];
-            $stuff = $randomthread->no;
-            $getthread = file_get_contents("https://a.4cdn.org/{$board}/thread/{$stuff}.json", false, $curlcontext);
-            $thread = json_decode($getthread);
-            $hasimage = 0;
-            $postnumbers = count($thread->posts);
-            $image = null;
-            $triednr = [];
-            $i = 0;
-            $originalthread = "https://boards.4chan.org/{$board}/thread/{$stuff}";
-            while ($hasimage == 0) {
-                $postnr = random_int(0, $postnumbers);
-                if (in_array($postnr, $triednr)) {
-                    if (count($triednr) == $postnumbers) {
-                        $hasimage = 2;
-                    }
-                } else {
-                    if (isset($thread->posts[$postnr]->tim)) {
-                        $image = $thread->posts[$postnr]->tim . $thread->posts[$postnr]->ext;
-                        $hasimage = 1;
-                    } else {
-                        $triednr[] = $postnr;
-                    }
-                }
-                $i++;
-            }
-            print("{$i}\n");
-            if ($hasimage == 1) {
-                $file = "http://i.4cdn.org/{$board}/{$image}";
-                $this->message->reply($file . ' from ' . $originalthread);
-            } else {
-                $this->message->reply('there are no images in this thread!');
-            }
-        } else if ($this->a[1] == 'help') {
-            $this->message->reply("get a totally random image or from a specified board
-            Usage:
-            !4chan ([board])");
-        } else {
-            $this->message->reply("that is not a valid board");
-        }
-    }
 
     //-------------------------------------------------------------------------
     // Anime & Manga Command

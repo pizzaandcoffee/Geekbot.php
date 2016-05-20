@@ -25,30 +25,34 @@ use Geekbot\Utils;
  *
  * @author fence
  */
-class Cat implements messageCommand{
+class eightball implements messageCommand{
     public function getDescription() {
-        return "returns a random image of a cat";
+        return "ask 8ball something";
     }
 
     public function getHelp() {
         return $this->getDescription() . "
-            usage:
-            !cat";
+        usage:
+        !8ball [question]";
     }
 
     public function runCommand($message) {
         $messageArray = Utils::messageSplit($message);
         if (Utils::isHelp($messageArray)) {
-            return $this->getHelp();
+            $this->getHelp();
+        } elseif (isset($messageArray[1])) {
+            $ballanswers = ['It is certain', 'It is decidedly so', 'Without a doubt', 'Yes, definitely', 'You may rely on it',
+                'As I see it, yes', 'Most likely', 'Outlook good', 'Yes', 'Signs point to yes', 'Reply hazy try again',
+                'Ask again later', 'Better not tell you now', 'Cannot predict now', 'Concentrate and ask again', "Don't count on it",
+                'My reply is no', 'My sources say no', 'Outlook not so good', 'Very doubtful'];
+            $message->reply($ballanswers[array_rand($ballanswers)]);
         } else {
-            $catsource = file_get_contents('http://random.cat/meow');
-            $catcontent = json_decode($catsource);
-            $message->reply($catcontent->file);
-            return $message;
+            $message->reply('you must ask a question!');
         }
+        return $message;
     }
 
     public static function getName() {
-        return "!cat";
+        return "!8ball";
     }
 }

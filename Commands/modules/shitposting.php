@@ -18,37 +18,45 @@
  */
 
 namespace Geekbot\Commands;
-use Geekbot\Utils;
 
-/**
- * Description of Cat
- *
- * @author fence
- */
-class Cat implements messageCommand{
+class coin implements basicCommand{
+    public static function getName() {
+        return "!coin";
+    }
+
+    public function runCommand() {
+        $number =['heads', 'tails'];
+        $thereply = "you flipped ".$number[array_rand($number)];
+        return $thereply;
+    }
+
     public function getDescription() {
-        return "returns a random image of a cat";
+        return "flip a coin";
     }
 
     public function getHelp() {
-        return $this->getDescription() . "
-            usage:
-            !cat";
+        return "!coin";
     }
 
-    public function runCommand($message) {
-        $messageArray = Utils::messageSplit($message);
-        if (Utils::isHelp($messageArray)) {
-            return $this->getHelp();
-        } else {
-            $catsource = file_get_contents('http://random.cat/meow');
-            $catcontent = json_decode($catsource);
-            $message->reply($catcontent->file);
-            return $message;
-        }
-    }
+}
 
+class dice implements basicCommand{
     public static function getName() {
-        return "!cat";
+        return "!dice";
     }
+
+    public function runCommand() {
+        $number = random_int(1, 6);
+        $thereply = "you threw {$number}";
+        return $thereply;
+    }
+
+    public function getDescription() {
+        return "roll a dice";
+    }
+
+    public function getHelp() {
+        return "!dice";
+    }
+
 }

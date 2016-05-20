@@ -58,4 +58,18 @@ class Utils{
             include $dir.'/'.$command;
         }
     }
+
+    public static function messageSplit($message){
+        $oa = preg_replace('/\s+/', ' ', strtolower($message->content));
+        $a = explode(' ', $oa);
+        return $a;
+    }
+
+    public static function isHelp($messageArray){
+        if (isset($messageArray[1]) && $messageArray[1] == "help") {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
