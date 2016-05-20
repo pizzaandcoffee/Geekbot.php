@@ -19,6 +19,8 @@
 
 namespace Geekbot;
 
+use Discord\Voice\VoiceClient;
+
 class Utils{
     
     public function startsWith($haystack, $needle) {
@@ -29,6 +31,7 @@ class Utils{
         if (isset($object[$attribute])) {
             return (string)$object[$attribute];
         }
+        return null;
     }
     
     public function calculateLevel($messages) {
@@ -78,5 +81,15 @@ class Utils{
         $settings = json_decode($envjson);
         $value = $settings->{$key};
         return $value;
+    }
+    
+    public static function playSound($sound, $channel){
+        global $bot;
+        $ws = $bot->ws;
+        $ws->joinVoiceChannel($channel)->then(function (VoiceClient $vc) use ($ws, $sound) {
+            $vc->setFrameSize(40)->then(function () use ($vc, $ws, $sound) {
+                $vc->playFile($sound);
+            });
+        });
     }
 }

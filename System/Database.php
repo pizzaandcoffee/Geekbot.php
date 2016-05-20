@@ -20,20 +20,19 @@
 namespace Geekbot; 
  
 include __DIR__.'/VictoriaDB.php';
-
-use Geekbot\VictoriaDB;
  
 class Database{
-    
+
     public static function set($key, $value){
         $type = Utils::settingsGet('database');
         if ($type == 'redis'){
             $redis = new \Redis();
-            $connection = $redis->connect('localhost', '6379');
+            $db = $redis->connect('localhost', '6379');
         } else {
-            $connection = new VictoriaDB(__DIR__ . '/db');
+            $db = new VictoriaDB(__DIR__ . '/db');
         }
-        $connection->set($key, $value);
+        $db->set($key, $value);
+        $db->save();
         return true;
     }
 
@@ -52,11 +51,12 @@ class Database{
         $type = Utils::settingsGet('database');
         if ($type == 'redis'){
             $redis = new \Redis();
-            $connection = $redis->connect('localhost', '6379');
+            $db = $redis->connect('localhost', '6379');
         } else {
-            $connection = new VictoriaDB(__DIR__ . '/db');
+            $db = new VictoriaDB(__DIR__ . '/db');
         }
-        $connection->del($key);
+        $db->del($key);
+        $db->save();
         return true;
     }
     

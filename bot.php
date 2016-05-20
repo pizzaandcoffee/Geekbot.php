@@ -18,24 +18,21 @@
  */
 
 include __DIR__ . '/vendor/autoload.php';
-include __DIR__ . '/System/Database.php';
 include __DIR__ . '/System/Commands.php';
+include __DIR__ . '/System/Database.php';
 include __DIR__ . '/System/Reactions.php';
 include __DIR__ . '/System/Utils.php';
 include __DIR__ . '/Commands/commandInterface.php';
 
 use Discord\Discord;
 use Discord\WebSockets\WebSocket;
-use Geekbot\VictoriaDB;
 use Geekbot\CommandsContainer;
-use Geekbot\Database;
 
 echo 'Geekbot' .PHP_EOL;
-echo '' .PHP_EOL;
 
 class Bot {
     private $discord;
-    private $ws;
+    public $ws;
     private $commands;
     
     function __construct() {
@@ -90,9 +87,7 @@ class Bot {
 
         $this->ws->on('error', function ($error, $ws) {
             print($error);
-            exit(1);
-        }
-        );
+        });
     }
    
     function run(){

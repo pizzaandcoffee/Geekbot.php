@@ -67,4 +67,8 @@ class VictoriaDB
         $new = json_encode($decode_settings);
         file_put_contents($where, $new);
     }
+
+    public function save(){
+        //does nothing, only here for redis compatibility...
+    }
 }
