@@ -92,4 +92,20 @@ class Utils{
             });
         });
     }
+
+    public static function getFile($fileName){
+        $file = __DIR__.'/../Storage/'.$fileName;
+        if (file_exists($file)){
+            return file_get_contents($file);
+        } else {
+            echo("the file '{$fileName}' does not exist");
+            return null;
+        }
+    }
+
+    public static function storeFile($fileName, $contents){
+        $file = __DIR__.'/../Storage/'.$fileName;
+        file_put_contents($file, $contents);
+        return true;
+    }
 }
