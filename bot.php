@@ -26,7 +26,7 @@ include __DIR__ . '/Commands/commandInterface.php';
 
 use Discord\Discord;
 use Discord\WebSockets\WebSocket;
-use Geekbot\KeyStorage;
+use Geekbot\VictoriaDB;
 use Geekbot\CommandsContainer;
 use Geekbot\Database;
 
@@ -34,20 +34,16 @@ echo 'Geekbot' .PHP_EOL;
 echo '' .PHP_EOL;
 
 class Bot {
-    private $settings;
     private $discord;
     private $ws;
     private $commands;
-    private $db;
     
     function __construct() {
-        
-        $envjson = file_get_contents('env.json');
-        $this->settings = json_decode($envjson);
-        $this->discord = new Discord($this->settings->token);
+
+        $this->discord = new Discord(\Geekbot\Utils::settingsGet('token'));
         $this->ws = new WebSocket($this->discord);
         $this->commands = new CommandsContainer();
-        $this->db = new Database($this->settings->database);
+
 
         date_default_timezone_set('Europe/Amsterdam');
         

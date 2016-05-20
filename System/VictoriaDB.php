@@ -37,7 +37,7 @@ class VictoriaDB
         return true;
     }
 
-    public function put($name, $data){
+    public function set($name, $data){
         $where = $this->folder.'/db.json';
         if($this->check()) {
             $get_settings = file_get_contents($where);
@@ -52,13 +52,11 @@ class VictoriaDB
         $where = $this->folder.'/db.json';
         $get_settings = file_get_contents($where);
         $decode_settings = json_decode($get_settings);
-        try {
-            $value = $decode_settings->{$name};
-            return $value;
+        $value = $decode_settings->{$name};
+        if($value == ""){
+            $value = 0;
         }
-        catch(Exception $e){
-            return 0;
-        }
+        return $value;
     }
 
     public function del($name){

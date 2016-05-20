@@ -19,6 +19,8 @@
 
 namespace Geekbot\Commands;
         
+use Geekbot\Database;
+
 class Test implements basicCommand{
     public static function getName() {
         return "!test";
@@ -74,6 +76,28 @@ class MessageTest implements messageCommand{
 
     public function getHelp() {
         return "!msg";
+    }
+
+}
+
+class dbtest implements messageCommand{
+    public static function getName() {
+        return "!dbtest";
+    }
+
+    public function runCommand($message) {
+        Database::set('dbtest', substr($message->content, 8));
+        $getfromdb = Database::get('dbtest');
+        $message->reply($getfromdb);
+        return $message;
+    }
+
+    public function getDescription() {
+        return "testing db stuff";
+    }
+
+    public function getHelp() {
+        return "!dbtest";
     }
 
 }

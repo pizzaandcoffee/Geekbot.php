@@ -72,4 +72,11 @@ class Utils{
             return false;
         }
     }
+
+    public static function settingsGet($key){
+        $envjson = file_get_contents(__DIR__ . "/../env.json");
+        $settings = json_decode($envjson);
+        $value = $settings->{$key};
+        return $value;
+    }
 }
