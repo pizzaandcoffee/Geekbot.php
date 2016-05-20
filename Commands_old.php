@@ -82,27 +82,7 @@ class Commands {
     //-------------------------------------------------------------------------
     // Help Command
     //-------------------------------------------------------------------------
-    public function help() {
-            $this->message->reply("here is a list of all commands:
-            !level - level settings for each user
-            !classes - class settings for each user
-            !bad - a bad joke counter
-            !last - see when the mentioned user last sent something
-            !stats - show stats for each user
-            !cat - shows a random cat picture
-            !ball - let the allknowingly 8ball answer your question
-            !pokedex - does what a pokedex does
-            !porn - :smirk:
-            !fortune - get a fortune or quote
-            !chan - get a totally random image from 4chan (be aware of shitposts)
-            !anime - looks up an anime from myanimelist
-            !manga - looks up a a manga from myanimelist
-            !coin - flips a coin
-            !dice - rolls a dice
-            Geekbot also knows how to respond to several words\n
-            for more info about each command use            
-            ![command] help");
-    }
+  
     //-------------------------------------------------------------------------
     // Debugging purposes
     //-------------------------------------------------------------------------
@@ -272,17 +252,6 @@ class Commands {
     // Useless Commands 
     // Cat, 8ball, choose, johncena, coin, dice
     //-------------------------------------------------------------------------   
-    public function cat(){
-        if (isset($this->a[1]) && $this->a[1] == 'help') {
-            $this->message->reply("Return a random image of a cat
-            usage:
-            !cat");
-        } else {
-            $catsource = file_get_contents('http://random.cat/meow');
-            $catcontent = json_decode($catsource);
-            $this->message->reply($catcontent->file);
-        }
-    }
     
     public function ball(){
         if (isset($this->a[1]) && $this->a[1] == 'help') {

@@ -26,7 +26,8 @@ class CommandsContainer {
         $this->commands = [];
         $this->includeCommands();
         $this->loadCommands();
-        
+        $this->loadCoreCommands();
+        $this->commands[Commands\Help::getName()]->setCommands($this->commands);
     }
 
     private function includeCommands() {
@@ -44,7 +45,11 @@ class CommandsContainer {
         echo " " . PHP_EOL;
     }
     
-    public function commandExists($name) {
+    private function loadCoreCommands() {
+        $this->commands[Commands\Help::getName()] = new Commands\Help();
+    }
+
+        public function commandExists($name) {
         return isset($this->commands[$name]);
     }
     

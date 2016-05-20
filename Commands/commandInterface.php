@@ -71,3 +71,7 @@ interface hasStats {
     */
     public function getStats();
 }
+
+interface coreCommand{
+    
+}

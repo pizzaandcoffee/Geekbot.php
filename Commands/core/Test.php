@@ -29,7 +29,7 @@ class Test implements basicCommand{
     }
 
     public function getDescription() {
-        return "test";
+        return "is a basicCommand";
     }
 
     public function getHelp() {
@@ -48,7 +48,7 @@ class Test2 implements messageCommand{
     }
 
     public function getDescription() {
-        return "test2";
+        return "is a messageCommand that returns a string";
     }
 
     public function getHelp() {
@@ -69,7 +69,7 @@ class MessageTest implements messageCommand{
     }
 
     public function getDescription() {
-        return message;
+        return "is a messageCommand that returns a message Object";
     }
 
     public function getHelp() {
