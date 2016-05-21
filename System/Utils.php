@@ -83,6 +83,12 @@ class Utils{
         return $value;
     }
     
+    public static function getSettingsArray(){
+        $envjson = file_get_contents(__DIR__ . "/../env.json");
+        $settings = json_decode($envjson);
+        return $settings;
+    }
+    
     public static function playSound($sound, $channel){
         global $bot;
         $ws = $bot->ws;
@@ -107,5 +113,11 @@ class Utils{
         $file = __DIR__.'/../Storage/'.$fileName;
         file_put_contents($file, $contents);
         return true;
+    }
+    
+    public static function getCommand($message) {
+        $command = explode(' ', $message->content);
+        
+        return $command[0];
     }
 }

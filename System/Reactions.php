@@ -19,36 +19,29 @@
 
 namespace Geekbot;
 
+use Geekbot\Utils;
+
 class Reactions {
 
-    //construct parameters
-    private $message;
+    private $reactions;
     
-    function __construct($message) {
-        $this->message = $message;    
+    function __construct() {
+        $reactions = json_decode(Utils::getFile("/../reactions.json"));
+        if(isset($reactions)){
+            $this->reactions = $reactions;
+            print_r($this->reactions);
+        }
+        else {
+            print("please set some reactionstring in reactions.json");
+            die();
+        }
     }
     
-    public function getMessage() {
-        return $this->message;
-    }
-    
-    public function ping(){
-        $this->message->reply('pong!');
-    }
-    
-    public function marco(){
-        $this->message->reply('polo!');
-    }
-    
-    public function deder() {
-        $this->message->reply('DEDEST');
-    }
-    
-    public function hui(){
-        $this->message->reply("hui!");
-    }
-    
-    public function fuck(){
-        $this->message->reply("Aso nei, da seit mer also nid :rage:");
+    function getReaction($message) {
+        if(isset($this->reactions->$message)){
+            return $this->reactions->$message;
+        } else {
+          return NULL;
+        }
     }
 }

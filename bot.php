@@ -34,12 +34,14 @@ class Bot {
     private $discord;
     public $ws;
     private $commands;
+    private $reactions;
     
     function __construct() {
 
         $this->discord = new Discord(\Geekbot\Utils::settingsGet('token'));
         $this->ws = new WebSocket($this->discord);
         $this->commands = new CommandsContainer();
+        $this->reactions = new Geekbot\Reactions(); 
 
 
         date_default_timezone_set('Europe/Amsterdam');
@@ -51,11 +53,11 @@ class Bot {
     function initSocket() {
         $this->ws->on('ready', function ($discord){
             $discord->updatePresence($this->ws, "Ping Pong", 0);
-            echo "bot is ready!" . PHP_EOL;
+            echo "geekbot is ready!" . PHP_EOL;
 
             $this->ws->on('message', function ($message) {
 
-                $cm = CommandsContainer::checkCommand($message);
+                $cm = \Geekbot\Utils::getCommand($message);
                 if($this->commands->commandExists($cm)){
                     $nya = $this->commands->getCommands();
                     if(in_array('Geekbot\Commands\basicCommand', class_implements($this->commands->getCommand($cm)))) {
@@ -70,10 +72,10 @@ class Bot {
                     }       
                 }
                 else {
-                    $reactions = new Geekbot\Reactions($message);   
-                    if(method_exists($reactions, $cm)) {
-                        $reactions->{$cm}();
-                        $message = $reactions->getMessage();
+                     
+                    $reaction = $this->reactions->getReaction(\Geekbot\Utils::getCommand($message));                   
+                    if( $reaction != NULL) {
+                        $message->reply($reaction);
                     }
                 }
 

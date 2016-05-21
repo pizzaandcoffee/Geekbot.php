@@ -4,5 +4,6 @@
 /composer.lock
 /vendor
 /env.json
+/reactions.json
 .c9
 StackTrace.txt

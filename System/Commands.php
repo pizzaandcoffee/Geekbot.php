@@ -65,10 +65,4 @@ class CommandsContainer {
     public function getCommands() {
         return $this->commands;
     }
-    
-    public static function checkCommand($message) {
-        $command = explode(' ', $message->content);
-        
-        return $command[0];
-    }
 }
