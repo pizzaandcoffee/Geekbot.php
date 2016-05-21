@@ -338,47 +338,6 @@ class Commands {
     //-------------------------------------------------------------------------
 
 
-    //-------------------------------------------------------------------------
-    // Anime & Manga Command
-    //-------------------------------------------------------------------------
-    function anime(){
-        $a = $this->a;
-        
-        if($a[1] == "help") {
-            $this->message->reply("command to look up animes from my animelist
-            usage:
-            !anime [name]");
-        }
-        else {
-            unset($a[0]);
-            $searchString = implode("+", $a);
 
-            $dom = new Dom;  
-            $dom->loadFromUrl("http://myanimelist.net/anime.php?q=". $searchString);
-            $table = $dom->find("table")[2];
-            $result = $table->find("tr")[1]->find("a")[0]->getAttribute("href");
-            $this->message->reply($result . "\n" . "For more Results : ". "http://myanimelist.net/anime.php?q=". $searchString);
-        }
-    }
-    
-    function manga(){
-        $a = $this->a;
-
-        if($a[1] == "help") {
-            $this->message->reply("command to look up manga from my animelist
-            usage:
-            !manga [name]");
-        }
-        else {
-            unset($a[0]);
-            $searchString = implode("+", $a);
-
-            $dom = new Dom;
-            $dom->loadFromUrl("http://myanimelist.net/manga.php?q=". $searchString);
-            $table = $dom->find("table")[2];
-            $result = $table->find("tr")[1]->find("a")[0]->getAttribute("href");
-            $this->message->reply($result . "\n" . "For more Results : ". "http://myanimelist.net/manga.php?q=". $searchString);
-        }
-    }
     
 }
