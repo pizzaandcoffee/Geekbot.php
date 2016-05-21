@@ -79,7 +79,12 @@ class Utils{
     public static function settingsGet($key){
         $envjson = file_get_contents(__DIR__ . "/../env.json");
         $settings = json_decode($envjson);
-        $value = $settings->{$key};
+        if(isset($settings->{$key})){
+            $value = $settings->{$key};
+        } else {
+            echo("setting '{$key}' is not found, returning 'null' instead");
+            $value = "null";
+        }
         return $value;
     }
     

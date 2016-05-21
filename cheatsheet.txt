@@ -1,0 +1,3 @@
+$message->channel->sendMessage("send a message without mentioning the author");
+
+$message->author->sendMessage("send the author a private message");
