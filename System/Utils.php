@@ -125,4 +125,25 @@ class Utils{
         
         return $command[0];
     }
+
+    public static function getGuildOption($message, $what){
+        $guildID = $message->channel->guild_id;
+        $settingsRaw = Database::get($guildID."-settings");
+        $settings = \GuzzleHttp\json_decode($settingsRaw);
+        if(isset($settings->{$what})){
+            return $settings->{$what};
+        } else {
+            return "null";
+        }
+    }
+
+    public static function setGuildOption($message, $what, $value){
+        $guildID = $message->channel->guild_id;
+        $settingsRaw = Database::get($guildID."-settings");
+        $settings = \GuzzleHttp\json_decode($settingsRaw);
+        $settings->{$what} = $value;
+        $settingsNew = \GuzzleHttp\json_encode($settings);
+        Database::set($guildID."-settings", $settingsNew);
+        return true;
+    }
 }
