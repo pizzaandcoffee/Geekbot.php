@@ -52,7 +52,7 @@ class Bot {
     
     function initSocket() {
         $this->ws->on('ready', function ($discord){
-            $discord->updatePresence($this->ws, "Ping Pong", 0);
+            $discord->updatePresence($this->ws, \Geekbot\Utils::settingsGet('playing'), 0);
             echo "geekbot is ready!" . PHP_EOL;
 
             $this->ws->on('message', function ($message) {

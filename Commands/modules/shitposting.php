@@ -19,6 +19,8 @@
 
 namespace Geekbot\Commands;
 
+use Geekbot\Utils;
+
 class coin implements basicCommand{
     public static function getName() {
         return "!coin";
@@ -57,6 +59,35 @@ class dice implements basicCommand{
 
     public function getHelp() {
         return "!dice";
+    }
+
+}
+
+class choose implements messageCommand{
+    public static function getName() {
+        return "!choose";
+    }
+
+    public function runCommand($message) {
+        $messageArray = Utils::messageSplit($message);
+        if (isset($message[1]) && $messageArray[1] == 'help') {
+            $this->getHelp();
+        } elseif (isset($messageArray[1]) && isset($messageArray[2])) {
+            unset($messageArray[0]);
+            $thechoice = "my choice is '{$messageArray[array_rand($messageArray)]}'";
+            $message->reply($thechoice);
+        } else {
+            $message->reply('please provide atleast 2 options');
+        }
+        return $message;
+    }
+
+    public function getDescription() {
+        return "let geekbot make a decide for you!";
+    }
+
+    public function getHelp() {
+        return "!choose [option1] [option2] ([more options])";
     }
 
 }

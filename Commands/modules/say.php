@@ -17,31 +17,23 @@
  *   along with Geekbot.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Geekbot;
+namespace Geekbot\Commands;
 
-use Geekbot\Utils;
-
-class Reactions {
-
-    private $reactions;
-    
-    function __construct() {
-        $reactions = json_decode(Utils::getFile("reactions.json"));
-        if(isset($reactions)){
-            $this->reactions = $reactions;
-            echo("reactions loaded...\n\n");
-        }
-        else {
-            print("please set some reactionstring in reactions.json");
-            die();
-        }
+class say implements messageCommand{
+    public static function getName() {
+        return "!say";
     }
-    
-    function getReaction($message) {
-        if(isset($this->reactions->$message)){
-            return $this->reactions->$message;
-        } else {
-          return NULL;
-        }
+
+    public function runCommand($message) {
+        $message->channel->sendMessage(substr($message->content, 5));
+        return $message;
+    }
+
+    public function getDescription() {
+        return "geekbot will repeat what you said";
+    }
+
+    public function getHelp() {
+        return "!say [your text]";
     }
 }

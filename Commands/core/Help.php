@@ -46,7 +46,8 @@ class Help implements messageCommand{
                 }
             }
         } else {
-            return $this->helpText();          
+            $message->author->sendMessage($this->helpText());
+            return $message;
         }
     }
     

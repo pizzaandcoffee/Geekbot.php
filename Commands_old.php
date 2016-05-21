@@ -251,30 +251,8 @@ class Commands {
     //-------------------------------------------------------------------------
     // Useless Commands 
     // Cat, 8ball, choose, johncena, coin, dice
-    //-------------------------------------------------------------------------   
+    //-------------------------------------------------------------------------
 
-    public function choose(){
-        if (isset($this->a[1]) && $this->a[1] == 'help') {
-            $this->message->reply("Let Geek Bot make the choice for you!\n
-                usage:
-                !choose [option1] [option2] ([option3] ...)");
-        } elseif (isset($this->a[1]) && isset($this->a[2])) {
-            unset($this->a[0]);
-            $thechoice = "my choice is '{$this->a[array_rand($this->a)]}'";
-            $this->message->reply($thechoice);
-        } else {
-            $this->message->reply('please provide atleast 2 options');
-        }
-    }
-    
-    public function wow(){
-        $this->message->reply('http://i.imgur.com/xXk71Hn.png');
-    }
-
-    public function johncena(){
-        $this->message->reply("https://www.youtube.com/watch?v=WnhvR_6oC9s");
-    }
-    
     public function say(){
         if ($this->message->author->username == $this->settings->ownername) {
             $tosay = substr($this->ac, 5);

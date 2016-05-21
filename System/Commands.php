@@ -39,11 +39,10 @@ class CommandsContainer {
         echo "Loading Commands:" . PHP_EOL;
         foreach (get_declared_classes() as $className) {
             if (in_array('Geekbot\Commands\command', class_implements($className))) {
-                echo "   - $className" . PHP_EOL;
+                echo "   - ". substr($className, 17) . "\n";
                 $this->commands[$className::getName()] = new $className();
             }
         }
-        echo " " . PHP_EOL;
     }
     
     private function loadCoreCommands() {

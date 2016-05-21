@@ -79,7 +79,12 @@ class Utils{
     public static function settingsGet($key){
         $envjson = file_get_contents(__DIR__ . "/../env.json");
         $settings = json_decode($envjson);
-        $value = $settings->{$key};
+        if(isset($settings->{$key})){
+            $value = $settings->{$key};
+        } else {
+            echo("setting '{$key}' is not found, returning 'null' instead");
+            $value = "null";
+        }
         return $value;
     }
     
@@ -119,5 +124,26 @@ class Utils{
         $command = explode(' ', $message->content);
         
         return $command[0];
+    }
+
+    public static function getGuildOption($message, $what){
+        $guildID = $message->channel->guild_id;
+        $settingsRaw = Database::get($guildID."-settings");
+        $settings = \GuzzleHttp\json_decode($settingsRaw);
+        if(isset($settings->{$what})){
+            return $settings->{$what};
+        } else {
+            return "null";
+        }
+    }
+
+    public static function setGuildOption($message, $what, $value){
+        $guildID = $message->channel->guild_id;
+        $settingsRaw = Database::get($guildID."-settings");
+        $settings = \GuzzleHttp\json_decode($settingsRaw);
+        $settings->{$what} = $value;
+        $settingsNew = \GuzzleHttp\json_encode($settings);
+        Database::set($guildID."-settings", $settingsNew);
+        return true;
     }
 }
