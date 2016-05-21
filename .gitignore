@@ -3,7 +3,6 @@
 .idea
 /composer.lock
 /vendor
-/cheatsheet.txt
 /env.json
 /reactions.json
 .c9
