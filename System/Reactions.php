@@ -26,10 +26,10 @@ class Reactions {
     private $reactions;
     
     function __construct() {
-        $reactions = json_decode(Utils::getFile("/../reactions.json"));
+        $reactions = json_decode(Utils::getFile("reactions.json"));
         if(isset($reactions)){
             $this->reactions = $reactions;
-            print_r($this->reactions);
+            echo("reactions loaded...\n\n");
         }
         else {
             print("please set some reactionstring in reactions.json");
