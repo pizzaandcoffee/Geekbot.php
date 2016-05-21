@@ -1,7 +1,4 @@
 <?php
-/**
- * Contains the all core commands
- */
 
 /*
  *   This file is part of Geekbot.
