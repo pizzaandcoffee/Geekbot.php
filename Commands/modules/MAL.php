@@ -20,14 +20,20 @@
 namespace Geekbot\Commands;
 
 use \Geekbot\Utils;
-use PHPHtmlParser\Dom;
+use SimpleXMLElement;
 
 /**
  * Looks up stuff from myanimelist
  *
  * @author fence
  */
-class MAL implements messageCommand{    
+class MAL implements messageCommand {
+
+    private $login;
+
+    function __construct() {
+        $this->login = Utils::settingsGet("mallogin");
+    }
 
     public function getDescription() {
         return "looks up stuff from myanimelist";
@@ -40,13 +46,13 @@ class MAL implements messageCommand{
     }
 
     public function runCommand($message) {
-        $parameters = Utils::messageSplit($message);       
-        if($parameters[1] == "help") {
+        $parameters = Utils::messageSplit($message);
+        if ($parameters[1] == "help") {
             return $this->getHelp();
         } else {
-            if($parameters[1] == "anime" | $parameters[1] == "manga") {
+            if ($parameters[1] == "anime" | $parameters[1] == "manga") {
                 //getting rid of the command
-                array_shift($parameters);              
+                array_shift($parameters);
                 return $this->getResult(array_shift($parameters), implode("+", $parameters));
             } else {
                 return "can't search for that";
@@ -57,12 +63,38 @@ class MAL implements messageCommand{
     public static function getName() {
         return "!mal";
     }
-    
+
     private function getResult($type, $searchString) {
-        $dom = new Dom;
-        $dom->loadFromUrl("http://myanimelist.net/$type.php?q=". $searchString);
-        $table = $dom->find("table")[2];
-        $result = $table->find("tr")[1]->find("a")[0]->getAttribute("href");
-        return $result . "\n" . "For more Results : ". "http://myanimelist.net/$type.php?q=". $searchString;
+        $opts = array(
+            'http' => array(
+                'method' => "GET",
+                'header' => "Authorization: Basic " . base64_encode($this->login)
+            )
+        );
+        $context = stream_context_create($opts);
+        $nya = file_get_contents("http://myanimelist.net/api/$type/search.xml?q=" . $searchString, false, $context);
+        if($nya != NULL) {
+            $mal = new SimpleXMLElement($nya);
+            return $this->{$type . "Info"}($mal->entry[0]);
+        } else {
+            return "couldn't find that";
+        }   
+    }
+    
+    private function animeInfo($xml) {
+        $string = "\n";
+        $string .= "**Title:** $xml->title (http://myanimelist.net/anime/$xml->id) \n**Type:** $xml->type \n**Status:** $xml->status \n**Year:** " . substr($xml->start_date, 0, 4) . "\n";
+        if($xml->type != "Movie") {
+            $string.= "**Episodes:** $xml->episodes \n";
+        }
+        return $string;
+    }
+    
+    private function mangaInfo($xml) {
+        $string = "\n";
+        $string .= "**Title:** $xml->title (http://myanimelist.net/manga/$xml->id) \n**Type:** $xml->type \n**Status:** $xml->status \n**Year:** " . substr($xml->start_date, 0, 4) . "\n";
+        $string.= "**Chapters:** $xml->chapters \n**Volumes:** $xml->volumes";
+        
+        return $string;
     }
 }
