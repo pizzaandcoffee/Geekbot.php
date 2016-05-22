@@ -2,6 +2,7 @@
 /composer.lock
 /db
 /vendor
+/blacklist.json
 /env.json
 .c9
 StackTrace.txt

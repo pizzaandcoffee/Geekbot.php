@@ -53,8 +53,10 @@ $ws->on('ready', function ($discord) use ($ws, $settings, $db, $discord) {
         #
         #   Command Handler
         #
-        
-        if ($message->author->id != $settings->botid){
+        $getblacklist = file_get_contents('blacklist.json');
+        $blacklist = json_decode($getblacklist);
+
+        if ($message->author->id != $settings->botid && !in_array($message->author->id, $blacklist)){
             $commands = new Geekbot\Commands($message, $db, $settings, new Geekbot\Utils);
             $reactions = new Geekbot\Reactions($message);
             
