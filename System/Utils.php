@@ -23,7 +23,7 @@ use Discord\Voice\VoiceClient;
 
 class Utils{
     
-    public function startsWith($haystack, $needle) {
+    public static function startsWith($haystack, $needle) {
         return $needle === "" || strrpos($haystack, $needle, -strlen($haystack)) !== false;
     }
 
@@ -34,7 +34,7 @@ class Utils{
         return null;
     }
     
-    public function calculateLevel($messages) {
+    public static function calculateLevel($messages) {
         $total = 0;
         $levels = [];
         for ($i = 1; $i < 100; $i++) {
@@ -82,7 +82,7 @@ class Utils{
         if(isset($settings->{$key})){
             $value = $settings->{$key};
         } else {
-            echo("setting '{$key}' is not found, returning 'null' instead");
+            echo("setting '{$key}' is not found, returning 'null' instead\n");
             $value = "null";
         }
         return $value;

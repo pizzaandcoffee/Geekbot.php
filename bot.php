@@ -28,7 +28,9 @@ use Discord\Discord;
 use Discord\WebSockets\WebSocket;
 use Geekbot\CommandsContainer;
 
-echo 'Geekbot' .PHP_EOL;
+$version = "2.0 alpha";
+
+echo "Geekbot - {$version}\n\n";
 
 class Bot {
     private $discord;
@@ -53,17 +55,17 @@ class Bot {
     function initSocket() {
         $this->ws->on('ready', function ($discord){
             $discord->updatePresence($this->ws, \Geekbot\Utils::settingsGet('playing'), 0);
-            echo "geekbot is ready!" . PHP_EOL;
+            echo "geekbot is ready!\n" . PHP_EOL;
 
             $this->ws->on('message', function ($message) {
 
-                $cm = \Geekbot\Utils::getCommand($message);
-                if($this->commands->commandExists($cm)){
-                    $nya = $this->commands->getCommands();
-                    if(in_array('Geekbot\Commands\basicCommand', class_implements($this->commands->getCommand($cm)))) {
-                        $message->reply($nya[$cm]->runCommand());
-                    } else if(in_array('Geekbot\Commands\messageCommand', class_implements($this->commands->getCommand($cm)))) {
-                        $result = $nya[$cm]->runCommand($message);
+                $command = \Geekbot\Utils::getCommand($message);
+                if($this->commands->commandExists($command)){
+                    $commandslist = $this->commands->getCommands();
+                    if(in_array('Geekbot\Commands\basicCommand', class_implements($this->commands->getCommand($command)))) {
+                        $message->reply($commandslist[$command]->runCommand());
+                    } else if(in_array('Geekbot\Commands\messageCommand', class_implements($this->commands->getCommand($command)))) {
+                        $result = $commandslist[$command]->runCommand($message);
                         if(is_string($result)){
                             $message->reply($result);
                         } else {

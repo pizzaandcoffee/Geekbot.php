@@ -22,7 +22,8 @@ namespace Geekbot;
 use PHPHtmlParser\Dom;
 use SimpleXMLElement;
 
-class Commands {
+class Commands
+{
     //construct parameters
     private $message;
     private $db;
@@ -41,13 +42,14 @@ class Commands {
     private $oa;
     private $a;
     private $ac;
-           
-    function __construct($message, $db, $settings, $utils) {
+
+    function __construct($message, $db, $settings, $utils)
+    {
         $this->db = $db;
         $this->message = $message;
         $this->settings = $settings;
         $this->utils = $utils;
-        
+
         $this->author = $message->author->username;
         $this->authorid = $message->author->id;
         #   Get message Count
@@ -68,70 +70,73 @@ class Commands {
         $this->a = explode(' ', $this->oa);
         $this->ac = strtolower($message->content);
     }
-    
-  
-    
-    public function getA() {
+
+
+    public function getA()
+    {
         return $this->a;
     }
-    
-    public function getMessage() {
+
+    public function getMessage()
+    {
         return $this->message;
     }
-    
-    //-------------------------------------------------------------------------
-    // Help Command
-    //-------------------------------------------------------------------------
-  
+
+
     //-------------------------------------------------------------------------
     // Debugging purposes
     //-------------------------------------------------------------------------
-    public function debugArray() {
+    public function debugArray()
+    {
         if ($this->message->author->username == $this->settings->ownername) {
             print_r($this->message) . PHP_EOL;
             print_r($this->a);
             print_r($this->a[1]) . PHP_EOL;
         }
     }
-    
-    public function debugLevel() {
+
+    public function debugLevel()
+    {
         $this->message->reply(calculateLevel($this->newamountofmessages));
     }
-    
+
     //-------------------------------------------------------------------------
     // Commands
     //-------------------------------------------------------------------------
-    public function idiot(){
-            if ($this->authorid == '93421536890859520') {
-                $this->message->reply('die Halluzination findet euch alle BEKLOPPT!');
-            } else {
-                $this->message->reply('du bist KEINE HALLUZINATION *triggered*');
-            }
+    public function idiot()
+    {
+        if ($this->authorid == '93421536890859520') {
+            $this->message->reply('die Halluzination findet euch alle BEKLOPPT!');
+        } else {
+            $this->message->reply('du bist KEINE HALLUZINATION *triggered*');
+        }
     }
-    
+
     //-------------------------------------------------------------------------
     // Level Command
     //-------------------------------------------------------------------------
-    public function level(){
-        if ($this->utils->startsWith($this->a[1], '<@')){
+    public function level()
+    {
+        if ($this->utils->startsWith($this->a[1], '<@')) {
             $userid = trim($this->a[1], '<@>');
             $messagesdbstring = $userid . '-' . $this->message->channel->guild_id . '-messages';
             $messages = $this->db->get($messagesdbstring);
             $thelevel = $this->utils->calculateLevel($messages);
-            $this->message->reply($this->a[1]."s level is {$thelevel}");
-        } elseif ($this->a[1] == 'server'){
+            $this->message->reply($this->a[1] . "s level is {$thelevel}");
+        } elseif ($this->a[1] == 'server') {
             $thelevel = $this->utils->calculateLevel($this->newamountofmessages_guild);
             $this->message->reply("the server level is {$thelevel}");
         } else {
             $this->message->reply("Wrong syntax for the command !level, please see !level help to see how the command works");
         }
     }
-    
+
 
     //-------------------------------------------------------------------------
     // Classes Command
     //-------------------------------------------------------------------------   
-    public function classes() {
+    public function classes()
+    {
         $rpgclasses = ['geek', 'neckbeard', 'console-peasant', 'neko', 'furry', 'laladin', 'yandere', 'script-kiddie',
             'zweihorn', 'affe-mit-waffe', 'glitzertier'];
         $classes2 = implode(", ", $rpgclasses);
@@ -162,38 +167,25 @@ class Commands {
         }
     }
 
-
-    //-------------------------------------------------------------------------
-    // Fortune Command
-    //-------------------------------------------------------------------------
-    public function fortune(){
-        if ($this->a[1] == 'help') {
-            $this->message->reply("!fortune return a random random forune");
-        } else {
-            $fortunes = file_get_contents('fortunes');
-            $array = explode('%', $fortunes);
-            $fortune = $array[array_rand($array)];
-            $this->message->reply($fortune);
-        }
-    }
-    
     //-------------------------------------------------------------------------
     // Last Online Command
     //-------------------------------------------------------------------------
-    public function last(){
+    public function last()
+    {
         if ($this->utils->startsWith($this->a[1], '<@')) {
             $user = trim($this->a[1], '<@>');
             $last = $this->db->get($user . '-last');
-            $this->message->reply($this->a[1]." sent his last message on {$last}");
+            $this->message->reply($this->a[1] . " sent his last message on {$last}");
         } else {
             $this->message->reply('please mention someone');
         }
     }
-    
+
     //-------------------------------------------------------------------------
     // Stats Command
     //-------------------------------------------------------------------------
-    public function stats(){
+    public function stats()
+    {
         if (isset($this->a[1]) && $this->utils->startsWith($this->a[1], "<@")) {
             $statsuserid = trim($this->a[1], '<@>');
             $statsmessagesdbstring = $statsuserid . '-' . $this->message->channel->guild_id . '-messages';
@@ -207,10 +199,10 @@ class Commands {
             Class: " . $class . " 
             Last Message: 
             " . $this->db->get($statsuserid . '-last') . " ");
-        } elseif (isset($this->a[1]) && $this->utils->startsWith($this->a[1], 'server')){
+        } elseif (isset($this->a[1]) && $this->utils->startsWith($this->a[1], 'server')) {
             $this->message->reply("Stats for this server:
             Messages sent: {$this->amountofmessages_guild}
-            Actual Level: ". $this->utils->calculateLevel($this->amountofmessages_guild)."
+            Actual Level: " . $this->utils->calculateLevel($this->amountofmessages_guild) . "
             (counting start 15 May 2016)");
         } else {
             $this->message->reply("this command uses the following syntax:
@@ -218,15 +210,16 @@ class Commands {
             use @here for server stats");
         }
     }
-    
+
     //-------------------------------------------------------------------------
     // Bad Joke Counter
     //-------------------------------------------------------------------------    
-    public function bad(){
+    public function bad()
+    {
         if (isset($this->a[1]) && $this->a[1] == 'show') {
             if (isset($this->a[2]) && $this->utils->startsWith($this->a[2], '<@')) {
                 $bads = $this->db->get($this->a[2] . '-badjokes');
-                $this->message->reply($this->a[2]." made {$bads} bad jokes");
+                $this->message->reply($this->a[2] . " made {$bads} bad jokes");
             } else {
                 $this->message->reply('please specify a user');
             }
@@ -234,7 +227,7 @@ class Commands {
             $old = $this->db->get($this->a[1] . '-badjokes');
             $new = $old + 1;
             $this->db->put($this->a[1] . '-badjokes', $new);
-            $this->message->reply($this->a[1]." made a bad joke");
+            $this->message->reply($this->a[1] . " made a bad joke");
         } else {
             $this->message->reply("the bad joke counter
             show - shows the amount of bad jokes
@@ -244,26 +237,16 @@ class Commands {
         }
     }
 
-    public function shit(){
+    public function shit()
+    {
         $this->bad();
     }
-    
-    //-------------------------------------------------------------------------
-    // Useless Commands 
-    // Cat, 8ball, choose, johncena, coin, dice
-    //-------------------------------------------------------------------------
 
-    public function say(){
-        if ($this->message->author->username == $this->settings->ownername) {
-            $tosay = substr($this->ac, 5);
-            $this->message->reply($tosay);
-        }
-    }
-    
     //-------------------------------------------------------------------------
     // Porn Command
     //-------------------------------------------------------------------------     
-    public function porn(){
+    public function porn()
+    {
         if (isset($this->a[1]) && $this->a[1] == 'help') {
             $this->message->reply("shows some porn :smirk:\n
                 usage:
@@ -276,46 +259,5 @@ class Commands {
         } else {
             $this->message->reply('Please use atleast one tag');
         }
-    }  
-    
-    //-------------------------------------------------------------------------
-    // Pokedex Command
-    //-------------------------------------------------------------------------      
-    public function pokedex(){
-        $pokedexoptions = ['all', 'image', 'type'];
-        if (isset($this->a[1]) && $this->a[1] == 'help') {
-            $this->message->reply("this return all information about a pokemon\n
-            usage:
-            !pokedex [name|number] [all|image|type]");
-        } elseif (isset($this->a[1]) && isset($this->a[2]) && in_array($this->a[2], $pokedexoptions)) {
-            $this->message->reply('please wait a moment while i fetch all the information');
-            $getrawpkdata = file_get_contents("http://pokeapi.co/api/v2/pokemon/".$this->a[1]);
-            if ($this->utils->startsWith($getrawpkdata, '{')) {
-                $pkd = \GuzzleHttp\json_decode($getrawpkdata);
-                if ($this->a[2] == 'image') {
-                    $this->message->reply($pkd->sprites->front_default);
-                } elseif ($this->a[2] == 'type') {
-                    $this->message->reply("this is still in development");
-                } else { 
-                    $this->message->reply("here is all the information about #{$pkd->id} {$pkd->name}
-                    type: {$pkd->types[0]->type->name} {$pkd->types[1]->type->name}
-                    weight: {$pkd->weight}lbs
-                    height: {$pkd->height}inch
-                    {$pkd->sprites->front_default}");
-                }
-            } else {
-                $this->message->reply("that is not a pokemon...");
-            }
-        } else {
-            $this->message->reply('That command in not valid, please see !pokedex help');
-        }
     }
-    
-    //-------------------------------------------------------------------------
-    // 4chan Command
-    //-------------------------------------------------------------------------
-
-
-
-    
 }
