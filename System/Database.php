@@ -20,41 +20,34 @@
 namespace Geekbot; 
  
 include __DIR__.'/VictoriaDB.php';
+
+//TODO: fix this
+
+//$dbtype = Utils::settingsGet('database');
+$dbtype = "victoriadb";
+if ($dbtype == 'redis'){
+    $redis = new \Redis();
+    $db = $redis->connect('localhost', '6379');
+} else {
+    $db = new VictoriaDB(__DIR__ . '/db');
+}
  
 class Database{
 
     public static function set($key, $value){
-        $type = Utils::settingsGet('database');
-        if ($type == 'redis'){
-            $redis = new \Redis();
-            $db = $redis->connect('localhost', '6379');
-        } else {
-            $db = new VictoriaDB(__DIR__ . '/db');
-        }
+        global $db;
         $db->set($key, $value);
         $db->save();
         return true;
     }
 
     public static function get($key){
-        $type = Utils::settingsGet('database');
-        if ($type == 'redis'){
-            $redis = new \Redis();
-            $connection = $redis->connect('localhost', '6379');
-        } else {
-            $connection = new VictoriaDB(__DIR__ . '/db');
-        }
-        return $connection->get($key);
+        global $db;
+        return $db->get($key);
     }
 
     public static function delete($key){
-        $type = Utils::settingsGet('database');
-        if ($type == 'redis'){
-            $redis = new \Redis();
-            $db = $redis->connect('localhost', '6379');
-        } else {
-            $db = new VictoriaDB(__DIR__ . '/db');
-        }
+        global $db;
         $db->del($key);
         $db->save();
         return true;

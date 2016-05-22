@@ -34,24 +34,6 @@ class Utils{
         return null;
     }
     
-    public static function calculateLevel($messages) {
-        $total = 0;
-        $levels = [];
-        for ($i = 1; $i < 100; $i++) {
-            $total += floor($i + 300 * pow(2, $i / 7.0));
-            $levels[] = floor($total / 16);
-        }
-        $level = 1;
-        foreach ($levels as $l) {
-            if ($l < $messages) {
-                $level++;
-            } else {
-                break;
-            }
-        }
-        return $level;
-    }
-    
     public static function includeFolder($folder) {
         $dir = $folder;
         $commands = scandir($dir);

@@ -54,7 +54,7 @@ class VictoriaDB
         $decode_settings = json_decode($get_settings);
         $value = $decode_settings->{$name};
         if($value == ""){
-            $value = 0;
+            $value = null;
         }
         return $value;
     }

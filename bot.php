@@ -21,6 +21,7 @@ include __DIR__ . '/vendor/autoload.php';
 include __DIR__ . '/System/Commands.php';
 include __DIR__ . '/System/Database.php';
 include __DIR__ . '/System/Reactions.php';
+include __DIR__ . '/System/Stats.php';
 include __DIR__ . '/System/Utils.php';
 include __DIR__ . '/Commands/commandInterface.php';
 
@@ -58,6 +59,8 @@ class Bot {
             echo "geekbot is ready!\n" . PHP_EOL;
 
             $this->ws->on('message', function ($message) {
+                
+                $stats = new \Geekbot\Stats($message);
 
                 $command = \Geekbot\Utils::getCommand($message);
                 if($this->commands->commandExists($command)){

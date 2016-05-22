@@ -40,10 +40,21 @@ class Cat implements messageCommand{
         $messageArray = Utils::messageSplit($message);
         if (Utils::isHelp($messageArray)) {
             return $this->getHelp();
+        } elseif(isset($messageArray[1]) && $messageArray[1] == "image"){
+            $imagesource = file_get_contents('http://random.cat/meow');
+            $imagecontent = json_decode($imagesource);
+            $message->reply($imagecontent->file);
+        } elseif(isset($messageArray[1]) && $messageArray[1] == "fact"){
+            $factsource = file_get_contents("http://catfacts-api.appspot.com/api/facts");
+            $factcontent = json_decode($factsource);
+            $message->reply($factcontent->facts[0]);
+            return $message;
         } else {
-            $catsource = file_get_contents('http://random.cat/meow');
-            $catcontent = json_decode($catsource);
-            $message->reply($catcontent->file);
+            $factsource = file_get_contents("http://catfacts-api.appspot.com/api/facts");
+            $factcontent = json_decode($factsource);
+            $imagesource = file_get_contents('http://random.cat/meow');
+            $imagecontent = json_decode($imagesource);
+            $message->reply($factcontent->facts[0].PHP_EOL.$imagecontent->file);
             return $message;
         }
     }
