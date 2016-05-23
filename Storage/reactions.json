@@ -3,5 +3,7 @@
     "marco": "polo",
     "hui": "hui!!!",
     "!wow": "http://i.imgur.com/xXk71Hn.png",
-    "!johncena": "https://www.youtube.com/watch?v=WnhvR_6oC9s"
+    "!johncena": "https://www.youtube.com/watch?v=WnhvR_6oC9s",
+    "poke": "{@author} pokes {@mention}",
+    "hug": "{@author} hugs {@mention}"
 }

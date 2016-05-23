@@ -80,7 +80,7 @@ class Bot {
                      
                     $reaction = $this->reactions->getReaction(\Geekbot\Utils::getCommand($message));                   
                     if( $reaction != NULL) {
-                        $message->reply($reaction);
+                        $message->channel->sendMessage($reaction);
                     }
                 }
 

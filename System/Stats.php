@@ -40,11 +40,11 @@ class Stats{
         Database::set($dbLocation, $rawUserData);
 
         //lets do the same for the guild itself
-        $rawGuildData = Database::get($guild);
-        $guildData = json_decode($rawGuildData);
-        $guildData->messages = $guildData->messages + 1;
-        $rawGuildData = json_encode($guildData);
-        Database::set($guild, $rawGuildData);
+//        $rawGuildData = Database::get($guild);
+//        $guildData = json_decode($rawGuildData);
+//        $guildData->messages = $guildData->messages + 1;
+//        $rawGuildData = json_encode($guildData);
+//        Database::set($guild, $rawGuildData);
     }
 
     public static function calculateLevel($messages) {
