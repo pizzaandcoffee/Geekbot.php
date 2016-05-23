@@ -18,11 +18,11 @@
  */
 
 include __DIR__ . '/vendor/autoload.php';
+include __DIR__ . '/System/Utils.php';
 include __DIR__ . '/System/Commands.php';
 include __DIR__ . '/System/Database.php';
 include __DIR__ . '/System/Reactions.php';
 include __DIR__ . '/System/Stats.php';
-include __DIR__ . '/System/Utils.php';
 include __DIR__ . '/Commands/commandInterface.php';
 
 use Discord\Discord;

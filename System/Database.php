@@ -21,10 +21,7 @@ namespace Geekbot;
  
 include __DIR__.'/VictoriaDB.php';
 
-//TODO: fix this
-
-//$dbtype = Utils::settingsGet('database');
-$dbtype = "victoriadb";
+$dbtype = Utils::settingsGet('database');
 if ($dbtype == 'redis'){
     $redis = new \Redis();
     $db = $redis->connect('localhost', '6379');
