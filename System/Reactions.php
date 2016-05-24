@@ -37,9 +37,16 @@ class Reactions {
         }
     }
     
-    function getReaction($message) {
-        if(isset($this->reactions->$message)){
-            return $this->reactions->$message;
+    function getReaction($message, $messageobj) {
+        if(isset($this->reactions->$message)) {
+            $string = $this->reactions->$message;
+            if (str_contains($string, "{@author}")) {
+                $string = str_replace('{@author}', "<@".$messageobj->author->id.">", $string);
+            }
+            if (str_contains($string, "{@mention}")) {
+                $string = str_replace('{@mention}', "<@".$messageobj->mentions[0]->id.">", $string);
+            }
+            return $string;
         } else {
           return NULL;
         }

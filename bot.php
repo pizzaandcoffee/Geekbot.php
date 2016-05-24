@@ -74,13 +74,12 @@ class Bot {
                         } else {
                             $message = $result;
                         }
-                    }       
+                    }
                 }
                 else {
-                     
-                    $reaction = $this->reactions->getReaction(\Geekbot\Utils::getCommand($message));                   
+                    $reaction = $this->reactions->getReaction(\Geekbot\Utils::getCommand($message), $message);
                     if( $reaction != NULL) {
-                        $message->reply($reaction);
+                        $message->channel->sendMessage($reaction);
                     }
                 }
 
