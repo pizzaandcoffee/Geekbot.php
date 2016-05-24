@@ -27,45 +27,38 @@ class VictoriaDB
         $this->folder = $folder;
     }
     
-    private function check(){
+    private function check($key){
         if(!file_exists($this->folder)){
             mkdir($this->folder);
         }
-        if(!file_exists($this->folder.'/db.json')){
-            fopen($this->folder.'/db.json', 'w');
+        if(!file_exists($this->folder.'/'.$key.'.json')){
+            fopen($this->folder.'/'.$key.'.json', 'w');
         }
         return true;
     }
 
     public function set($name, $data){
-        $where = $this->folder.'/db.json';
-        if($this->check()) {
-            $get_settings = file_get_contents($where);
-            $decode_settings = json_decode($get_settings);
-            $decode_settings->{$name} = $data;
-            $new = json_encode($decode_settings);
-            file_put_contents($where, $new);
+        $where = $this->folder.'/'.$name.'.json';
+        if($this->check($name)) {
+            file_put_contents($where, $data);
         }
+        return true;
     }
 
     public function get($name){
-        $where = $this->folder.'/db.json';
-        $get_settings = file_get_contents($where);
-        $decode_settings = json_decode($get_settings);
-        $value = $decode_settings->{$name};
-        if($value == ""){
-            $value = null;
+        if(file_exists($this->folder.'/'.$name.'.json')){
+            $where = $this->folder.'/'.$name.'.json';
+            $get_settings = file_get_contents($where);
+            return $get_settings;
+        } else {
+            return "{}";
         }
-        return $value;
     }
 
     public function del($name){
-        $where = $this->folder.'/db.json';
-        $get_settings = file_get_contents($where);
-        $decode_settings = json_decode($get_settings);
-        unset($decode_settings->{$name});
-        $new = json_encode($decode_settings);
-        file_put_contents($where, $new);
+        $where = $this->folder.'/'.$name.'.json';
+        $this->del($where);
+        return true;
     }
 
     public function save(){

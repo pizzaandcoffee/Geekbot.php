@@ -28,23 +28,28 @@ class Stats{
         $dbLocation = $guild.'-'.$authorid;
 
         //get user info from db
-        $rawUserData = Database::get($dbLocation);
-        $userData = json_decode($rawUserData);
+        $userData = Database::get($dbLocation);
         
         //update stuff
+        if(!isset($userData->messages)){
+            $userData->messages = 0;
+        }
+        if(!isset($userData->lastmessage)){
+            $userData->lastmessage = null;
+        }
         $userData->messages = $userData->messages + 1;
         $userData->lastmessage = date(DATE_RFC2822);
 
         //put it back into the db
-        $rawUserData = json_encode($userData);
-        Database::set($dbLocation, $rawUserData);
+        Database::set($dbLocation, $userData);
 
         //lets do the same for the guild itself
-//        $rawGuildData = Database::get($guild);
-//        $guildData = json_decode($rawGuildData);
-//        $guildData->messages = $guildData->messages + 1;
-//        $rawGuildData = json_encode($guildData);
-//        Database::set($guild, $rawGuildData);
+        $guildData = Database::get($guild);
+        if(!isset($guildData->messages)){
+            $guildData->messages = 0;
+        }
+        $guildData->messages = $guildData->messages + 1;
+        Database::set($guild, $guildData);
     }
 
     public static function calculateLevel($messages) {

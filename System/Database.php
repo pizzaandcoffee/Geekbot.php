@@ -33,14 +33,16 @@ class Database{
 
     public static function set($key, $value){
         global $db;
-        $db->set($key, $value);
+        $data = json_encode($value);
+        $db->set($key, $data);
         $db->save();
         return true;
     }
 
     public static function get($key){
         global $db;
-        return $db->get($key);
+        $data = json_decode($db->get($key));
+        return $data;
     }
 
     public static function delete($key){
