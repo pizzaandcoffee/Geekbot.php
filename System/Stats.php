@@ -34,11 +34,11 @@ class Stats{
         if(!isset($userData->messages)){
             $userData->messages = 0;
         }
-        if(!isset($userData->lastmessage)){
-            $userData->lastmessage = null;
+        if(!isset($userData->lastMessage)){
+            $userData->lastMessage = null;
         }
         $userData->messages = $userData->messages + 1;
-        $userData->lastmessage = date(DATE_RFC2822);
+        $userData->lastMessage = date(DATE_RFC2822);
 
         //put it back into the db
         Database::set($dbLocation, $userData);
@@ -52,7 +52,7 @@ class Stats{
         Database::set($guild, $guildData);
     }
 
-    public static function calculateLevel($messages) {
+    private static function calculateLevel($messages) {
         $total = 0;
         $levels = [];
         for ($i = 1; $i < 100; $i++) {
@@ -70,13 +70,61 @@ class Stats{
         return $level;
     }
 
-    public static function getUserData($message){
-        $authorid = $message->author->id;
-        $guild = $message->channel->guild_id;
-        $dbLocation = $guild.'-'.$authorid;
-        $rawUserData = Database::get($dbLocation);
-        $userData = json_decode($rawUserData);
-        return $userData;
+    public static function getUserData($guildID, $userID){
+        $dbLocation = $guildID.'-'.$userID;
+        $data = Database::get($dbLocation);
+        return $data;
+    }
+
+    public static function getLastMessage($guildID, $userID){
+        $dbLocation = $guildID.'-'.$userID;
+        $data = Database::get($dbLocation);
+        if(!isset($data->lastMessage)){
+            $data->lastMessage = "never";
+        }
+        return $data->lastMessage;
+    }
+
+    public static function getAmountOfMessages($guildID, $userID){
+        $dbLocation = $guildID.'-'.$userID;
+        $data = Database::get($dbLocation);
+        if(!isset($data->messages)){
+            $data->messages = 0;
+        }
+        return $data->messages;
+    }
+
+    public static function getClass($guildID, $userID){
+        $dbLocation = $guildID.'-'.$userID;
+        $data = Database::get($dbLocation);
+        if(!isset($data->class)){
+            $data->class = "none";
+        }
+        return $data->class;
+    }
+
+    public static function getBadJokes($guildID, $userID){
+        $dbLocation = $guildID.'-'.$userID;
+        $data = Database::get($dbLocation);
+        if(!isset($data->badJokes)){
+            $data->badJokes = 0;
+        }
+        return $data->badJokes;
+    }
+
+    public static function getLevel($guildID, $userID){
+        $messages = Stats::getAmountOfMessages($guildID, $userID);
+        $level = Stats::calculateLevel($messages);
+        return $level;
+
+    }
+
+    public static function getGuildMessages($guildID){
+        $data = Database::get($guildID);
+        if(!isset($data->messages)){
+            $data->messages = 0;
+        }
+        return $data->messages;
     }
 
 }

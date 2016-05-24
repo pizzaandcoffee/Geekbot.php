@@ -91,3 +91,27 @@ class choose implements messageCommand{
     }
 
 }
+
+class idiot implements messageCommand{
+    public static function getName() {
+        return "!idiot";
+    }
+
+    public function runCommand($message) {
+        if ($message->author->id == '93421536890859520') {
+            $message->channel->sendMessage("die Halluzination findet euch alle BEKLOPPT!");
+        } else {
+            $message->reply("du bist KEINE HALLUZINATION\n*triggered*");
+        }
+        return $message;
+    }
+
+    public function getDescription() {
+        return "lets you see what the illusion thinks";
+    }
+
+    public function getHelp() {
+        return "!idiot";
+    }
+
+}

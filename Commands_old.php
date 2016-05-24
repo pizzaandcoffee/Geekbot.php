@@ -84,55 +84,6 @@ class Commands
 
 
     //-------------------------------------------------------------------------
-    // Debugging purposes
-    //-------------------------------------------------------------------------
-    public function debugArray()
-    {
-        if ($this->message->author->username == $this->settings->ownername) {
-            print_r($this->message) . PHP_EOL;
-            print_r($this->a);
-            print_r($this->a[1]) . PHP_EOL;
-        }
-    }
-
-    public function debugLevel()
-    {
-        $this->message->reply(calculateLevel($this->newamountofmessages));
-    }
-
-    //-------------------------------------------------------------------------
-    // Commands
-    //-------------------------------------------------------------------------
-    public function idiot()
-    {
-        if ($this->authorid == '93421536890859520') {
-            $this->message->reply('die Halluzination findet euch alle BEKLOPPT!');
-        } else {
-            $this->message->reply('du bist KEINE HALLUZINATION *triggered*');
-        }
-    }
-
-    //-------------------------------------------------------------------------
-    // Level Command
-    //-------------------------------------------------------------------------
-    public function level()
-    {
-        if ($this->utils->startsWith($this->a[1], '<@')) {
-            $userid = trim($this->a[1], '<@>');
-            $messagesdbstring = $userid . '-' . $this->message->channel->guild_id . '-messages';
-            $messages = $this->db->get($messagesdbstring);
-            $thelevel = $this->utils->calculateLevel($messages);
-            $this->message->reply($this->a[1] . "s level is {$thelevel}");
-        } elseif ($this->a[1] == 'server') {
-            $thelevel = $this->utils->calculateLevel($this->newamountofmessages_guild);
-            $this->message->reply("the server level is {$thelevel}");
-        } else {
-            $this->message->reply("Wrong syntax for the command !level, please see !level help to see how the command works");
-        }
-    }
-
-
-    //-------------------------------------------------------------------------
     // Classes Command
     //-------------------------------------------------------------------------   
     public function classes()
@@ -167,80 +118,6 @@ class Commands
         }
     }
 
-    //-------------------------------------------------------------------------
-    // Last Online Command
-    //-------------------------------------------------------------------------
-    public function last()
-    {
-        if ($this->utils->startsWith($this->a[1], '<@')) {
-            $user = trim($this->a[1], '<@>');
-            $last = $this->db->get($user . '-last');
-            $this->message->reply($this->a[1] . " sent his last message on {$last}");
-        } else {
-            $this->message->reply('please mention someone');
-        }
-    }
-
-    //-------------------------------------------------------------------------
-    // Stats Command
-    //-------------------------------------------------------------------------
-    public function stats()
-    {
-        if (isset($this->a[1]) && $this->utils->startsWith($this->a[1], "<@")) {
-            $statsuserid = trim($this->a[1], '<@>');
-            $statsmessagesdbstring = $statsuserid . '-' . $this->message->channel->guild_id . '-messages';
-            $statsmessages = $this->db->get($statsmessagesdbstring);
-            $badjokes = $this->db->get($this->a[1] . '-badjokes');
-            $class = $this->db->get($this->a[1] . '-class');
-            $this->message->reply("stats for " . $this->a[1] . " 
-            Messages sent: " . $statsmessages . " 
-            Bad jokes made: " . $badjokes . " 
-            Level: " . $this->utils->calculateLevel($statsmessages) . "
-            Class: " . $class . " 
-            Last Message: 
-            " . $this->db->get($statsuserid . '-last') . " ");
-        } elseif (isset($this->a[1]) && $this->utils->startsWith($this->a[1], 'server')) {
-            $this->message->reply("Stats for this server:
-            Messages sent: {$this->amountofmessages_guild}
-            Actual Level: " . $this->utils->calculateLevel($this->amountofmessages_guild) . "
-            (counting start 15 May 2016)");
-        } else {
-            $this->message->reply("this command uses the following syntax:
-            !stats [mention]
-            use @here for server stats");
-        }
-    }
-
-    //-------------------------------------------------------------------------
-    // Bad Joke Counter
-    //-------------------------------------------------------------------------    
-    public function bad()
-    {
-        if (isset($this->a[1]) && $this->a[1] == 'show') {
-            if (isset($this->a[2]) && $this->utils->startsWith($this->a[2], '<@')) {
-                $bads = $this->db->get($this->a[2] . '-badjokes');
-                $this->message->reply($this->a[2] . " made {$bads} bad jokes");
-            } else {
-                $this->message->reply('please specify a user');
-            }
-        } elseif (isset($this->a[1]) && $this->utils->startsWith($this->a[1], '<@')) {
-            $old = $this->db->get($this->a[1] . '-badjokes');
-            $new = $old + 1;
-            $this->db->put($this->a[1] . '-badjokes', $new);
-            $this->message->reply($this->a[1] . " made a bad joke");
-        } else {
-            $this->message->reply("the bad joke counter
-            show - shows the amount of bad jokes
-            @mention - adds 1 to the bad joke counter\n
-            usage:
-            !bad [show|@mention] ([@mention])");
-        }
-    }
-
-    public function shit()
-    {
-        $this->bad();
-    }
 
     //-------------------------------------------------------------------------
     // Porn Command
