@@ -30,7 +30,7 @@ use Discord\Discord;
 use Discord\WebSockets\WebSocket;
 use Geekbot\CommandsContainer;
 
-$version = "2.0 alpha";
+$version = "2.0 alpha Test Build";
 
 echo("  ____ _____ _____ _  ______   ___ _____\n");
 echo(" / ___| ____| ____| |/ / __ ) / _ \\_   _|\n");
