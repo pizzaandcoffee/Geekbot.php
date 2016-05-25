@@ -19,6 +19,7 @@
 
 namespace Geekbot\Commands;
 
+use Geekbot\Settings;
 use \Geekbot\Utils;
 use SimpleXMLElement;
 
@@ -32,7 +33,7 @@ class MAL implements messageCommand {
     private $login;
 
     function __construct() {
-        $this->login = Utils::settingsGet("mallogin");
+        $this->login = Settings::envGet("mallogin");
     }
 
     public function getDescription() {

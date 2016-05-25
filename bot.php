@@ -19,6 +19,7 @@
 
 include __DIR__ . '/vendor/autoload.php';
 include __DIR__ . '/System/Utils.php';
+include __DIR__ . '/System/Settings.php';
 include __DIR__ . '/System/Commands.php';
 include __DIR__ . '/System/Database.php';
 include __DIR__ . '/System/Reactions.php';
@@ -31,7 +32,13 @@ use Geekbot\CommandsContainer;
 
 $version = "2.0 alpha";
 
-echo "Geekbot - {$version}\n\n";
+echo("  ____ _____ _____ _  ______   ___ _____\n");
+echo(" / ___| ____| ____| |/ / __ ) / _ \\_   _|\n");
+echo("| |  _|  _| |  _| | ' /|  _ \\| | | || |\n");
+echo("| |_| | |___| |___| . \\| |_) | |_| || |\n");
+echo(" \\____|_____|_____|_|\\_\\____/ \\___/ |_|\n");
+
+echo "{$version}\n\n";
 
 class Bot {
     private $discord;
@@ -41,7 +48,7 @@ class Bot {
     
     function __construct() {
 
-        $this->discord = new Discord(\Geekbot\Utils::settingsGet('token'));
+        $this->discord = new Discord(\Geekbot\Settings::envGet('token'));
         $this->ws = new WebSocket($this->discord);
         $this->commands = new CommandsContainer();
         $this->reactions = new Geekbot\Reactions(); 
@@ -55,7 +62,7 @@ class Bot {
     
     function initSocket() {
         $this->ws->on('ready', function ($discord){
-            $discord->updatePresence($this->ws, \Geekbot\Utils::settingsGet('playing'), 0);
+            $discord->updatePresence($this->ws, \Geekbot\Settings::envGet('playing'), 0);
             echo "geekbot is ready!\n" . PHP_EOL;
 
             $this->ws->on('message', function ($message) {

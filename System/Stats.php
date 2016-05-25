@@ -22,6 +22,7 @@ namespace Geekbot;
 class Stats{
 
     function __construct($message){
+        
         //set a few variables
         $authorid = $message->author->id;
         $guild = $message->channel->guild_id;

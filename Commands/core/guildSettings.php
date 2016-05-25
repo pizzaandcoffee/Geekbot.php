@@ -20,6 +20,7 @@
 namespace Geekbot\Commands;
 
 use Geekbot\Utils;
+use Geekbot\Settings;
 
 class guildSettings implements messageCommand{
     public static function getName() {
@@ -31,10 +32,10 @@ class guildSettings implements messageCommand{
         switch ($messageArray[1]){
             case "test":
                 if($messageArray[2] == "set"){
-                    Utils::setGuildOption($message, $messageArray[1], $messageArray[3]);
+                    Settings::setGuildSetting($message, $messageArray[1], $messageArray[3]);
                     $message->reply("option {$messageArray[1]} was set to {$messageArray[3]}");
                 } elseif ($messageArray[2] == "get"){
-                    $option = Utils::getGuildOption($message, $messageArray[1]);
+                    $option = Settings::getGuildSetting($message, $messageArray[1]);
                     $message->channel->sendMessage($option);
                 }
 

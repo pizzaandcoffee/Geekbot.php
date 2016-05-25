@@ -19,7 +19,7 @@
 
 namespace Geekbot;
 
-class VictoriaDB
+class JsonDB
 {
     private $folder;
     

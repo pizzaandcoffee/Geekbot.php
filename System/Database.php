@@ -19,14 +19,18 @@
  
 namespace Geekbot; 
  
-include __DIR__.'/VictoriaDB.php';
+include __DIR__ . '/JsonDB.php';
 
-$dbtype = Utils::settingsGet('database');
+use Geekbot\Settings;
+
+$dbtype = Settings::envGet('database');
 if ($dbtype == 'redis'){
     $redis = new \Redis();
     $db = $redis->connect('localhost', '6379');
+} elseif ($dbtype == 'json'){
+    $db = new JsonDB(__DIR__ . '/db');
 } else {
-    $db = new VictoriaDB(__DIR__ . '/db');
+    die("please set database value in your env.json to either 'json' or 'redis'");
 }
  
 class Database{
