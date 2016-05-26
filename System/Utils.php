@@ -85,7 +85,7 @@ class Utils{
     }
     
     public static function getCommand($message) {
-        $command = explode(' ', $message->content);
+        $command = explode(' ', strtolower($message->content));
         
         return $command[0];
     }

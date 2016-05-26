@@ -34,13 +34,22 @@ class classes implements messageCommand{
         if(is_array($rpgclasses)) {
             $classesString = implode(", ", $rpgclasses);
             if (isset($messageArray[1]) && $messageArray[1] == 'set') {
-                if (Utils::startsWith($messageArray[2], '<@')) {
+                if (Utils::startsWith($messageArray[2], '<@') && Settings::envGet('ownerid') == $message->author->id) {
 
-                    if (isset($messageArray[3]) && in_array($messageArray[3], $rpgclasses)) {
+                    if (isset($messageArray[3]) && in_array($messageArray[3], $rpgclasses) || Settings::envGet('ownerid') == $message->author->id) {
                         Settings::setUserSetting($message, 'class', $messageArray[3]);
-                        $message->reply("{$messageArray[2]} is now a " . $messageArray[3]);
+                        $message->channel->sendMessage("{$messageArray[2]} is now a " . $messageArray[3]);
                     } else {
-                        $message->reply("that class does not exist, please use one of the following: \n {$classesString}");
+                        $message->channel->sendMessage("that class does not exist, please use one of the following: \n {$classesString}");
+                    }
+                } elseif(Utils::startsWith($messageArray[2], '<@')) {
+                    $message->reply("you cannot set someone else's class");
+                } else {
+                    if (in_array($messageArray[2], $rpgclasses) || Settings::envGet('ownerid') == $message->author->id) {
+                        Settings::setUserSetting($message, 'class', $messageArray[2]);
+                        $message->channel->sendMessage("<@{$message->author->id}> is now a " . $messageArray[2]);
+                    } else {
+                        $message->channel->sendMessage("that class does not exist, please use one of the following: \n {$classesString}");
                     }
                 }
             }
@@ -58,14 +67,22 @@ class classes implements messageCommand{
                 $message->reply("Added class {$messageArray[2]}");
             }
         } elseif(isset($messageArray[1]) && $messageArray[1] == "remove"){
-            if(isset($messageArray[2])){
+            if(isset($messageArray[2]) && is_array($rpgclasses)){
                 if(in_array($messageArray[2], $rpgclasses)){
-                    $rpgclasses = array_diff($rpgclasses, array($messageArray[2]));
-                    Settings::setGuildSetting($message, "classes", $rpgclasses);
+                    $newclasses = [];
+                    foreach($rpgclasses as $class){
+                        if($class != $messageArray[2]){
+                            $newclasses[] = $class;
+                        }
+                    }
+//                    $rpgclasses = array_diff($rpgclasses, array($messageArray[2]));
+                    Settings::setGuildSetting($message, "classes", $newclasses);
                     $message->reply("the class {$messageArray[2]} has been removed");
                 } else {
                     $message->reply("you cannot remove that class because it does not exist...");
                 }
+            } else {
+                $message->reply("you cannot do that because there are no classes set yet...");
             }
         } elseif(isset($messageArray[1]) && $messageArray[1] == "show"){
             if (!isset($messageArray[2]) && is_array($rpgclasses)){
