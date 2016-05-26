@@ -37,7 +37,11 @@ class classes implements messageCommand{
                 if (Utils::startsWith($messageArray[2], '<@') && Settings::envGet('ownerid') == $message->author->id) {
 
                     if (isset($messageArray[3]) && in_array($messageArray[3], $rpgclasses) || Settings::envGet('ownerid') == $message->author->id) {
-                        Settings::setUserSetting($message, 'class', $messageArray[3]);
+                        $guildID = $message->channel->guild_id;
+                        $mentionID = $message->mentions[0]->id;
+                        $userData = Database::get($guildID.'-'.$mentionID);
+                        $userData->class = $messageArray[3];
+                        Database::set($guildID.'-'.$mentionID, $userData);
                         $message->channel->sendMessage("{$messageArray[2]} is now a " . $messageArray[3]);
                     } else {
                         $message->channel->sendMessage("that class does not exist, please use one of the following: \n {$classesString}");
@@ -75,7 +79,6 @@ class classes implements messageCommand{
                             $newclasses[] = $class;
                         }
                     }
-//                    $rpgclasses = array_diff($rpgclasses, array($messageArray[2]));
                     Settings::setGuildSetting($message, "classes", $newclasses);
                     $message->reply("the class {$messageArray[2]} has been removed");
                 } else {
