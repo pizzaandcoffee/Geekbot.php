@@ -19,8 +19,7 @@
 
 namespace Geekbot;
 
-class JsonDB
-{
+class JsonDB {
     private $folder;
     
     function __construct($folder){

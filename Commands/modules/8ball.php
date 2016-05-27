@@ -20,12 +20,11 @@
 namespace Geekbot\Commands;
 use Geekbot\Utils;
 
-/**
- * Description of Cat
- *
- * @author fence
- */
 class eightball implements messageCommand{
+    public static function getName() {
+        return "!8ball";
+    }
+
     public function getDescription() {
         return "ask 8ball something";
     }
@@ -39,7 +38,7 @@ class eightball implements messageCommand{
     public function runCommand($message) {
         $messageArray = Utils::messageSplit($message);
         if (Utils::isHelp($messageArray)) {
-            $this->getHelp();
+            $message->channel->sendMessage($this->getHelp());
         } elseif (isset($messageArray[1])) {
             $ballanswers = ['It is certain', 'It is decidedly so', 'Without a doubt', 'Yes, definitely', 'You may rely on it',
                 'As I see it, yes', 'Most likely', 'Outlook good', 'Yes', 'Signs point to yes', 'Reply hazy try again',
@@ -52,7 +51,4 @@ class eightball implements messageCommand{
         return $message;
     }
 
-    public static function getName() {
-        return "!8ball";
-    }
 }

@@ -23,17 +23,16 @@ use Geekbot\Settings;
 use \Geekbot\Utils;
 use SimpleXMLElement;
 
-/**
- * Looks up stuff from myanimelist
- *
- * @author fence
- */
 class MAL implements messageCommand {
 
     private $login;
 
     function __construct() {
         $this->login = Settings::envGet("mallogin");
+    }
+
+    public static function getName() {
+        return "!mal";
     }
 
     public function getDescription() {
@@ -48,7 +47,7 @@ class MAL implements messageCommand {
 
     public function runCommand($message) {
         $parameters = Utils::messageSplit($message);
-        if ($parameters[1] == "help") {
+        if (Utils::isHelp($message)) {
             return $this->getHelp();
         } else {
             if ($parameters[1] == "anime" | $parameters[1] == "manga") {
@@ -59,10 +58,6 @@ class MAL implements messageCommand {
                 return "can't search for that";
             }
         }
-    }
-
-    public static function getName() {
-        return "!mal";
     }
 
     private function getResult($type, $searchString) {

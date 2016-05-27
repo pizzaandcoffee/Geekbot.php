@@ -10,19 +10,19 @@ Version 2.0 is currently under heavy development and not ready for production ye
 ### How to use
 ----------------
 
-1. git clone https://github.com/runebaas/geekbot 
-2. cd geekbot
-3. composer install
-4. cp env.json.env env.json
-5. fill out env.json
-6. php bot.php
+1. $ git clone https://github.com/runebaas/geekbot 
+2. $ cd geekbot
+3. $ composer install
+4. $ cp env.json.env env.json
+5. fill out the env.json
+6. $ php bot.php
 
 ### Contributing
 ----------------
 
 Everyone is welcome to contribute!
 
-Make a pull request whenever you want to and i'll review it
+Make a pull request whenever you want to and we'll review it
 
 ### Creators
 ----------------

@@ -26,6 +26,16 @@ class fourchan implements messageCommand{
         return "!4chan";
     }
 
+    public function getDescription() {
+        return "get a random image from 4chan or a specified board (warning: high amount of shitposting!)";
+    }
+
+    public function getHelp() {
+        return $this->getDescription() . "
+            Usage:
+            !4chan ([board])";
+    }
+
     public function runCommand($message) {
         $messageArray = Utils::messageSplit($message);
         $curloptions = array(
@@ -85,22 +95,12 @@ class fourchan implements messageCommand{
             } else {
                 $message->reply('there are no images in this thread!');
             }
-        } else if (Utils::isHelp($messageArray)) {
-            $message->reply("get a totally random image or from a specified board
-            Usage:
-            !4chan ([board])");
+        } elseif (Utils::isHelp($messageArray)) {
+            $message->channel->sendMessage($this->getHelp());
         } else {
             $message->reply("that is not a valid board");
         }
         return $message;
-    }
-
-    public function getDescription() {
-        return "get a random image from 4chan or a specified board (warning: high amount of shitposting!)";
-    }
-
-    public function getHelp() {
-        return "!4chan";
     }
 
 }

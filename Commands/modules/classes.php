@@ -20,6 +20,7 @@
 namespace Geekbot\Commands;
 
 use Geekbot\Database;
+use Geekbot\Permission;
 use Geekbot\Settings;
 use Geekbot\Utils;
 
@@ -28,15 +29,32 @@ class classes implements messageCommand{
         return "!class";
     }
 
+    public function getDescription() {
+        return "give someone a class";
+    }
+
+    public function getHelp() {
+        return $this->getDescription() . "
+        usage:
+            !class [option] [class]
+        options:
+            set - assign yourself a class
+            add - add a class
+            remove - remove a class
+        admins can assign others a class by using the following syntax:
+            !class [option] [mention] [class]
+        admins can also assing any class outside of the classes list";
+    }
+    
     public function runCommand($message) {
         $messageArray = Utils::messageSplit($message);
         $rpgclasses = Settings::getGuildSetting($message, "classes");
         if(is_array($rpgclasses)) {
             $classesString = implode(", ", $rpgclasses);
             if (isset($messageArray[1]) && $messageArray[1] == 'set') {
-                if (Utils::startsWith($messageArray[2], '<@') && Settings::envGet('ownerid') == $message->author->id) {
+                if (Utils::startsWith($messageArray[2], '<@') && Permission::isAdmin($message)) {
 
-                    if (isset($messageArray[3]) && in_array($messageArray[3], $rpgclasses) || Settings::envGet('ownerid') == $message->author->id) {
+                    if (isset($messageArray[3]) && in_array($messageArray[3], $rpgclasses) || Permission::isAdmin($message)) {
                         $guildID = $message->channel->guild_id;
                         $mentionID = $message->mentions[0]->id;
                         $userData = Database::get($guildID.'-'.$mentionID);
@@ -61,7 +79,7 @@ class classes implements messageCommand{
             $message->reply("please add atleast 1 class to the classes list...");
         }
 
-        if(isset($messageArray[1]) && $messageArray[1] == "add"){
+        if(isset($messageArray[1]) && $messageArray[1] == "add" && Permission::isAdmin($message)){
             if(isset($messageArray[2])){
                 if(!is_array($rpgclasses)){
                     $rpgclasses = [];
@@ -70,7 +88,7 @@ class classes implements messageCommand{
                 Settings::setGuildSetting($message, "classes", $rpgclasses);
                 $message->reply("Added class {$messageArray[2]}");
             }
-        } elseif(isset($messageArray[1]) && $messageArray[1] == "remove"){
+        } elseif(isset($messageArray[1]) && $messageArray[1] == "remove" && Permission::isAdmin($message)){
             if(isset($messageArray[2]) && is_array($rpgclasses)){
                 if(in_array($messageArray[2], $rpgclasses)){
                     $newclasses = [];
@@ -102,21 +120,13 @@ class classes implements messageCommand{
                     $message->reply("{$messageArray[2]} is a {$userClass}");
                 }
             }
-        } elseif(isset($messageArray[1]) && $messageArray[1] == "help"){
+        } elseif(Utils::isHelp($message)){
             $message->channel->send($this->getHelp());
         } elseif(!isset($messageArray[1])) {
             $message->reply("Wrong syntax for the command !class, please see !class help to see how the command works");
         }
 
         return $message;
-    }
-
-    public function getDescription() {
-        return "set a class";
-    }
-
-    public function getHelp() {
-        return "!class";
     }
 
 }

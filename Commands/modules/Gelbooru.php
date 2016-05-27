@@ -23,12 +23,11 @@ use PHPHtmlParser\Dom;
 use Geekbot\Utils;
 use SimpleXMLElement;
 
-/**
- * Description of GelBooru
- *
- * @author fence
- */
 class Gelbooru implements messageCommand {
+
+    public static function getName() {
+        return "!gelbooru";
+    }
 
     public function getDescription() {
         return "looks up stuff from gelbooru";
@@ -36,7 +35,7 @@ class Gelbooru implements messageCommand {
 
     public function getHelp() {
         return $this->getDescription() . "           
-            usage:
+        usage:
             !gelbooru tags [tag] - looks up tags
             !gelbooru safe|questionable|explicit [tags] - returns a random image in the specified rating
             !gelbooru [tags] - returns a random image";
@@ -50,8 +49,8 @@ class Gelbooru implements messageCommand {
 
             case "tags":
                 if (isset($parameters[2])) {
-                    $order;
-                    $sort;
+                    $order = null;
+                    $sort = null;
                     switch ($parameters[3]) {
                         case "name":
                             $order = "tag";
@@ -91,10 +90,6 @@ class Gelbooru implements messageCommand {
                 array_shift($parameters);
                 return $this->images(implode(" ", $parameters));
         }
-    }
-
-    public static function getName() {
-        return "!gelbooru";
     }
 
     private function tags($search, $order, $sort) {

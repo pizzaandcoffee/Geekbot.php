@@ -28,6 +28,7 @@ if(!file_exists("env.json")){
 include __DIR__ . '/vendor/autoload.php';
 include __DIR__ . '/System/Utils.php';
 include __DIR__ . '/System/Settings.php';
+include __DIR__ . '/System/Permission.php';
 include __DIR__ . '/System/Commands.php';
 include __DIR__ . '/System/Database.php';
 include __DIR__ . '/System/Reactions.php';
@@ -60,10 +61,9 @@ class Bot {
         $this->ws = new WebSocket($this->discord);
         $this->commands = new CommandsContainer();
         $this->reactions = new Geekbot\Reactions(); 
-
-
-        date_default_timezone_set('Europe/Amsterdam');
-        
+        if(\Geekbot\Settings::envGet('timezone') != "null") {
+            date_default_timezone_set(\Geekbot\Settings::envGet('timezone'));
+        }        
         $this->initSocket();
     }
     

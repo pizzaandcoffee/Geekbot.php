@@ -30,6 +30,16 @@ class badJokeCounter implements messageCommand{
         return "!bad";
     }
 
+    public function getDescription() {
+        return "a bad joke counter";
+    }
+
+    public function getHelp() {
+        return $this->getDescription() . "
+            usage:
+            !bad [@mention]";
+    }
+
     public function runCommand($message) {
         $messageArray = Utils::messageSplit($message);
         $guildID = $message->channel->guild_id;
@@ -44,19 +54,9 @@ class badJokeCounter implements messageCommand{
             Database::set($dblocation, $userdata);
             $message->channel->sendMessage("<@{$userID}> made a bad joke!");
         } else {
-            $message->reply($this->getHelp());
+            $message->channel->sendMessage($this->getHelp());
         }
         return $message;
-    }
-
-    public function getDescription() {
-        return "a bad joke counter";
-    }
-
-    public function getHelp() {
-        return "the bad joke counter
-            usage:
-            !bad [@mention]";
     }
 
 }

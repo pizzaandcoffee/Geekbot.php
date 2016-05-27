@@ -77,7 +77,7 @@ class Settings{
     /**
      * @param array $message the message object
      * @param string $key the settings you want to change
-     * @param array $value the value of the setting (can be an array too)
+     * @param string|int $value the value of the setting (can be an array too)
      * @return bool
      */
     public static function setUserSetting($message, $key, $value){

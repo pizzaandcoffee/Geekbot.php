@@ -19,14 +19,11 @@
 
 namespace Geekbot\Commands;
 
+use Geekbot\Permission;
+
 class say implements messageCommand{
     public static function getName() {
         return "!say";
-    }
-
-    public function runCommand($message) {
-        $message->channel->sendMessage(substr($message->content, 5));
-        return $message;
     }
 
     public function getDescription() {
@@ -35,5 +32,12 @@ class say implements messageCommand{
 
     public function getHelp() {
         return "!say [your text]";
+    }
+
+    public function runCommand($message) {
+        if(Permission::isAdmin($message)) {
+            $message->channel->sendMessage(substr($message->content, 5));
+        }
+        return $message;
     }
 }

@@ -26,11 +26,25 @@ class pokedex implements messageCommand{
         return "!pokedex";
     }
 
+    public function getDescription() {
+        return "a full featured pokedex";
+    }
+
+    public function getHelp() {
+        return $this->getDescription() ."
+        usage: 
+            !pokedex [option] [name or nr]
+        options:
+            image - returns the sprite of that pokemon
+            type - returns it's types
+            full - returns all information";
+    }
+
     public function runCommand($message) {
         $messageArray = Utils::messageSplit($message);
         $pokedexoptions = ['all', 'image', 'type'];
-        if (isset($messageArray[1]) && $messageArray[1] == 'help') {
-            $this->getHelp();
+        if (Utils::isHelp($message)) {
+            $message->channel->sendMessage($this->getHelp());
         } elseif (isset($messageArray[2]) && isset($messageArray[1]) && in_array($messageArray[1], $pokedexoptions)) {
             $message->reply('please wait a moment while i fetch all the information');
             $getrawpkdata = file_get_contents("http://pokeapi.co/api/v2/pokemon/".$messageArray[2]);
@@ -54,19 +68,5 @@ class pokedex implements messageCommand{
             $message->reply('That command in not valid, please see !pokedex help');
         }
         return $message;
-    }
-
-    public function getDescription() {
-        return "A pokedex!";
-    }
-
-    public function getHelp() {
-        return "a full featured pokedex
-        usage: `!pokedex [option] [name or nr]
-        
-        options:
-        - image
-        - type
-        - full";
     }
 }

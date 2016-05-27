@@ -26,12 +26,6 @@ class coin implements basicCommand{
         return "!coin";
     }
 
-    public function runCommand() {
-        $number =['heads', 'tails'];
-        $thereply = "you flipped ".$number[array_rand($number)];
-        return $thereply;
-    }
-
     public function getDescription() {
         return "flip a coin";
     }
@@ -39,18 +33,18 @@ class coin implements basicCommand{
     public function getHelp() {
         return "!coin";
     }
+    
+    public function runCommand() {
+        $number =['heads', 'tails'];
+        $thereply = "you flipped ".$number[array_rand($number)];
+        return $thereply;
+    }
 
 }
 
 class dice implements basicCommand{
     public static function getName() {
         return "!dice";
-    }
-
-    public function runCommand() {
-        $number = random_int(1, 6);
-        $thereply = "you threw {$number}";
-        return $thereply;
     }
 
     public function getDescription() {
@@ -61,11 +55,25 @@ class dice implements basicCommand{
         return "!dice";
     }
 
+    public function runCommand() {
+        $number = random_int(1, 6);
+        $thereply = "you threw {$number}";
+        return $thereply;
+    }
+
 }
 
 class choose implements messageCommand{
     public static function getName() {
         return "!choose";
+    }
+
+    public function getDescription() {
+        return "let geekbot make a decide for you!";
+    }
+
+    public function getHelp() {
+        return "!choose [option1] [option2] ([more options])";
     }
 
     public function runCommand($message) {
@@ -82,18 +90,18 @@ class choose implements messageCommand{
         return $message;
     }
 
-    public function getDescription() {
-        return "let geekbot make a decide for you!";
-    }
-
-    public function getHelp() {
-        return "!choose [option1] [option2] ([more options])";
-    }
-
 }
 
 class idiot implements messageCommand{
     public static function getName() {
+        return "!idiot";
+    }
+
+    public function getDescription() {
+        return "lets you see what the illusion thinks";
+    }
+
+    public function getHelp() {
         return "!idiot";
     }
 
@@ -104,14 +112,6 @@ class idiot implements messageCommand{
             $message->reply("du bist KEINE HALLUZINATION\n*triggered*");
         }
         return $message;
-    }
-
-    public function getDescription() {
-        return "lets you see what the illusion thinks";
-    }
-
-    public function getHelp() {
-        return "!idiot";
     }
 
 }

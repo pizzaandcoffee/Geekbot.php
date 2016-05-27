@@ -20,26 +20,28 @@
 namespace Geekbot\Commands;
 use Geekbot\Utils;
 
-/**
- * Description of Cat
- *
- * @author fence
- */
 class Cat implements messageCommand{
+    public static function getName() {
+        return "!cat";
+    }
+
     public function getDescription() {
         return "returns a random image of a cat";
     }
 
     public function getHelp() {
         return $this->getDescription() . "
-            usage:
-            !cat";
+        usage:
+            !cat ([option])
+        Options:
+            fact - gives you a random cat fact
+            image - gives you a random cat image";
     }
 
     public function runCommand($message) {
         $messageArray = Utils::messageSplit($message);
         if (Utils::isHelp($messageArray)) {
-            return $this->getHelp();
+            $message->channel->sendMessage($this->getHelp());
         } elseif(isset($messageArray[1]) && $messageArray[1] == "image"){
             $imagesource = file_get_contents('http://random.cat/meow');
             $imagecontent = json_decode($imagesource);
@@ -59,7 +61,4 @@ class Cat implements messageCommand{
         }
     }
 
-    public static function getName() {
-        return "!cat";
-    }
 }

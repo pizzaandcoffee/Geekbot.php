@@ -27,24 +27,24 @@ class yt implements messageCommand{
         return "!yt";
     }
 
+    public function getDescription() {
+        return "searches on youtube and return the first result";
+    }
+
+    public function getHelp() {
+        return $this->getDescription() . "
+        usage:
+            !yt [some video]";
+    }
+
     public function runCommand($message) {
         try {
             $y = new Youtube(array('key' => Settings::envGet('ytkey')));
             $s = $y->searchVideos(substr($message->content, 4));
             $message->channel->sendMessage("'" . $s[0]->snippet->title . "' from '" . $s[0]->snippet->channelTitle . "'\nhttps://www.youtube.com/watch?v=" . $s[0]->id->videoId);
         } catch(\Exception $e){
-            $message->reply("you can use the youtube command because the api key is not set");
+            $message->reply("you can not use the youtube command because the api key is not set");
         }
         return $message;
-    }
-
-    public function getDescription() {
-        return "searches on youtube and return the first result";
-    }
-
-    public function getHelp() {
-        return "searches on youtube and return the first result
-        usage:
-        !yt [some cat video]";
     }
 }

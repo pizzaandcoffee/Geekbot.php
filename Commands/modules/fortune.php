@@ -26,9 +26,19 @@ class fortune implements messageCommand{
         return "!fortune";
     }
 
+    public function getDescription() {
+        return "returns a fortune from the unix fortune database";
+    }
+
+    public function getHelp() {
+        return $this->getDescription() . "
+        usage:
+        !fortune";
+    }
+
     public function runCommand($message) {
         $messageArray = Utils::messageSplit($message);
-        if (isset($messageArray[1]) && $messageArray[1] == 'help') {
+        if (Utils::isHelp($message)) {
             $message->channel->sendMessage($this->getHelp());
         } else {
             $fortunes = Utils::getFile('fortunes');
@@ -38,15 +48,5 @@ class fortune implements messageCommand{
             $message->channel->sendMessage($fortune);
         }
         return $message;
-    }
-
-    public function getDescription() {
-        return "returns a fortune from the unix fortune database";
-    }
-
-    public function getHelp() {
-        return "returns a fortune from the unix fortune database
-        usage:
-        !fortune";
     }
 }
