@@ -17,6 +17,14 @@
  *   along with Geekbot.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+if(!file_exists("vendor/autoload.php")) {
+    echo "please run \"composer install\" before running the bot";
+    exit;
+}
+if(!file_exists("env.json")){
+    echo "please configure your env.json before running the bot";
+    exit;
+}
 include __DIR__ . '/vendor/autoload.php';
 include __DIR__ . '/System/Utils.php';
 include __DIR__ . '/System/Settings.php';
