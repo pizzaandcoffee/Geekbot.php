@@ -37,6 +37,11 @@ class JsonDB
         return true;
     }
 
+    /**
+     * @param string|int $name The name of the database key
+     * @param array $data The data to store
+     * @return bool
+     */
     public function set($name, $data){
         $where = $this->folder.'/'.$name.'.json';
         if($this->check($name)) {
@@ -45,6 +50,10 @@ class JsonDB
         return true;
     }
 
+    /**
+     * @param string|int $name The name of the database key
+     * @return string
+     */
     public function get($name){
         if(file_exists($this->folder.'/'.$name.'.json')){
             $where = $this->folder.'/'.$name.'.json';
@@ -55,13 +64,20 @@ class JsonDB
         }
     }
 
+    /**
+     * @param string|int $name The name of the database key
+     * @return bool
+     */
     public function del($name){
         $where = $this->folder.'/'.$name.'.json';
         $this->del($where);
         return true;
     }
 
+    /**
+     * does nothing, only here for redis compatibility...
+     */
     public function save(){
-        //does nothing, only here for redis compatibility...
+        return true;
     }
 }

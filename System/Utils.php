@@ -22,18 +22,31 @@ namespace Geekbot;
 use Discord\Voice\VoiceClient;
 
 class Utils{
-    
+
+    /**
+     * @param string $haystack
+     * @param string $needle
+     * @return bool
+     */
     public static function startsWith($haystack, $needle) {
         return $needle === "" || strrpos($haystack, $needle, -strlen($haystack)) !== false;
     }
 
+    /**
+     * @param $object
+     * @param $attribute
+     * @return null|string
+     */
     public static function xml_attribute($object, $attribute) {
         if (isset($object[$attribute])) {
             return (string)$object[$attribute];
         }
         return null;
     }
-    
+
+    /**
+     * @param string $folder
+     */
     public static function includeFolder($folder) {
         $dir = $folder;
         $commands = scandir($dir);
@@ -44,12 +57,20 @@ class Utils{
         }
     }
 
+    /**
+     * @param array $message the message object
+     * @return array
+     */
     public static function messageSplit($message){
         $oa = preg_replace('/\s+/', ' ', strtolower($message->content));
         $a = explode(' ', $oa);
         return $a;
     }
 
+    /**
+     * @param array $messageArray
+     * @return bool
+     */
     public static function isHelp($messageArray){
         if (isset($messageArray[1]) && $messageArray[1] == "help") {
             return true;
@@ -57,7 +78,11 @@ class Utils{
             return false;
         }
     }
-    
+
+    /**
+     * @param $sound
+     * @param $channel
+     */
     public static function playSound($sound, $channel){
         global $bot;
         $ws = $bot->ws;
@@ -68,6 +93,11 @@ class Utils{
         });
     }
 
+    /**
+     * get a file from the Storage
+     * @param string $fileName
+     * @return null|string
+     */
     public static function getFile($fileName){
         $file = __DIR__.'/../Storage/'.$fileName;
         if (file_exists($file)){
@@ -78,12 +108,21 @@ class Utils{
         }
     }
 
+    /**
+     * @param string $fileName
+     * @param $contents
+     * @return bool
+     */
     public static function storeFile($fileName, $contents){
         $file = __DIR__.'/../Storage/'.$fileName;
         file_put_contents($file, $contents);
         return true;
     }
-    
+
+    /**
+     * @param $message
+     * @return mixed
+     */
     public static function getCommand($message) {
         $command = explode(' ', strtolower($message->content));
         

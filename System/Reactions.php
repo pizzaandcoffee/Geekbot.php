@@ -32,7 +32,7 @@ class Reactions {
             echo("reactions loaded...\n\n");
         }
         else {
-            print("please set some reactionstring in reactions.json");
+            print("please set some reaction strings in Storage/reactions.json");
             die();
         }
     }
@@ -40,11 +40,11 @@ class Reactions {
     function getReaction($message, $messageobj) {
         if(isset($this->reactions->$message)) {
             $string = $this->reactions->$message;
-            if (str_contains($string, "{@author}")) {
-                $string = str_replace('{@author}', "<@".$messageobj->author->id.">", $string);
+            if (str_contains($string, "@author")) {
+                $string = str_replace('@author', "<@".$messageobj->author->id.">", $string);
             }
-            if (str_contains($string, "{@mention}")) {
-                $string = str_replace('{@mention}', "<@".$messageobj->mentions[0]->id.">", $string);
+            if (str_contains($string, "@mention")) {
+                $string = str_replace('@mention', "<@".$messageobj->mentions[0]->id.">", $string);
             }
             return $string;
         } else {

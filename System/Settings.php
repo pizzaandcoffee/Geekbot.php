@@ -25,6 +25,11 @@ use Geekbot\Utils;
 
 class Settings{
 
+    /**
+     * @param array $message the message object
+     * @param string $key the settings you need
+     * @return string|int|array
+     */
     public static function getGuildSetting($message, $key){
         $guildID = $message->channel->guild_id;
         $guildSettings = Database::get($guildID);
@@ -35,6 +40,12 @@ class Settings{
         }
     }
 
+    /**
+     * @param array $message the message object
+     * @param string $key the settings you want to change
+     * @param array $value the value of the setting (can be an array too)
+     * @return bool
+     */
     public static function setGuildSetting($message, $key, $value){
         $guildID = $message->channel->guild_id;
         $guildSettings = Database::get($guildID);
@@ -46,6 +57,11 @@ class Settings{
         return true;
     }
 
+    /**
+     * @param array $message the message object
+     * @param string $key the settings you need
+     * @return string|int|array
+     */
     public static function getUserSetting($message, $key){
         $authorID = $message->author->id;
         $guildID = $message->channel->guild_id;
@@ -58,6 +74,12 @@ class Settings{
         }
     }
 
+    /**
+     * @param array $message the message object
+     * @param string $key the settings you want to change
+     * @param array $value the value of the setting (can be an array too)
+     * @return bool
+     */
     public static function setUserSetting($message, $key, $value){
         $authorID = $message->author->id;
         $guildID = $message->channel->guild_id;
@@ -71,6 +93,10 @@ class Settings{
         return true;
     }
 
+    /**
+     * @param string $key the name of the value you need
+     * @return string
+     */
     public static function envGet($key){
         $envjson = file_get_contents(__DIR__ . "/../env.json");
         $settings = json_decode($envjson);

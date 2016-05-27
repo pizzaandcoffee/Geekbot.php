@@ -71,12 +71,11 @@ class Stats{
         return $level;
     }
 
-    public static function getUserData($guildID, $userID){
-        $dbLocation = $guildID.'-'.$userID;
-        $data = Database::get($dbLocation);
-        return $data;
-    }
-
+    /**
+     * @param int $guildID The Guild ID
+     * @param int $userID The User ID
+     * @return string
+     */
     public static function getLastMessage($guildID, $userID){
         $dbLocation = $guildID.'-'.$userID;
         $data = Database::get($dbLocation);
@@ -86,6 +85,11 @@ class Stats{
         return $data->lastMessage;
     }
 
+    /**
+     * @param int $guildID The Guild ID
+     * @param int $userID The User ID
+     * @return int
+     */
     public static function getAmountOfMessages($guildID, $userID){
         $dbLocation = $guildID.'-'.$userID;
         $data = Database::get($dbLocation);
@@ -95,6 +99,11 @@ class Stats{
         return $data->messages;
     }
 
+    /**
+     * @param int $guildID The Guild ID
+     * @param int $userID The User ID
+     * @return string
+     */
     public static function getClass($guildID, $userID){
         $dbLocation = $guildID.'-'.$userID;
         $data = Database::get($dbLocation);
@@ -104,6 +113,11 @@ class Stats{
         return $data->class;
     }
 
+    /**
+     * @param int $guildID The Guild ID
+     * @param int $userID The User ID
+     * @return int
+     */
     public static function getBadJokes($guildID, $userID){
         $dbLocation = $guildID.'-'.$userID;
         $data = Database::get($dbLocation);
@@ -113,6 +127,11 @@ class Stats{
         return $data->badJokes;
     }
 
+    /**
+     * @param int $guildID The Guild ID
+     * @param int $userID The User ID
+     * @return int
+     */
     public static function getLevel($guildID, $userID){
         $messages = Stats::getAmountOfMessages($guildID, $userID);
         $level = Stats::calculateLevel($messages);
@@ -120,6 +139,10 @@ class Stats{
 
     }
 
+    /**
+     * @param int $guildID The Guild ID
+     * @return int
+     */
     public static function getGuildMessages($guildID){
         $data = Database::get($guildID);
         if(!isset($data->messages)){

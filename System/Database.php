@@ -35,6 +35,11 @@ if ($dbtype == 'redis'){
  
 class Database{
 
+    /**
+     * @param string|int $key The database key or storage location
+     * @param array $value the array that should be in there
+     * @return bool
+     */
     public static function set($key, $value){
         global $db;
         $data = json_encode($value);
@@ -43,12 +48,20 @@ class Database{
         return true;
     }
 
+    /**
+     * @param string|int $key The database key or storage location
+     * @return array
+     */
     public static function get($key){
         global $db;
         $data = json_decode($db->get($key));
         return $data;
     }
 
+    /**
+     * @param string|int $key The database key or storage location
+     * @return bool
+     */
     public static function delete($key){
         global $db;
         $db->del($key);

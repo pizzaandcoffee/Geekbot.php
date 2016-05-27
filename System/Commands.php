@@ -52,7 +52,11 @@ class CommandsContainer {
         public function commandExists($name) {
         return isset($this->commands[$name]);
     }
-    
+
+    /**
+     * @param $name
+     * @return mixed|null returns a list of commands
+     */
     public function getCommand($name) {
         if($this->commandExists($name)) {
             return $this->commands[$name];
@@ -60,7 +64,10 @@ class CommandsContainer {
             return NULL;
         }
     }
-    
+
+    /**
+     * @return array
+     */
     public function getCommands() {
         return $this->commands;
     }
