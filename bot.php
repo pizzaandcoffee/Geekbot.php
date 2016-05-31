@@ -39,7 +39,12 @@ use Discord\Discord;
 use Discord\WebSockets\WebSocket;
 use Geekbot\CommandsContainer;
 
-$version = "2.0 alpha Test Build";
+if(file_exists(".git/ORIG_HEAD")) {
+    $githead = file_get_contents(".git/ORIG_HEAD");
+    $version = "2.0 Beta - Build {$githead}";
+} else {
+    $version = "2.0 Beta";
+}
 
 echo("  ____ _____ _____ _  ______   ___ _____\n");
 echo(" / ___| ____| ____| |/ / __ ) / _ \\_   _|\n");
@@ -50,7 +55,7 @@ echo(" \\____|_____|_____|_|\\_\\____/ \\___/ |_|\n");
 echo "{$version}\n\n";
 
 class Bot {
-    private $discord;
+    public $discord;
     public $ws;
     private $commands;
     private $reactions;
