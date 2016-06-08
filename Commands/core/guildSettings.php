@@ -44,7 +44,7 @@ class guildSettings implements messageCommand{
                     break;
                 
                 case "botrole":
-                    Settings::setGuildSetting($message, 'botRole',$messageArray[2]);
+                    Permission::setGuildPermission($message, 'botRole', $messageArray[2]);
                     $message->reply("The bot Role has been set to {$messageArray[2]}, people without this role can use geekbot!");
                     break;
             }

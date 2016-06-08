@@ -23,6 +23,34 @@ class Permission {
 
     /**
      * @param array $message the message object
+     * @param string $key what permission?
+     * @param string|array|int $value the value of the key
+     */
+    public static function setGuildPermission($message, $key, $value){
+        $permissions = Settings::getGuildSetting($message, 'permissions');
+        if($permissions == "null"){
+            $permissions = null;
+        }
+        $permissions->$key = $value;
+        Settings::setGuildSetting($message, 'permissions', $permissions);
+    }
+
+    /**
+     * @param array $message the message object
+     * @param string $key what permission?
+     * @return null
+     */
+    public static function getGuildPermission($message, $key){
+        $permissions = Settings::getGuildSetting($message, 'permissions');
+        if(isset($permissions->$key[0])){
+            return null;
+        } else {
+            return $permissions->$key;
+        }
+    }
+
+    /**
+     * @param array $message the message object
      * @return bool
      */
     public static function isAdmin($message){
@@ -65,6 +93,11 @@ class Permission {
         }
     }
 
+    /**
+     * @param array $message the message object
+     * @param string $roleName name of the role
+     * @return bool
+     */
     public static function hasRole($message, $roleName){
         $hasRole = false;
         try {
@@ -82,10 +115,15 @@ class Permission {
         return $hasRole;
     }
 
+    /**
+     * @param array $message the message object
+     * @param int $userID the user id
+     * @return bool
+     */
     public static function blacklistCheck($message, $userID){
         $permissions = Settings::getGuildSetting($message, 'permissions');
-        if(isset($permissions->botrole)){
-            if(Permission::hasRole($message, $permissions->botrole)){
+        if(isset($permissions->botRole)){
+            if(Permission::hasRole($message, $permissions->botRole)){
                 return true;
             } else {
                 return false;
@@ -104,15 +142,23 @@ class Permission {
 
     }
 
+    /**
+     * @param array $message the message object
+     * @param int $userID the user you want to blacklist
+     */
     public static function blacklistAdd($message, $userID){
         $permissions = Settings::getGuildSetting($message, 'permissions');
-        if(!is_array($permissions->blacklist)){
+        if(!isset($permissions->blacklist) || !is_array($permissions->blacklist)){
             $permissions->blacklist = [];
         }
         $permissions->blacklist[] = $userID;
         Settings::setGuildSetting($message, 'permissions', $permissions);
     }
 
+    /**
+     * @param array $message the message object
+     * @param int $userID the user you want to remove from the blacklist
+     */
     public static function blacklistRemove($message, $userID){
         $permissions = Settings::getGuildSetting($message, 'permissions');
         $newList = [];
@@ -121,7 +167,6 @@ class Permission {
                 $newList[] = $users;
             }
         }
-        $permissions->blacklist = $newList;
-        Settings::setGuildSetting($message, 'permissions', $permissions);
+        Permission::setGuildPermission($message, 'blacklist', $newList);
     }
 }
