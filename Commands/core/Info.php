@@ -62,8 +62,6 @@ class Info implements basicCommand {
     }
     
     private function getVersion() {
-        global $version;
-        return $version;
-//        return "Geekbot 2.0 alpha Test Build";
+        return GEEKBOT_VERSION;
     }
 }

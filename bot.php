@@ -45,6 +45,7 @@ if(file_exists(".git/ORIG_HEAD")) {
 } else {
     $version = "2.0 Beta";
 }
+define('GEEKBOT_VERSION', $version);
 
 echo("  ____ _____ _____ _  ______   ___ _____\n");
 echo(" / ___| ____| ____| |/ / __ ) / _ \\_   _|\n");
@@ -78,28 +79,29 @@ class Bot {
             $discord->updatePresence($this->ws, \Geekbot\Settings::envGet('playing'), 0);
             echo "geekbot is ready!\n" . PHP_EOL;
 
-            $this->ws->on('message', function ($message) {
-                
+            $this->ws->on('message', function ($message) use ($discord) {
                 $stats = new \Geekbot\Stats($message);
 
-                $command = \Geekbot\Utils::getCommand($message);
-                if($this->commands->commandExists($command)){
-                    $commandslist = $this->commands->getCommands();
-                    if(in_array('Geekbot\Commands\basicCommand', class_implements($this->commands->getCommand($command)))) {
-                        $message->reply($commandslist[$command]->runCommand());
-                    } else if(in_array('Geekbot\Commands\messageCommand', class_implements($this->commands->getCommand($command)))) {
-                        $result = $commandslist[$command]->runCommand($message);
-                        if(is_string($result)){
-                            $message->reply($result);
-                        } else {
-                            $message = $result;
+                if(\Geekbot\Permission::blacklistCheck($message, $message->author->id)){
+                    $command = \Geekbot\Utils::getCommand($message);
+                    if($this->commands->commandExists($command)){
+                        $commandslist = $this->commands->getCommands();
+                        if(in_array('Geekbot\Commands\basicCommand', class_implements($this->commands->getCommand($command)))) {
+                            $message->reply($commandslist[$command]->runCommand());
+                        } else if(in_array('Geekbot\Commands\messageCommand', class_implements($this->commands->getCommand($command)))) {
+                            $result = $commandslist[$command]->runCommand($message);
+                            if(is_string($result)){
+                                $message->reply($result);
+                            } else {
+                                $message = $result;
+                            }
                         }
                     }
-                }
-                else {
-                    $reaction = $this->reactions->getReaction(\Geekbot\Utils::getCommand($message), $message);
-                    if( $reaction != NULL) {
-                        $message->channel->sendMessage($reaction);
+                    else {
+                        $reaction = $this->reactions->getReaction(\Geekbot\Utils::getCommand($message), $message);
+                        if( $reaction != NULL) {
+                            $message->channel->sendMessage($reaction);
+                        }
                     }
                 }
 

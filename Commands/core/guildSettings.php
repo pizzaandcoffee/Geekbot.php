@@ -19,6 +19,7 @@
 
 namespace Geekbot\Commands;
 
+use Geekbot\Permission;
 use Geekbot\Utils;
 use Geekbot\Settings;
 
@@ -29,17 +30,24 @@ class guildSettings implements messageCommand{
 
     public function runCommand($message) {
         $messageArray = Utils::messageSplit($message);
-        switch ($messageArray[1]){
-            case "test":
-                if($messageArray[2] == "set"){
-                    Settings::setGuildSetting($message, $messageArray[1], $messageArray[3]);
-                    $message->reply("option {$messageArray[1]} was set to {$messageArray[3]}");
-                } elseif ($messageArray[2] == "get"){
-                    $option = Settings::getGuildSetting($message, $messageArray[1]);
-                    $message->channel->sendMessage($option);
-                }
+        if(Permission::isAdmin($message)) {
+            switch ($messageArray[1]) {
 
-                break;
+                case "blacklist":
+                    if ($messageArray[2] == "add") {
+                        Permission::blacklistAdd($message, $message->mentions[0]->id);
+                        $message->reply("<@{$message->mentions[0]->id}> was added to the blacklist");
+                    } elseif ($messageArray[2] == "remove") {
+                        Permission::blacklistRemove($message, $message->mentions[0]->id);
+                        $message->reply("<@{$message->mentions[0]->id}> was removed from the blacklist");
+                    }
+                    break;
+                
+                case "botrole":
+                    Settings::setGuildSetting($message, 'botRole',$messageArray[2]);
+                    $message->reply("The bot Role has been set to {$messageArray[2]}, people without this role can use geekbot!");
+                    break;
+            }
         }
         return $message;
     }

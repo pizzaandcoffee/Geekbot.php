@@ -64,4 +64,64 @@ class Permission {
             return false;
         }
     }
+
+    public static function hasRole($message, $roleName){
+        $hasRole = false;
+        try {
+            $memberRoles = $message->full_channel->guild->members->get('id', $message->author->id)->roles;
+
+            foreach ($memberRoles as $role) {
+                if (strtolower($role->name) == $roleName) {
+                    $hasRole = true;
+                }
+            }
+        } catch (\Exception $e){
+            echo "Geekbot has not enough permission to check if the user is an admin or not!";
+            echo "Give Geekbot 'manage roles' rights to do this!";
+        }
+        return $hasRole;
+    }
+
+    public static function blacklistCheck($message, $userID){
+        $permissions = Settings::getGuildSetting($message, 'permissions');
+        if(isset($permissions->botrole)){
+            if(Permission::hasRole($message, $permissions->botrole)){
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            if (isset($permissions->blacklist)) {
+                if (in_array($userID, $permissions->blacklist)) {
+                    return false;
+                } else {
+                    return true;
+                }
+            } else {
+                return true;
+            }
+        }
+
+    }
+
+    public static function blacklistAdd($message, $userID){
+        $permissions = Settings::getGuildSetting($message, 'permissions');
+        if(!is_array($permissions->blacklist)){
+            $permissions->blacklist = [];
+        }
+        $permissions->blacklist[] = $userID;
+        Settings::setGuildSetting($message, 'permissions', $permissions);
+    }
+
+    public static function blacklistRemove($message, $userID){
+        $permissions = Settings::getGuildSetting($message, 'permissions');
+        $newList = [];
+        foreach($permissions->blacklist as $users){
+            if($users != $userID){
+                $newList[] = $users;
+            }
+        }
+        $permissions->blacklist = $newList;
+        Settings::setGuildSetting($message, 'permissions', $permissions);
+    }
 }
