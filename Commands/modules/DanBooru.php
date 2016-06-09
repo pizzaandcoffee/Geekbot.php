@@ -22,24 +22,24 @@ namespace Geekbot\Commands;
 use Geekbot\Utils;
 
 /**
- * Description of Konachan
+ * Description of DanBooru
  *
  * @author fence
  */
-class Konachan implements messageCommand {
+class DanBooru implements messageCommand {
     public static function getName() {
-        return "!konachan";
+        return "!danbooru";
     }
     
     public function getDescription() {
-        return "looks up stuff from konachan";
+        return "looks up stuff from danbooru";
     }
 
     public function getHelp() {
         return $this->getDescription() . "           
         usage:
-            !konachan safe|questionable|explicit [tags] - returns a random image in the specified rating
-            !konachan [tags] - returns a random image";
+            !danbooru safe|questionable|explicit [tags] - returns a random image in the specified rating
+            !danbooru [tags] - returns a random image";
     }
 
     public function runCommand($message) {
@@ -61,14 +61,14 @@ class Konachan implements messageCommand {
     }
     
     private function images($tags) {
-        $getkonachan = file_get_contents('http://konachan.com/post.json?tags=' . $tags);
-        $konachan = json_decode($getkonachan, true);
-        $randomnumberporn = rand(1, count($konachan) -1);
-        $result = $konachan[$randomnumberporn]['file_url'];
+        $getDanBooru = file_get_contents('http://danbooru.donmai.us/posts.json?tags=' . $tags);
+        $DanBooru = json_decode($getDanBooru, true);
+        $randomnumberporn = rand(1, count($DanBooru) -1);
+        $result = $DanBooru[$randomnumberporn]['file_url'];
         if ($result == NULL) {
             return "no results";
         } else {
-            return $result;
+            return "http://danbooru.donmai.us" . $result;
         }
     }
 

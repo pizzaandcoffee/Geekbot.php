@@ -22,24 +22,24 @@ namespace Geekbot\Commands;
 use Geekbot\Utils;
 
 /**
- * Description of Konachan
+ * Description of Yandere
  *
- * @author fence
+ * @author Alex Fence
  */
-class Konachan implements messageCommand {
+class Yandere implements messageCommand {
     public static function getName() {
-        return "!konachan";
+        return "!yandere";
     }
     
     public function getDescription() {
-        return "looks up stuff from konachan";
+        return "looks up stuff from yande.re";
     }
 
     public function getHelp() {
         return $this->getDescription() . "           
         usage:
-            !konachan safe|questionable|explicit [tags] - returns a random image in the specified rating
-            !konachan [tags] - returns a random image";
+            !yandere safe|questionable|explicit [tags] - returns a random image in the specified rating
+            !yandere [tags] - returns a random image";
     }
 
     public function runCommand($message) {
@@ -61,10 +61,19 @@ class Konachan implements messageCommand {
     }
     
     private function images($tags) {
-        $getkonachan = file_get_contents('http://konachan.com/post.json?tags=' . $tags);
-        $konachan = json_decode($getkonachan, true);
-        $randomnumberporn = rand(1, count($konachan) -1);
-        $result = $konachan[$randomnumberporn]['file_url'];
+        $context = stream_context_create(array(
+                    'http' => array(
+                        'method' => 'GET',
+                        'header' => 'Content-Type: application/json',
+                        'verify_peer'      => false,
+                        'verify_peer_name' => false,
+                        ), 
+                    )
+                );
+        $getyanderejson = file_get_contents('http://yande.re/post.json?tags=' . $tags, false, $context);
+        $yandere = json_decode($getyanderejson, true);
+        $randomnumberporn = rand(1, count($yandere) -1);
+        $result = $yandere[$randomnumberporn]['file_url'];
         if ($result == NULL) {
             return "no results";
         } else {
