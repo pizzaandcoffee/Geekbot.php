@@ -85,7 +85,7 @@ class Gelbooru implements messageCommand {
             case "questionable":
                 return $this->imageWithRating("questionable", $parameters);
             case "explicit":
-                return $this->imageWithRating("questionable", $parameters);
+                return $this->imageWithRating("explicit", $parameters);
             default :
                 array_shift($parameters);
                 return $this->images(implode(" ", $parameters));
