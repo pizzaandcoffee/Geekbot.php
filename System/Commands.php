@@ -21,7 +21,7 @@ namespace Geekbot;
 
 class CommandsContainer {
     private $commands;
-    
+
     function __construct() {
         $this->commands = [];
         $this->includeCommands();
@@ -32,9 +32,9 @@ class CommandsContainer {
 
     private function includeCommands() {
         Utils::includeFolder(__DIR__ . '/../Commands/core');
-        Utils::includeFolder(__DIR__ . '/../Commands/modules');
+        Utils::includeFolderRecursively(__DIR__ . '/../Commands/modules/');
     }
-    
+
     private function loadCommands() {
         echo "Loading Commands:" . PHP_EOL;
         foreach (get_declared_classes() as $className) {
@@ -44,7 +44,7 @@ class CommandsContainer {
             }
         }
     }
-    
+
     private function loadCoreCommands() {
         $this->commands[Commands\Help::getName()] = new Commands\Help();
     }

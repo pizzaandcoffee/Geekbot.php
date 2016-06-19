@@ -57,6 +57,19 @@ class Utils{
         }
     }
 
+    public static function includeFolderRecursively($folder) {
+
+        $scan = glob("$folder/*");
+          foreach ($scan as $path) {
+              if (preg_match('/\.php$/', $path)) {
+                  require_once $path;
+              }
+              elseif (is_dir($path)) {
+                Utils::includeFolderRecursively($path);
+              }
+          }
+    }
+
     /**
      * @param array $message the message object
      * @return array
@@ -125,7 +138,7 @@ class Utils{
      */
     public static function getCommand($message) {
         $command = explode(' ', strtolower($message->content));
-        
+
         return $command[0];
     }
 }
