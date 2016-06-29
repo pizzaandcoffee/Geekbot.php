@@ -21,7 +21,6 @@ namespace Geekbot\Commands;
 
 use Geekbot\Permission;
 use Geekbot\Utils;
-use Geekbot\Settings;
 
 class guildSettings implements messageCommand{
     public static function getName() {
@@ -35,16 +34,16 @@ class guildSettings implements messageCommand{
 
                 case "blacklist":
                     if ($messageArray[2] == "add") {
-                        Permission::blacklistAdd($message, $message->mentions[0]->id);
+                        Permission::blacklistAdd($message->mentions[0]->id);
                         $message->reply("<@{$message->mentions[0]->id}> was added to the blacklist");
                     } elseif ($messageArray[2] == "remove") {
-                        Permission::blacklistRemove($message, $message->mentions[0]->id);
+                        Permission::blacklistRemove($message->mentions[0]->id);
                         $message->reply("<@{$message->mentions[0]->id}> was removed from the blacklist");
                     }
                     break;
                 
                 case "botrole":
-                    Permission::setGuildPermission($message, 'botRole', $messageArray[2]);
+                    Permission::setGuildPermission('botRole', $messageArray[2]);
                     $message->reply("The bot Role has been set to {$messageArray[2]}, people without this role can use geekbot!");
                     break;
             }

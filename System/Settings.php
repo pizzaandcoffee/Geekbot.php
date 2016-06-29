@@ -19,20 +19,14 @@
 
 namespace Geekbot;
 
-use Discord\Voice\VoiceClient;
-use Geekbot\Database;
-use Geekbot\Utils;
-
 class Settings{
 
     /**
-     * @param array $message the message object
      * @param string $key the settings you need
      * @return string|int|array
      */
-    public static function getGuildSetting($message, $key){
-        $guildID = $message->channel->guild_id;
-        $guildSettings = Database::get($guildID);
+    public static function getGuildSetting($key){
+        $guildSettings = Database::get($GLOBALS['guildid']);
         if(!isset($guildSettings->$key)){
             return "null";
         } else {
@@ -41,32 +35,26 @@ class Settings{
     }
 
     /**
-     * @param array $message the message object
      * @param string $key the settings you want to change
      * @param array $value the value of the setting (can be an array too)
      * @return bool
      */
-    public static function setGuildSetting($message, $key, $value){
-        $guildID = $message->channel->guild_id;
-        $guildSettings = Database::get($guildID);
+    public static function setGuildSetting($key, $value){
+        $guildSettings = Database::get($GLOBALS['guildid'] );
         if(!isset($guildSettings->$key)){
             $guildSettings->$key = "null";
         }
         $guildSettings->$key = $value;
-        Database::set($guildID, $guildSettings);
+        Database::set($GLOBALS['guildid'] , $guildSettings);
         return true;
     }
 
     /**
-     * @param array $message the message object
      * @param string $key the settings you need
      * @return string|int|array
      */
-    public static function getUserSetting($message, $key){
-        $authorID = $message->author->id;
-        $guildID = $message->channel->guild_id;
-        $dbLocation = $guildID.'-'.$authorID;
-        $userSettings = Database::get($dbLocation);
+    public static function getUserSetting($key){
+        $userSettings = Database::get($GLOBALS['dblocation']);
         if(!isset($userSettings->$key)){
             return 0;
         } else {
@@ -75,21 +63,17 @@ class Settings{
     }
 
     /**
-     * @param array $message the message object
      * @param string $key the settings you want to change
      * @param string|int $value the value of the setting (can be an array too)
      * @return bool
      */
-    public static function setUserSetting($message, $key, $value){
-        $authorID = $message->author->id;
-        $guildID = $message->channel->guild_id;
-        $dbLocation = $guildID.'-'.$authorID;
-        $userSettings = Database::get($dbLocation);
+    public static function setUserSetting($key, $value){
+        $userSettings = Database::get($GLOBALS['dblocation']);
         if(!isset($userSettings->$key)){
             $userSettings->$key = 0;
         }
         $userSettings->$key = $value;
-        Database::set($dbLocation, $userSettings);
+        Database::set($GLOBALS['dblocation'], $userSettings);
         return true;
     }
 

@@ -21,14 +21,12 @@ namespace Geekbot;
  
 include __DIR__ . '/JsonDB.php';
 
-use Geekbot\Settings;
-
 $dbtype = Settings::envGet('database');
 if ($dbtype == 'redis'){
     $redis = new \Redis();
-    $db = $redis->connect('localhost', '6379');
+    $geekbot_db = $redis->connect('localhost', '6379');
 } elseif ($dbtype == 'json'){
-    $db = new JsonDB(__DIR__ . '/db');
+    $geekbot_db = new JsonDB(__DIR__ . '/db');
 } else {
     die("please set database value in your env.json to either 'json' or 'redis'");
 }
@@ -41,10 +39,10 @@ class Database{
      * @return bool
      */
     public static function set($key, $value){
-        global $db;
+        global $geekbot_db;
         $data = json_encode($value);
-        $db->set($key, $data);
-        $db->save();
+        $geekbot_db->set($key, $data);
+        $geekbot_db->save();
         return true;
     }
 
@@ -53,8 +51,8 @@ class Database{
      * @return array
      */
     public static function get($key){
-        global $db;
-        $data = json_decode($db->get($key));
+        global $geekbot_db;
+        $data = json_decode($geekbot_db->get($key));
         return $data;
     }
 
@@ -63,9 +61,9 @@ class Database{
      * @return bool
      */
     public static function delete($key){
-        global $db;
-        $db->del($key);
-        $db->save();
+        global $geekbot_db;
+        $geekbot_db->del($key);
+        $geekbot_db->save();
         return true;
     }
     

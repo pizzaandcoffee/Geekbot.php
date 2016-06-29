@@ -19,8 +19,6 @@
 
 namespace Geekbot;
 
-use Geekbot\Utils;
-
 class Reactions {
 
     private $reactions;

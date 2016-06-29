@@ -80,9 +80,13 @@ class Bot {
             echo "geekbot is ready!\n" . PHP_EOL;
 
             $this->ws->on('message', function ($message) use ($discord) {
+                $GLOBALS['userid'] = $message->author->id;
+                $GLOBALS['guildid'] = $message->channel->guild_id;
+                $GLOBALS['dblocation'] = $GLOBALS['guildid'].'-'.$GLOBALS['userid'];
+                
                 $stats = new \Geekbot\Stats($message);
 
-                if(\Geekbot\Permission::blacklistCheck($message, $message->author->id)){
+                if(\Geekbot\Permission::blacklistCheck($message)){
                     $command = \Geekbot\Utils::getCommand($message);
                     if($this->commands->commandExists($command)){
                         $commandslist = $this->commands->getCommands();

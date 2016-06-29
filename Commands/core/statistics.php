@@ -31,16 +31,15 @@ class statistics implements messageCommand{
 
     public function runCommand($message) {
         $messageArray = Utils::messageSplit($message);
-        $guildID = $message->channel->guild_id;
         if(isset($messageArray[1]) && Utils::startsWith($messageArray[1], "<@")){
             $userID = $message->mentions[0]->id;
             $message->channel->sendMessage("Here are the Stats for <@{$userID}>:".PHP_EOL.
             "```".PHP_EOL.
-            "Level:         ".Stats::getLevel($guildID, $userID).PHP_EOL.
-            "Sent Messages: ".Stats::getAmountOfMessages($guildID, $userID).PHP_EOL.
-            "Class:         ".Stats::getClass($guildID, $userID).PHP_EOL.
-            "Bad Jokes:     ".Stats::getBadJokes($guildID, $userID).PHP_EOL.
-            "Last Message:  ".Stats::getLastMessage($guildID, $userID).PHP_EOL.
+            "Level:         ".Stats::getLevel($userID).PHP_EOL.
+            "Sent Messages: ".Stats::getAmountOfMessages($userID).PHP_EOL.
+            "Class:         ".Stats::getClass($userID).PHP_EOL.
+            "Bad Jokes:     ".Stats::getBadJokes($userID).PHP_EOL.
+            "Last Message:  ".Stats::getLastMessage($userID).PHP_EOL.
             "```");
         }
         return $message;
