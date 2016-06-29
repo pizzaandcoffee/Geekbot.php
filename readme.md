@@ -23,7 +23,7 @@ A bot framework for discord built on [DiscordPHP](https://github.com/teamreflex/
 
 Just drop the modules in the Commands/modules folder and geekbot will automatically load them, no configuration required
 
-The default modules are in another rope, you can get them [here](https://github.com/runebaas/Geekbot-Modules)
+The default modules are in another repository, you can get them [here](https://github.com/runebaas/Geekbot-Modules)
 
 ### Documentation
 
