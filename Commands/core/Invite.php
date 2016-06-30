@@ -19,19 +19,14 @@
 
 namespace Geekbot\Commands;
 
-use DateTime;
+class Invite implements basicCommand {
 
-
-class Info implements basicCommand {
-    private $startDate;
-
-    function __construct() {
-        $this->startDate = new DateTime('now');
-
+    public static function getName() {
+        return "!invite";
     }
 
     public function getDescription() {
-        return "returns some info about the bot";
+        return "returns an invite link";
     }
 
     public function getHelp() {
@@ -39,25 +34,7 @@ class Info implements basicCommand {
     }
 
     public function runCommand() {
-        return "Running " . $this->getVersion() . " since: " . $this->timeToString($this->getEnlapsedTime());
-    }
-
-    public static function getName() {
-        return "!info";
-    }
-
-    private function getEnlapsedTime() {
-        $startdate = $this->startDate;
-        $now = new DateTime('now');
-        $interval = $now->diff($startdate);
-        return $interval;
-    }
-
-    private function timeToString($interval) {
-        return $interval->format('%m months %d days %h hours %i minutes %S seconds');
-    }
-
-    private function getVersion() {
-        return GEEKBOT_VERSION;
+        $id = \Geekbot\Settings::envGet('clientid');
+        return "https://discordapp.com/oauth2/authorize?client_id=" . $id . "&scope=bot&permissions=0";
     }
 }

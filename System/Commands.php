@@ -40,7 +40,15 @@ class CommandsContainer {
         foreach (get_declared_classes() as $className) {
             if (in_array('Geekbot\Commands\command', class_implements($className))) {
                 echo "   - ". substr($className, 17) . "\n";
-                $this->commands[$className::getName()] = new $className();
+                if($className::getName()){
+                    if(\Geekbot\Settings::envGet('invite')) {
+                        $this->commands[$className::getName()] = new $className();
+                    }
+                } else {
+                    $this->commands[$className::getName()] = new $className();
+                }
+
+
             }
         }
     }
