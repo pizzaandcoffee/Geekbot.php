@@ -60,20 +60,23 @@ class Bot {
     public $ws;
     private $commands;
     private $reactions;
-    
+
     function __construct() {
 
         $this->discord = new Discord(\Geekbot\Settings::envGet('token'));
         $this->ws = new WebSocket($this->discord);
         $this->commands = new CommandsContainer();
-        $this->reactions = new Geekbot\Reactions(); 
+        $this->reactions = new Geekbot\Reactions();
         if(\Geekbot\Settings::envGet('timezone') != "null") {
             date_default_timezone_set(\Geekbot\Settings::envGet('timezone'));
-        }        
+        }
+        if(Geekbot\Settings::envGet('prefix') != "null"){
+            $GLOBALS['prefix'] = Geekbot\Settings::envGet('prefix');
+        }
         $this->initSocket();
     }
-    
-    
+
+
     function initSocket() {
         $this->ws->on('ready', function ($discord){
             $discord->updatePresence($this->ws, \Geekbot\Settings::envGet('playing'), 0);
@@ -83,21 +86,28 @@ class Bot {
                 $GLOBALS['userid'] = $message->author->id;
                 $GLOBALS['guildid'] = $message->channel->guild_id;
                 $GLOBALS['dblocation'] = $GLOBALS['guildid'].'-'.$GLOBALS['userid'];
-                
+
                 $stats = new \Geekbot\Stats($message);
 
                 if(\Geekbot\Permission::blacklistCheck($message)){
                     $command = \Geekbot\Utils::getCommand($message);
+
                     if($this->commands->commandExists($command)){
+
                         $commandslist = $this->commands->getCommands();
-                        if(in_array('Geekbot\Commands\basicCommand', class_implements($this->commands->getCommand($command)))) {
-                            $message->reply($commandslist[$command]->runCommand());
-                        } else if(in_array('Geekbot\Commands\messageCommand', class_implements($this->commands->getCommand($command)))) {
-                            $result = $commandslist[$command]->runCommand($message);
-                            if(is_string($result)){
-                                $message->reply($result);
-                            } else {
-                                $message = $result;
+                        $cmd = $this->commands->getCommand($command);
+
+                        // class_implements() expects an object or a string
+                        if($cmd != null) {
+                            if(in_array('Geekbot\Commands\basicCommand', class_implements())) {
+                                $message->reply($commandslist[$command]->runCommand());
+                            } else if(in_array('Geekbot\Commands\messageCommand', class_implements($this->commands->getCommand($command)))) {
+                                $result = $cmd->runCommand($message);
+                                if(is_string($result)){
+                                    $message->reply($result);
+                                } else {
+                                    $message = $result;
+                                }
                             }
                         }
                     }
@@ -121,7 +131,7 @@ class Bot {
             print($error);
         });
     }
-   
+
     function run(){
         $this->ws->run();
     }

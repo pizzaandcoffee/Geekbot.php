@@ -57,8 +57,9 @@ class CommandsContainer {
         $this->commands[Commands\Help::getName()] = new Commands\Help();
     }
 
-        public function commandExists($name) {
-        return isset($this->commands[$name]);
+    public function commandExists($name) {
+        echo "commandExists \n";
+        return isset($this->commands[$this->handlePrefix($name)]);
     }
 
     /**
@@ -66,9 +67,12 @@ class CommandsContainer {
      * @return mixed|null returns a list of commands
      */
     public function getCommand($name) {
-        if($this->commandExists($name)) {
-            return $this->commands[$name];
+        echo "getCommand \n";
+        $commandName = $this->handlePrefix($name);
+        if(isset($this->commands[$commandName])) {
+            return $this->commands[$commandName];
         } else {
+            echo "FUCK!!!!!!!!!!!! \n";
             return NULL;
         }
     }
@@ -78,5 +82,28 @@ class CommandsContainer {
      */
     public function getCommands() {
         return $this->commands;
+    }
+
+    private function handlePrefix($command){
+        if(isset($GLOBALS['prefix'])){
+            echo "global \n";
+            if(Settings::getGuildSetting("private") == "null") {
+                echo "private \n";
+                $prefix = $GLOBALS['prefix'];
+                if(!(strpos($command, $prefix) === False)){
+                    echo  str_replace($prefix, "", $command) . " \n";
+                    return str_replace($prefix, "", $command);
+                } else {
+                    //return something that is not a command
+                    return $prefix;
+                }
+            } else {
+                // the guild is private
+                return $command;
+            }
+        } else {
+            // no prefix is set
+            return $command;
+        }
     }
 }
