@@ -99,7 +99,7 @@ class Bot {
 
                             // class_implements() expects an object or a string
                             if ($cmd != null) {
-                                if (in_array('Geekbot\Commands\basicCommand', class_implements())) {
+                                if (in_array('Geekbot\Commands\basicCommand', class_implements($this->commands->getCommand($command)))) {
                                     $message->reply($commandslist[$command]->runCommand());
                                 } else if (in_array('Geekbot\Commands\messageCommand', class_implements($this->commands->getCommand($command)))) {
                                     $result = $cmd->runCommand($message);

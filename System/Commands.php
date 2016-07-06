@@ -66,7 +66,6 @@ class CommandsContainer {
      * @return mixed|null returns a list of commands
      */
     public function getCommand($name) {
-        echo "getCommand \n";
         $commandName = $this->handlePrefix($name);
         if(isset($this->commands[$commandName])) {
             return $this->commands[$commandName];
@@ -84,12 +83,9 @@ class CommandsContainer {
 
     private function handlePrefix($command){
         if(isset($GLOBALS['prefix'])){
-            echo "global \n";
             if(Settings::getGuildSetting("private") == "null") {
-                echo "private \n";
                 $prefix = $GLOBALS['prefix'];
                 if(!(strpos($command, $prefix) === False)){
-                    echo  str_replace($prefix, "", $command) . " \n";
                     return str_replace($prefix, "", $command);
                 } else {
                     //return something that is not a command
