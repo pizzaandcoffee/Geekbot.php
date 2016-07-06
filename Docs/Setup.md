@@ -10,11 +10,11 @@ git clone https://github.com/runebaas/Geekbot
 
 or downloading the latest stable release (see tags)
 
-## 2. Filling out the env.json
+## 2. Filling out the .env file
 
-First of all, copy the `env.json.example` to `env.json`
+First of all, copy the `.env.example` to `.env`
 
-Now open `env.json` with your favorite text editor.
+Now open `.env` with your favorite text editor.
 
 #### required options
 

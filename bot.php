@@ -21,8 +21,8 @@ if(!file_exists("vendor/autoload.php")) {
     echo "please run \"composer install\" before running the bot";
     exit;
 }
-if(!file_exists("env.json")){
-    echo "please configure your env.json before running the bot";
+if(!file_exists(".env")){
+    echo "please configure your .env before running the bot";
     exit;
 }
 include __DIR__ . '/vendor/autoload.php';
@@ -91,35 +91,42 @@ class Bot {
 
                 if(\Geekbot\Permission::blacklistCheck($message)){
                     $command = \Geekbot\Utils::getCommand($message);
+                    try {
+                        if ($this->commands->commandExists($command)) {
 
-                    if($this->commands->commandExists($command)){
+                            $commandslist = $this->commands->getCommands();
+                            $cmd = $this->commands->getCommand($command);
 
-                        $commandslist = $this->commands->getCommands();
-                        $cmd = $this->commands->getCommand($command);
-
-                        // class_implements() expects an object or a string
-                        if($cmd != null) {
-                            if(in_array('Geekbot\Commands\basicCommand', class_implements())) {
-                                $message->reply($commandslist[$command]->runCommand());
-                            } else if(in_array('Geekbot\Commands\messageCommand', class_implements($this->commands->getCommand($command)))) {
-                                $result = $cmd->runCommand($message);
-                                if(is_string($result)){
-                                    $message->reply($result);
-                                } else {
-                                    $message = $result;
+                            // class_implements() expects an object or a string
+                            if ($cmd != null) {
+                                if (in_array('Geekbot\Commands\basicCommand', class_implements())) {
+                                    $message->reply($commandslist[$command]->runCommand());
+                                } else if (in_array('Geekbot\Commands\messageCommand', class_implements($this->commands->getCommand($command)))) {
+                                    $result = $cmd->runCommand($message);
+                                    if (is_string($result)) {
+                                        $message->reply($result);
+                                    } else {
+                                        $message = $result;
+                                    }
                                 }
                             }
+                        } else {
+                            $reaction = $this->reactions->getReaction(\Geekbot\Utils::getCommand($message), $message);
+                            if ($reaction != NULL) {
+                                $message->channel->sendMessage($reaction);
+                            }
                         }
-                    }
-                    else {
-                        $reaction = $this->reactions->getReaction(\Geekbot\Utils::getCommand($message), $message);
-                        if( $reaction != NULL) {
-                            $message->channel->sendMessage($reaction);
-                        }
+                    } catch (Exception $e){
+                        echo("An error occurd:\n");
+                        echo($e."\n");
+                        echo("Message that caused it: \"".$message->content."\"\n");
+                        echo("Continuing Geekbot...");
                     }
                 }
 
                 $reply = $message->timestamp->format('d/m/y H:i:s') . ' - ';
+                $reply .= $message->getFullChannelAttribute()->getGuildAttribute()->name . ' - ';
+                $reply .= $message->channel->name . ' - ';
                 $reply .= $message->author->username . ' - ';
                 $reply .= $message->content;
                 echo $reply . PHP_EOL;

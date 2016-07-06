@@ -5,5 +5,6 @@
     "!wow": "http://i.imgur.com/xXk71Hn.png",
     "!johncena": "https://www.youtube.com/watch?v=WnhvR_6oC9s",
     "poke": "@author pokes @mention",
-    "hug": "@author hugs @mention"
+    "hug": "@author hugs @mention",
+    "!invite": "https://discordapp.com/oauth2/authorize?client_id=171249478546882561&scope=bot&permissions=0"
 }

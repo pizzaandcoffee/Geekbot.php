@@ -10,13 +10,15 @@ A bot framework for discord built on [DiscordPHP](https://github.com/teamreflex/
 
 ----------------
 
+For a full guide please refer to Docs/Setup.md
+
 ##### Starting the bot
 
 1. $ git clone https://github.com/runebaas/geekbot 
 2. $ cd geekbot
 3. $ composer install
-4. $ cp env.json.env env.json
-5. fill out the env.json
+4. $ cp .env.example .env
+5. fill out the .env file
 6. $ php bot.php
 
 ##### adding modules

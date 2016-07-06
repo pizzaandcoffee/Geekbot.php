@@ -82,13 +82,22 @@ class Settings{
      * @return string
      */
     public static function envGet($key){
-        $envjson = file_get_contents(__DIR__ . "/../env.json");
-        $settings = json_decode($envjson);
-        if(isset($settings->{$key})){
-            $value = $settings->{$key};
-        } else {
-            echo("setting '{$key}' is not found, returning 'null' instead\n");
-            $value = "null";
+        $envfile = fopen(__DIR__."/../.env", 'r');
+        $value = null;
+        if($envfile){
+            while(!feof($envfile)){
+                $line = fgets($envfile);
+                $arr = explode('=', $line);
+                if(isset($arr[0]) && isset($arr[1])){
+                    if($arr[0] == $key){
+                        $value = $output = str_replace(array("\r\n", "\r", "\n"), "", $arr[1]);
+                        break;
+                    }
+                }
+            }
+        }
+        if($value == null){
+            echo "{$key} not found in env file, returning empty string\n";
         }
         return $value;
     }

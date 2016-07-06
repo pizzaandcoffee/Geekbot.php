@@ -58,7 +58,6 @@ class CommandsContainer {
     }
 
     public function commandExists($name) {
-        echo "commandExists \n";
         return isset($this->commands[$this->handlePrefix($name)]);
     }
 
@@ -72,7 +71,6 @@ class CommandsContainer {
         if(isset($this->commands[$commandName])) {
             return $this->commands[$commandName];
         } else {
-            echo "FUCK!!!!!!!!!!!! \n";
             return NULL;
         }
     }

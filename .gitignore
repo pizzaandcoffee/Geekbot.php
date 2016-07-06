@@ -4,6 +4,7 @@
 /composer.lock
 /vendor
 /env.json
+/.env
 .c9
 StackTrace.txt
 /Commands/modules/
