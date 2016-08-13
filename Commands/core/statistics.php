@@ -32,7 +32,7 @@ class statistics implements messageCommand{
     public function runCommand($message) {
         $messageArray = Utils::messageSplit($message);
         if(isset($messageArray[1]) && Utils::startsWith($messageArray[1], "<@")){
-            $userID = $message->mentions[0]->id;
+            $userID = $message->mentions->first()->id;
             $message->channel->sendMessage("Here are the Stats for <@{$userID}>:".PHP_EOL.
             "```".PHP_EOL.
             "Level:         ".Stats::getLevel($userID).PHP_EOL.

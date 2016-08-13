@@ -36,6 +36,7 @@ include __DIR__ . '/System/Stats.php';
 include __DIR__ . '/Commands/commandInterface.php';
 
 use Discord\Discord;
+use Discord\Parts\User\Game;
 use Discord\WebSockets\WebSocket;
 use Geekbot\CommandsContainer;
 
@@ -77,7 +78,7 @@ class Bot {
 
     function initSocket() {
         $this->discord->on('ready', function ($discord){
-            //$discord->updatePresence($discord->factory(Game::class, ["name" => \Geekbot\Settings::envGet('playing')]));
+            $discord->updatePresence($discord->factory(Game::class, ["name" => \Geekbot\Settings::envGet('playing')]));
             echo "\ngeekbot is ready!\n" . PHP_EOL;
 
             $this->discord->on('message', function ($message) use ($discord) {
@@ -123,7 +124,7 @@ class Bot {
                 }
 
                 $reply = $message->timestamp->format('d/m/y H:i:s') . ' - ';
-                $reply .= $message->getFullChannelAttribute()->getGuildAttribute()->name . ' - ';
+                $reply .= $message->channel->guild->name . ' - ';
                 $reply .= $message->channel->name . ' - ';
                 $reply .= $message->author->username . ' - ';
                 $reply .= $message->content;
@@ -132,7 +133,7 @@ class Bot {
         }
         );
 
-        $this->discord->on('error', function ($error, $ws) {
+        $this->discord->on('error', function ($error) {
             print($error);
         });
     }
