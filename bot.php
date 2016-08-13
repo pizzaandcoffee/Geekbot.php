@@ -57,14 +57,12 @@ echo "{$version}\n\n";
 
 class Bot {
     public $discord;
-    public $ws;
     private $commands;
     private $reactions;
 
     function __construct() {
 
-        $this->discord = new Discord(\Geekbot\Settings::envGet('token'));
-        $this->ws = new WebSocket($this->discord);
+        $this->discord = new Discord(['token' => \Geekbot\Settings::envGet('token')]);
         $this->commands = new CommandsContainer();
         $this->reactions = new Geekbot\Reactions();
         if(\Geekbot\Settings::envGet('timezone') != "null") {
@@ -78,11 +76,11 @@ class Bot {
 
 
     function initSocket() {
-        $this->ws->on('ready', function ($discord){
-            $discord->updatePresence($this->ws, \Geekbot\Settings::envGet('playing'), 0);
-            echo "geekbot is ready!\n" . PHP_EOL;
+        $this->discord->on('ready', function ($discord){
+            //$discord->updatePresence($discord->factory(Game::class, ["name" => \Geekbot\Settings::envGet('playing')]));
+            echo "\ngeekbot is ready!\n" . PHP_EOL;
 
-            $this->ws->on('message', function ($message) use ($discord) {
+            $this->discord->on('message', function ($message) use ($discord) {
                 $GLOBALS['userid'] = $message->author->id;
                 $GLOBALS['guildid'] = $message->channel->guild_id;
                 $GLOBALS['dblocation'] = $GLOBALS['guildid'].'-'.$GLOBALS['userid'];
@@ -134,13 +132,13 @@ class Bot {
         }
         );
 
-        $this->ws->on('error', function ($error, $ws) {
+        $this->discord->on('error', function ($error, $ws) {
             print($error);
         });
     }
 
     function run(){
-        $this->ws->run();
+        $this->discord->run();
     }
 }
 
