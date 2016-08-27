@@ -35,6 +35,7 @@ include __DIR__ . '/System/Commands.php';
 include __DIR__ . '/System/Database.php';
 include __DIR__ . '/System/Reactions.php';
 include __DIR__ . '/System/Stats.php';
+include __DIR__ . '/System/BlackList.php';
 include __DIR__ . '/Commands/commandInterface.php';
 
 use Discord\Discord;
@@ -90,7 +91,7 @@ class Bot {
 
                 $stats = new \Geekbot\Stats($message);
 
-                if(\Geekbot\Permission::blacklistCheck($message)){
+                if(\Geekbot\BlackList::check($message)){
                     $command = \Geekbot\Utils::getCommand($message);
                     try {
                         if ($this->commands->commandExists($command)) {

@@ -19,6 +19,7 @@
 
 namespace Geekbot\Commands;
 
+use Geekbot\BlackList;
 use Geekbot\Permission;
 use Geekbot\Utils;
 use Geekbot\Settings;
@@ -35,10 +36,10 @@ class guildSettings implements messageCommand{
 
                 case "blacklist":
                     if ($messageArray[2] == "add") {
-                        Permission::blacklistAdd($message->mentions[0]->id);
+                        BlackList::add($message->mentions[0]->id);
                         $message->reply("<@{$message->mentions[0]->id}> was added to the blacklist");
                     } elseif ($messageArray[2] == "remove") {
-                        Permission::blacklistRemove($message->mentions[0]->id);
+                        BlackList::remove($message->mentions[0]->id);
                         $message->reply("<@{$message->mentions[0]->id}> was removed from the blacklist");
                     }
                     break;
