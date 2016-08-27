@@ -47,31 +47,31 @@ class Permission {
     function __construct($message) {
         $roles = $message->getAuthorAttribute()->getRolesAttribute();
 
-        $create_instant_invite = false;
-        $kick_members = false;
-        $ban_members = false;
-        $administrator = false;
-        $manage_channels = false;
-        $manage_server = false;
-        $change_nickname = false;
-        $manage_nicknames = false;
-        $manage_roles = false;
-        $read_messages = false;
-        $send_messages = false;
-        $send_tts_messages = false;
-        $manage_messages = false;
-        $embed_links = false;
-        $attach_files = false;
-        $read_message_history = false;
-        $mention_everyone = false;
-        $voice_connect = false;
-        $voice_speak = false;
-        $voice_mute_members = false;
-        $voice_deafen_members = false;
-        $voice_move_members = false;
-        $voice_use_vad = false;
+        $this->create_instant_invite = false;
+        $this->kick_members = false;
+        $this->ban_members = false;
+        $this->administrator = false;
+        $this->manage_channels = false;
+        $this->manage_server = false;
+        $this->change_nickname = false;
+        $this->manage_nicknames = false;
+        $this->manage_roles = false;
+        $this->read_messages = false;
+        $this->send_messages = false;
+        $this->send_tts_messages = false;
+        $this->manage_messages = false;
+        $this->embed_links = false;
+        $this->attach_files = false;
+        $this->read_message_history = false;
+        $this->mention_everyone = false;
+        $this->voice_connect = false;
+        $this->voice_speak = false;
+        $this->voice_mute_members = false;
+        $this->voice_deafen_members = false;
+        $this->voice_move_members = false;
+        $this->voice_use_vad = false;
 
-        foreach ($variable as $role) {
+        foreach ($roles as $role) {
             $permissions = $role->permissions;
 
             if ($permissions->create_instant_invite) {
