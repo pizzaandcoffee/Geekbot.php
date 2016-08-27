@@ -20,97 +20,147 @@
 namespace Geekbot;
 
 class Permission {
+    public $create_instant_invite;
+    public $kick_members;
+    public $ban_members;
+    public $administrator;
+    public $manage_channels;
+    public $manage_server;
+    public $change_nickname;
+    public $manage_nicknames;
+    public $manage_roles;
+    public $read_messages;
+    public $send_messages;
+    public $send_tts_messages;
+    public $manage_messages;
+    public $embed_links;
+    public $attach_files;
+    public $read_message_history;
+    public $mention_everyone;
+    public $voice_connect;
+    public $voice_speak;
+    public $voice_mute_members;
+    public $voice_deafen_members;
+    public $voice_move_members;
+    public $voice_use_vad;
 
-    /**
-     * @param array $message the message object
-     * @return bool
-     */
-    public static function isAdmin($message){
-        $isAdmin = false;
-        try {
-            if($message->author->roles->has('administrator')){
-                $isAdmin = true;
-            } else {
-                $isAdmin = false;
+    function __construct($message) {
+        $roles = $message->getAuthorAttribute()->getRolesAttribute();
+
+        $create_instant_invite = false;
+        $kick_members = false;
+        $ban_members = false;
+        $administrator = false;
+        $manage_channels = false;
+        $manage_server = false;
+        $change_nickname = false;
+        $manage_nicknames = false;
+        $manage_roles = false;
+        $read_messages = false;
+        $send_messages = false;
+        $send_tts_messages = false;
+        $manage_messages = false;
+        $embed_links = false;
+        $attach_files = false;
+        $read_message_history = false;
+        $mention_everyone = false;
+        $voice_connect = false;
+        $voice_speak = false;
+        $voice_mute_members = false;
+        $voice_deafen_members = false;
+        $voice_move_members = false;
+        $voice_use_vad = false;
+
+        foreach ($variable as $role) {
+            $permissions = $role->permissions;
+
+            if ($permissions->create_instant_invite) {
+                $this->create_instant_invite = true;
             }
-        } catch (\Exception $e){
-            echo "Geekbot has not enough permission to check if the user is an admin or not!";
-            echo "Give Geekbot 'manage roles' rights to do this!";
-        }
-        return $isAdmin;
-    }
 
-    /**
-     * @param array $message the message object
-     * @param string $roleName name of the role
-     * @return bool
-     */
-    public static function hasRole($message, $roleName){
-        $hasRole = false;
-        try {
-            $memberRoles = $message->full_channel->guild->members->get('id', $message->author->id)->roles;
-
-            foreach ($memberRoles as $role) {
-                if (strtolower($role->name) == $roleName) {
-                    $hasRole = true;
-                }
+            if ($permissions->kick_members) {
+                $this->kick_members = true;
             }
-        } catch (\Exception $e){
-            echo "Geekbot has not enough permission to check if the user is an admin or not!";
-            echo "Give Geekbot 'manage roles' rights to do this!";
-        }
-        return $hasRole;
-    }
 
-    /**
-     * @param array $message the message object
-     * @return bool
-     */
-    public static function blacklistCheck($message){
-        $permissions = Settings::getGuildSetting('permissions');
-        if(isset($permissions->botRole)){
-            if(Permission::hasRole($message, $permissions->botRole)){
-                return true;
-            } else {
-                return false;
+            if ($permissions->ban_members) {
+                $this->ban_members = true;
             }
-        } else {
-            if (isset($permissions->blacklist)) {
-                if (in_array($GLOBALS['userid'], $permissions->blacklist)) {
-                    return false;
-                } else {
-                    return true;
-                }
-            } else {
-                return true;
+
+            if ($permissions->administrator) {
+                $this->administrator = true;
+            }
+
+            if ($permissions->manage_channels) {
+                $this->manage_channels = true;
+            }
+
+            if ($permissions->manage_server) {
+                $this->manage_server = true;
+            }
+
+            if ($permissions->change_nickname) {
+                $this->change_nickname = true;
+            }
+
+            if ($permissions->manage_nicknames) {
+                $this->manage_nicknames = true;
+            }
+
+            if ($permissions->manage_roles) {
+                $this->manage_roles = true;
+            }
+
+            if ($permissions->read_messages ) {
+                $this->read_messages = true;
+            }
+
+            if ($permissions->send_messages) {
+                $this->send_messages = true;
+            }
+
+            if ($permissions->send_tts_messages) {
+                $this->send_tts_messages = true;
+            }
+
+            if ($permissions->manage_messages) {
+                $this->manage_messages = true;
+            }
+
+            if ($permissions->embed_links) {
+                $this->embed_links = true;
+            }
+
+            if ($permissions->attach_files) {
+                $this->attach_files = true;
+            }
+
+            if ($permissions->read_message_history) {
+                $this->read_message_history = true;
+            }
+
+            if ($permissions->voice_connect) {
+                $this->voice_connect = true;
+            }
+
+            if ($permissions->voice_speak) {
+                $this->voice_speak = true;
+            }
+
+            if ($permissions->voice_mute_members) {
+                $this->voice_mute_members = true;
+            }
+
+            if ($permissions->voice_deafen_members) {
+                $this->voice_deafen_members = true;
+            }
+
+            if ($permissions->voice_move_members) {
+                $this->voice_move_members = true;
+            }
+
+            if ($permissions->voice_use_vad) {
+                $this->voice_use_vad = true;
             }
         }
-
-    }
-
-    /**
-     * @param int $userID the user you want to blacklist
-     */
-    public static function blacklistAdd($userID){
-        $permissions = Settings::getGuildSetting('permissions');
-        if(!isset($permissions->blacklist) || !is_array($permissions->blacklist)){
-            $permissions->blacklist = [];
-        }
-        $permissions->blacklist[] = $userID;
-        Settings::setGuildSetting('permissions', $permissions);
-    }
-
-    /**
-     * @param int $userID the user you want to remove from the blacklist
-     */
-    public static function blacklistRemove($userID){
-        $permissions = Settings::getGuildSetting('permissions');
-        $newList = [];
-        foreach($permissions->blacklist as $users){
-            if($users != $userID){
-                $newList[] = $users;
-            }
-        }
-        Permission::setGuildPermission('blacklist', $newList);
     }
 }
