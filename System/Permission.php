@@ -54,12 +54,10 @@ class Permission {
     public static function isAdmin($message){
         $isAdmin = false;
         try {
-            $memberRoles = $message->full_channel->guild->members->get('id', $message->author->id)->roles;
-
-            foreach ($memberRoles as $role) {
-                if (strtolower($role->name) == "admin") {
-                    $isAdmin = true;
-                }
+            if($message->author->roles->has('administrator')){
+                $isAdmin = true;
+            } else {
+                $isAdmin = false;
             }
         } catch (\Exception $e){
             echo "Geekbot has not enough permission to check if the user is an admin or not!";

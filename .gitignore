@@ -8,3 +8,5 @@
 .c9
 StackTrace.txt
 /Commands/modules/
+.gitignore
+modules_be_here
