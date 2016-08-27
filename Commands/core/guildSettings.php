@@ -31,7 +31,8 @@ class guildSettings implements messageCommand{
 
     public function runCommand($message) {
         $messageArray = Utils::messageSplit($message);
-        if(Permission::isAdmin($message)) {
+        $perms = new Permission($message);
+        if($perms->administrator) {
             switch ($messageArray[1]) {
 
                 case "blacklist":
