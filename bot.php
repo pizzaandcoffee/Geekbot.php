@@ -85,11 +85,17 @@ class Bot {
             echo "\ngeekbot is ready!\n" . PHP_EOL;
 
             $this->discord->on('message', function ($message) use ($discord) {
+
                 $GLOBALS['userid'] = $message->author->id;
-                $GLOBALS['guildid'] = $message->channel->guild_id;
+                if(!$message->getChannelAttribute()->is_private) {
+                    $GLOBALS['guildid'] = $message->channel->guild_id;
+                } else {
+                    $GLOBALS['guildid'] = 0;
+                }
                 $GLOBALS['dblocation'] = $GLOBALS['guildid'].'-'.$GLOBALS['userid'];
 
                 $stats = new \Geekbot\Stats($message);
+
 
                 if(\Geekbot\BlackList::check($message)){
                     $command = \Geekbot\Utils::getCommand($message);
@@ -127,8 +133,12 @@ class Bot {
                 }
 
                 $reply = $message->timestamp->format('d/m/y H:i:s') . ' - ';
-                $reply .= $message->channel->guild->name . ' - ';
-                $reply .= $message->channel->name . ' - ';
+                if(!$message->getChannelAttribute()->is_private) {
+                    $reply .= $message->channel->guild->name . ' - ';
+                    $reply .= $message->channel->name . ' - ';
+                } else {
+                    $reply .= "Private - ";
+                }
                 $reply .= $message->author->username . ' - ';
                 $reply .= $message->content;
                 echo $reply . PHP_EOL;
