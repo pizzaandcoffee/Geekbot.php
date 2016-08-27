@@ -41,7 +41,7 @@ class CommandsContainer {
             if (in_array('Geekbot\Commands\command', class_implements($className))) {
                 echo "   - ". substr($className, 17) . "\n";
                 if($className::getName()){
-                    if(\Geekbot\Settings::envGet('invite')) {
+                    if(\Geekbot\Settings::envGet('sys.invite')) {
                         $this->commands[$className::getName()] = new $className();
                     }
                 } else {

@@ -21,14 +21,14 @@ namespace Geekbot;
  
 include __DIR__ . '/JsonDB.php';
 
-$dbtype = Settings::envGet('database');
+$dbtype = Settings::envGet('sys.database');
 if ($dbtype == 'redis'){
-    $redis = new \Redis();
-    $geekbot_db = $redis->connect('localhost', '6379');
+    $geekbot_db = new \Redis();
+    $geekbot_db->connect(Settings::envGet('redis.host'), Settings::envGet('redis.port'));
 } elseif ($dbtype == 'json'){
-    $geekbot_db = new JsonDB(__DIR__ . '/db');
+    $geekbot_db = new JsonDB(__DIR__ . Settings::envGet('json.path'));
 } else {
-    die("please set database value in your env.json to either 'json' or 'redis'");
+    die("please set database value in your .env to either 'json' or 'redis'");
 }
  
 class Database{

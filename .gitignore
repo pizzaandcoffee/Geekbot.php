@@ -1,5 +1,6 @@
 /test
 /System/db
+/Storage/db
 .idea
 /composer.lock
 /vendor

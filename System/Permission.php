@@ -22,32 +22,6 @@ namespace Geekbot;
 class Permission {
 
     /**
-     * @param string $key what permission?
-     * @param string|array|int $value the value of the key
-     */
-    public static function setGuildPermission($key, $value){
-        $permissions = Settings::getGuildSetting('permissions');
-        if($permissions == "null"){
-            $permissions = null;
-        }
-        $permissions->$key = $value;
-        Settings::setGuildSetting('permissions', $permissions);
-    }
-
-    /**
-     * @param string $key what permission?
-     * @return null
-     */
-    public static function getGuildPermission($key){
-        $permissions = Settings::getGuildSetting('permissions');
-        if(isset($permissions->$key[0])){
-            return null;
-        } else {
-            return $permissions->$key;
-        }
-    }
-
-    /**
      * @param array $message the message object
      * @return bool
      */
@@ -64,27 +38,6 @@ class Permission {
             echo "Give Geekbot 'manage roles' rights to do this!";
         }
         return $isAdmin;
-    }
-
-    /**
-     * @return int
-     */
-    public static function getUserLevel(){
-        $userlevel = Settings::getUserSetting('userLevel');
-        return $userlevel;
-    }
-
-    /**
-     * @param int $level the user level (should be between 1 and 9)
-     * @return bool
-     */
-    public static function setUserLevel($level){
-        if ($level <= 0 && $level >= 10){
-            Settings::setUserSetting('userLevel', $level);
-            return true;
-        } else {
-            return false;
-        }
     }
 
     /**

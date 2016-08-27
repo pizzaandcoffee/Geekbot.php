@@ -34,7 +34,7 @@ class Invite implements basicCommand {
     }
 
     public function runCommand() {
-        $id = \Geekbot\Settings::envGet('clientid');
+        $id = \Geekbot\Settings::envGet('sys.clientid');
         return "https://discordapp.com/oauth2/authorize?client_id=" . $id . "&scope=bot&permissions=0";
     }
 }

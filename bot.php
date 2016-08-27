@@ -18,8 +18,10 @@
  */
 
 if(!file_exists("vendor/autoload.php")) {
-    echo "please run \"composer install\" before running the bot";
-    exit;
+    echo "The geekbot dependencies are not installed yet...\n";
+    echo "Installing dependencies, please wait...\n\n";
+    exec("composer install");
+    //exit;
 }
 if(!file_exists(".env")){
     echo "please configure your .env before running the bot";
@@ -63,14 +65,14 @@ class Bot {
 
     function __construct() {
 
-        $this->discord = new Discord(['token' => \Geekbot\Settings::envGet('token')]);
+        $this->discord = new Discord(['token' => \Geekbot\Settings::envGet('sys.token')]);
         $this->commands = new CommandsContainer();
         $this->reactions = new Geekbot\Reactions();
-        if(\Geekbot\Settings::envGet('timezone') != "null") {
-            date_default_timezone_set(\Geekbot\Settings::envGet('timezone'));
+        if(\Geekbot\Settings::envGet('sys.timezone') != "null") {
+            date_default_timezone_set(\Geekbot\Settings::envGet('sys.timezone'));
         }
-        if(Geekbot\Settings::envGet('prefix') != "null"){
-            $GLOBALS['prefix'] = Geekbot\Settings::envGet('prefix');
+        if(Geekbot\Settings::envGet('sys.prefix') != "null"){
+            $GLOBALS['prefix'] = Geekbot\Settings::envGet('sys.prefix');
         }
         $this->initSocket();
     }
@@ -78,7 +80,7 @@ class Bot {
 
     function initSocket() {
         $this->discord->on('ready', function ($discord){
-            $discord->updatePresence($discord->factory(Game::class, ["name" => \Geekbot\Settings::envGet('playing')]));
+            $discord->updatePresence($discord->factory(Game::class, ["name" => \Geekbot\Settings::envGet('sys.playing')]));
             echo "\ngeekbot is ready!\n" . PHP_EOL;
 
             $this->discord->on('message', function ($message) use ($discord) {
