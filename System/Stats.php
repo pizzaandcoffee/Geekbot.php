@@ -26,7 +26,7 @@ class Stats{
         //set a few variables
 
         //get user info from db
-        $userData = Database::get($GLOBALS['dblocation']);
+        $userData = Database::get('member');
         
         //update stuff
         if(!isset($userData->messages)){
@@ -39,15 +39,15 @@ class Stats{
         $userData->lastMessage = date(DATE_RFC2822);
 
         //put it back into the db
-        Database::set($GLOBALS['dblocation'], $userData);
+        Database::set('member', $userData);
 
         //lets do the same for the guild itself
-        $guildData = Database::get($GLOBALS['guildid']);
+        $guildData = Database::get('guild');
         if(!isset($guildData->messages)){
             $guildData->messages = 0;
         }
         $guildData->messages = $guildData->messages + 1;
-        Database::set($GLOBALS['guildid'], $guildData);
+        Database::set('guild', $guildData);
     }
 
     private static function calculateLevel($messages) {
@@ -73,8 +73,7 @@ class Stats{
      * @return string
      */
     public static function getLastMessage($userID){
-        $dbLocation = $GLOBALS['guildid'].'-'.$userID;
-        $data = Database::get($dbLocation);
+        $data = Database::get('member', $userID);
         if(!isset($data->lastMessage)){
             $data->lastMessage = "never";
         }
@@ -86,8 +85,7 @@ class Stats{
      * @return int
      */
     public static function getAmountOfMessages($userID){
-        $dbLocation = $GLOBALS['guildid'].'-'.$userID;
-        $data = Database::get($dbLocation);
+        $data = Database::get('member', $userID);
         if(!isset($data->messages)){
             $data->messages = 0;
         }
@@ -99,8 +97,7 @@ class Stats{
      * @return string
      */
     public static function getClass($userID){
-        $dbLocation = $GLOBALS['guildid'].'-'.$userID;
-        $data = Database::get($dbLocation);
+        $data = Database::get('member', $userID);
         if(!isset($data->class)){
             $data->class = "none";
         }
@@ -112,8 +109,7 @@ class Stats{
      * @return int
      */
     public static function getBadJokes($userID){
-        $dbLocation = $GLOBALS['guildid'].'-'.$userID;
-        $data = Database::get($dbLocation);
+        $data = Database::get('member', $userID);
         if(!isset($data->badJokes)){
             $data->badJokes = 0;
         }
@@ -135,7 +131,7 @@ class Stats{
      * @return int
      */
     public static function getGuildMessages(){
-        $data = Database::get($GLOBALS['guildid']);
+        $data = Database::get('guild');
         if(!isset($data->messages)){
             $data->messages = 0;
         }

@@ -26,7 +26,7 @@ class Settings{
      * @return string|int|array
      */
     public static function getGuildSetting($key){
-        $guildSettings = Database::get($GLOBALS['guildid']);
+        $guildSettings = Database::get('guild');
         if(!isset($guildSettings->$key)){
             return "null";
         } else {
@@ -40,12 +40,12 @@ class Settings{
      * @return bool
      */
     public static function setGuildSetting($key, $value){
-        $guildSettings = Database::get($GLOBALS['guildid'] );
+        $guildSettings = Database::get('guild');
         if(!isset($guildSettings->$key)){
             $guildSettings->$key = "null";
         }
         $guildSettings->$key = $value;
-        Database::set($GLOBALS['guildid'] , $guildSettings);
+        Database::set('guild', $guildSettings);
         return true;
     }
 
@@ -54,7 +54,7 @@ class Settings{
      * @return string|int|array
      */
     public static function getUserSetting($key){
-        $userSettings = Database::get($GLOBALS['dblocation']);
+        $userSettings = Database::get('user');
         if(!isset($userSettings->$key)){
             return 0;
         } else {
@@ -68,12 +68,40 @@ class Settings{
      * @return bool
      */
     public static function setUserSetting($key, $value){
-        $userSettings = Database::get($GLOBALS['dblocation']);
+        $userSettings = Database::get('user');
         if(!isset($userSettings->$key)){
             $userSettings->$key = 0;
         }
         $userSettings->$key = $value;
-        Database::set($GLOBALS['dblocation'], $userSettings);
+        Database::set('member', $userSettings);
+        return true;
+    }
+
+    /**
+     * @param string $key the settings you need
+     * @return string|int|array
+     */
+    public static function getMemberSetting($key){
+        $userSettings = Database::get('member');
+        if(!isset($userSettings->$key)){
+            return 0;
+        } else {
+            return $userSettings->$key;
+        }
+    }
+
+    /**
+     * @param string $key the settings you want to change
+     * @param string|int $value the value of the setting (can be an array too)
+     * @return bool
+     */
+    public static function setMemberSetting($key, $value){
+        $userSettings = Database::get('member');
+        if(!isset($userSettings->$key)){
+            $userSettings->$key = 0;
+        }
+        $userSettings->$key = $value;
+        Database::set('member', $userSettings);
         return true;
     }
 

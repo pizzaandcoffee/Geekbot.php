@@ -38,10 +38,34 @@ class Database{
      * @param array $value the array that should be in there
      * @return bool
      */
-    public static function set($key, $value){
+    public static function set($key, $value, $other=null){
         global $geekbot_db;
+        $options = ['user', 'member', 'guild', 'global'];
+        $loc = "failed";
+        if (in_array($key, $options)){
+            switch ($key){
+                case "user":
+                    $loc = '0-'.$GLOBALS['userid'];
+                    break;
+                case "member":
+                    if($other == null){
+                        $loc = $GLOBALS['dblocation'];
+                    } else {
+                        $loc = $GLOBALS['guildid'].'-'.$other;
+                    }
+                    break;
+                case "guild":
+                    $loc = $GLOBALS['guildid'];
+                    break;
+                case "global":
+                    $loc = "global";
+            }
+
+        } else {
+            echo "!!! Failed to store data !!!\n";
+        }
         $data = json_encode($value);
-        $geekbot_db->set($key, $data);
+        $geekbot_db->set($loc, $data);
         $geekbot_db->save();
         return true;
     }
@@ -50,9 +74,33 @@ class Database{
      * @param string|int $key The database key or storage location
      * @return array
      */
-    public static function get($key){
+    public static function get($key, $other=null){
         global $geekbot_db;
-        $data = json_decode($geekbot_db->get($key));
+        $options = ['user', 'member', 'guild', 'global'];
+        $loc = "failed";
+        if (in_array($key, $options)){
+            switch ($key){
+                case "user":
+                    $loc = '0-'.$GLOBALS['userid'];
+                    break;
+                case "member":
+                    if($other == null){
+                        $loc = $GLOBALS['dblocation'];
+                    } else {
+                        $loc = $GLOBALS['guildid'].'-'.$other;
+                    }
+                    break;
+                case "guild":
+                    $loc = $GLOBALS['guildid'];
+                    break;
+                case "global":
+                    $loc = "global";
+            }
+
+        } else {
+            echo "!!! Failed to get data !!!\n";
+        }
+        $data = json_decode($geekbot_db->get($loc));
         return $data;
     }
 

@@ -74,8 +74,12 @@ class Utils{
      * @param array $message the message object
      * @return array
      */
-    public static function messageSplit($message){
-        $oa = preg_replace('/\s+/', ' ', strtolower($message->content));
+    public static function messageSplit($message, $keepCase=false){
+        if($keepCase){
+            $oa = preg_replace('/\s+/', ' ', $message->content);
+        } else {
+            $oa = preg_replace('/\s+/', ' ', strtolower($message->content));
+        }
         $a = explode(' ', $oa);
         return $a;
     }
