@@ -1,7 +1,13 @@
+/test
+/System/db
+/Storage/db
 .idea
 /composer.lock
-/db
 /vendor
 /env.json
+/.env
 .c9
 StackTrace.txt
+/Commands/modules/
+.gitignore
+modules_be_here

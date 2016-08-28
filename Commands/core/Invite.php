@@ -17,38 +17,24 @@
  *   along with Geekbot.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Geekbot;
+namespace Geekbot\Commands;
 
-class Reactions {
+class Invite implements basicCommand {
 
-    //construct parameters
-    private $message;
-    
-    function __construct($message) {
-        $this->message = $message;    
+    public static function getName() {
+        return "!invite";
     }
-    
-    public function getMessage() {
-        return $this->message;
+
+    public function getDescription() {
+        return "returns an invite link";
     }
-    
-    public function ping(){
-        $this->message->reply('pong!');
+
+    public function getHelp() {
+        $this->getDescription();
     }
-    
-    public function marco(){
-        $this->message->reply('polo!');
-    }
-    
-    public function deder() {
-        $this->message->reply('DEDEST');
-    }
-    
-    public function hui(){
-        $this->message->reply("hui!");
-    }
-    
-    public function fuck(){
-        $this->message->reply("Aso nei, da seit mer also nid :rage:");
+
+    public function runCommand() {
+        $id = \Geekbot\Settings::envGet('sys.clientid');
+        return "https://discordapp.com/oauth2/authorize?client_id=" . $id . "&scope=bot&permissions=0";
     }
 }

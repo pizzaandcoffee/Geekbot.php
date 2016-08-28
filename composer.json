@@ -2,8 +2,9 @@
   "minimum-stability": "dev",
   "prefer-stable" : true,
   "require": {
-    "team-reflex/discord-php": "dev-master",
+    "team-reflex/discord-php": "^v4.0.0",
     "symfony/yaml": "^3.0",
-    "paquettg/php-html-parser": "1.7.0"
+    "paquettg/php-html-parser": "1.7.0",
+    "madcoda/php-youtube-api": "^1.2"
   }
 }

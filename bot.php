@@ -17,78 +17,144 @@
  *   along with Geekbot.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+if(!file_exists("vendor/autoload.php")) {
+    echo "The geekbot dependencies are not installed yet...\n";
+    echo "Installing dependencies, please wait...\n\n";
+    exec("composer install");
+    //exit;
+}
+if(!file_exists(".env")){
+    echo "please configure your .env before running the bot";
+    exit;
+}
 include __DIR__ . '/vendor/autoload.php';
-include __DIR__ . '/DB.php';
-include __DIR__ . '/Commands.php';
-include __DIR__ . '/Reactions.php';
-include __DIR__ . '/Utils.php';
+include __DIR__ . '/System/Utils.php';
+include __DIR__ . '/System/Settings.php';
+include __DIR__ . '/System/Permission.php';
+include __DIR__ . '/System/Commands.php';
+include __DIR__ . '/System/Database.php';
+include __DIR__ . '/System/Reactions.php';
+include __DIR__ . '/System/Stats.php';
+include __DIR__ . '/System/BlackList.php';
+include __DIR__ . '/Commands/commandInterface.php';
 
 use Discord\Discord;
+use Discord\Parts\User\Game;
 use Discord\WebSockets\WebSocket;
-use Geekbot\KeyStorage;
-use Geekbot\Commands;
+use Geekbot\CommandsContainer;
 
-$envjson = file_get_contents('env.json');
-$settings = json_decode($envjson);
-
-$discord = new Discord($settings->token);
-$ws = new WebSocket($discord);
-
-date_default_timezone_set('Europe/Amsterdam');
-
-if ($settings->leveldb == 'true') {
-    echo("using leveldb...\n");
-    $db = new LevelDB(__DIR__ . '/db');
+if(file_exists(".git/ORIG_HEAD")) {
+    $githead = file_get_contents(".git/ORIG_HEAD");
+    $version = "2.0 Beta - Build {$githead}";
 } else {
-    echo("using victoriadb...\n");
-    $db = new KeyStorage();
+    $version = "2.0 Beta";
 }
+define('GEEKBOT_VERSION', $version);
 
-$ws->on('ready', function ($discord) use ($ws, $settings, $db, $discord) {
-    $discord->updatePresence($ws, "Ping Pong", 0);
-    echo "bot is ready!" . PHP_EOL;
+echo("  ____ _____ _____ _  ______   ___ _____\n");
+echo(" / ___| ____| ____| |/ / __ ) / _ \\_   _|\n");
+echo("| |  _|  _| |  _| | ' /|  _ \\| | | || |\n");
+echo("| |_| | |___| |___| . \\| |_) | |_| || |\n");
+echo(" \\____|_____|_____|_|\\_\\____/ \\___/ |_|\n");
 
-    $ws->on('message', function ($message) use ($settings, $db, $ws, $discord) {
-        
-        #
-        #   Command Handler
-        #
-        
-        if ($message->author->id != $settings->botid){
-            $commands = new Geekbot\Commands($message, $db, $settings, new Geekbot\Utils);
-            $reactions = new Geekbot\Reactions($message);
-            
-            //is Command or Debug Command
-            if(substr($commands->getA()[0], 0, 1) == "!") {
-                if(method_exists($commands, substr($commands->getA()[0], 1))) {
-                    $commands->{substr($commands->getA()[0], 1)}();
-                    $message = $commands->getMessage();
-                }
-            } else {
-                if(method_exists($reactions, $commands->getA()[0])) {
-                   $reactions->{$commands->getA()[0]}();
-                   $message = $reactions->getMessage();
-                }
-            }
-            
+echo "{$version}\n\n";
+
+class Bot {
+    public $discord;
+    private $commands;
+    private $reactions;
+
+    function __construct() {
+
+        $this->discord = new Discord(['token' => \Geekbot\Settings::envGet('sys.token')]);
+        $this->commands = new CommandsContainer();
+        $this->reactions = new Geekbot\Reactions();
+        if(\Geekbot\Settings::envGet('sys.timezone') != "null") {
+            date_default_timezone_set(\Geekbot\Settings::envGet('sys.timezone'));
         }
+        if(Geekbot\Settings::envGet('sys.prefix') != "null"){
+            $GLOBALS['prefix'] = Geekbot\Settings::envGet('sys.prefix');
+        }
+        $this->initSocket();
+    }
 
-        #
-        #   Output message to console
-        #
 
-        $reply = $message->timestamp->format('d/m/y H:i:s') . ' - ';
-        $reply .= $message->author->username . ' - ';
-        $reply .= $message->content;
-        echo $reply . PHP_EOL;
-    });
+    function initSocket() {
+        $this->discord->on('ready', function ($discord){
+            $discord->updatePresence($discord->factory(Game::class, ["name" => \Geekbot\Settings::envGet('sys.playing')]));
+            echo "\ngeekbot is ready!\n" . PHP_EOL;
+
+            $this->discord->on('message', function ($message) use ($discord) {
+
+                $GLOBALS['userid'] = $message->author->id;
+                if(!$message->getChannelAttribute()->is_private) {
+                    $GLOBALS['guildid'] = $message->channel->guild_id;
+                } else {
+                    $GLOBALS['guildid'] = 0;
+                }
+                $GLOBALS['dblocation'] = $GLOBALS['guildid'].'-'.$GLOBALS['userid'];
+
+                $stats = new \Geekbot\Stats($message);
+
+
+                if(\Geekbot\BlackList::check($message)){
+                    $command = \Geekbot\Utils::getCommand($message);
+                    try {
+                        if ($this->commands->commandExists($command)) {
+
+                            $commandslist = $this->commands->getCommands();
+                            $cmd = $this->commands->getCommand($command);
+
+                            // class_implements() expects an object or a string
+                            if ($cmd != null) {
+                                if (in_array('Geekbot\Commands\basicCommand', class_implements($this->commands->getCommand($command)))) {
+                                    $message->reply($commandslist[$command]->runCommand());
+                                } else if (in_array('Geekbot\Commands\messageCommand', class_implements($this->commands->getCommand($command)))) {
+                                    $result = $cmd->runCommand($message);
+                                    if (is_string($result)) {
+                                        $message->reply($result);
+                                    } else {
+                                        $message = $result;
+                                    }
+                                }
+                            }
+                        } else {
+                            $reaction = $this->reactions->getReaction(\Geekbot\Utils::getCommand($message), $message);
+                            if ($reaction != NULL) {
+                                $message->channel->sendMessage($reaction);
+                            }
+                        }
+                    } catch (Exception $e){
+                        echo("An error occurd:\n");
+                        echo($e."\n");
+                        echo("Message that caused it: \"".$message->content."\"\n");
+                        echo("Continuing Geekbot...");
+                    }
+                }
+
+                $reply = $message->timestamp->format('d/m/y H:i:s') . ' - ';
+                if(!$message->getChannelAttribute()->is_private) {
+                    $reply .= $message->channel->guild->name . ' - ';
+                    $reply .= $message->channel->name . ' - ';
+                } else {
+                    $reply .= "Private - ";
+                }
+                $reply .= $message->author->username . ' - ';
+                $reply .= $message->content;
+                echo $reply . PHP_EOL;
+            });
+        }
+        );
+
+        $this->discord->on('error', function ($error) {
+            print($error);
+        });
+    }
+
+    function run(){
+        $this->discord->run();
+    }
 }
-);
 
-$ws->on('error', function ($error, $ws) {
-    print($error);
-    exit(1);
-}
-);
-
-$ws->run();
+$bot = new Bot();
+$bot->run();
