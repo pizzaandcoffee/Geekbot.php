@@ -503,26 +503,5 @@ class Commands {
             $this->message->reply($result . "\n" . "For more Results : ". "http://myanimelist.net/manga.php?q=". $searchString);
         }
     }
-
-    //-------------------------------------------------------------------------
-    // blacklist
-    //-------------------------------------------------------------------------
-
-    function blacklist(){
-        if($this->authorid == '93061333972455424') {
-            $a = $this->a;
-            $userid = trim($this->a[2], '<@>');
-            $getblacklist = file_get_contents('blacklist.json');
-            $oldblacklist = json_decode($getblacklist);
-            if ($a[1] == 'add') {
-                $oldblacklist[] = $userid;
-                $this->message->author->sendMessage("added {$userid} to the blacklist");
-            }
-            elseif ($a[1] == 'remove') {
-                $this->message->author->sendMessage("please remove the user manually ({$userid})");
-            }
-            $newblacklist = json_encode($oldblacklist);
-            file_put_contents('blacklist.json', $newblacklist);
-        }
-    }
+    
 }
