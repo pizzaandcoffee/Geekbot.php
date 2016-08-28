@@ -73,7 +73,7 @@ class Settings{
             $userSettings->$key = 0;
         }
         $userSettings->$key = $value;
-        Database::set('member', $userSettings);
+        Database::set('user', $userSettings);
         return true;
     }
 
