@@ -44,8 +44,8 @@ class Permission {
     public $voice_move_members;
     public $voice_use_vad;
 
-    function __construct($message) {
-        $roles = $message->getAuthorAttribute()->getRolesAttribute();
+    function __construct($member) {
+        $roles = $member->getRolesAttribute();
 
         $this->create_instant_invite = false;
         $this->kick_members = false;
