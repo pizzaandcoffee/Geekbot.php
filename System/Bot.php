@@ -42,7 +42,7 @@ class Bot {
             $GLOBALS['prefix'] = Geekbot\Settings::envGet('sys.prefix');
         }
 
-        if(\Geekbot\Settings::envGet('log.toFile') == true){
+        if(\Geekbot\Settings::envGet('log.toFile') == "true"){
             define('GEEKBOT_LOG_TO_FILE', true);
             if(!file_exists(__DIR__.\Geekbot\Settings::envGet('log.location'))){
                 fopen(__DIR__.\Geekbot\Settings::envGet('log.location'), 'w');
