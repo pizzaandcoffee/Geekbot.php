@@ -62,16 +62,28 @@ interface messageCommand extends command {
     public function runCommand($message);
 }
 
-/**
-* By implementing this Interface your command will be an extension of the stats command
-*/
-interface hasStats {
-    /**
-    * @return string the string will be shown when the !stats command is called
-    */
-    public function getStats();
+interface subCommand extends messageCommand {
+    public function getParent();
 }
 
-interface coreCommand{
+abstract class ParentCommand implements messageCommand{
+    
+    public $subCommands;
+    
+    public function addCommad($cmd){
+        $this->subCommands[$cmd->getName] = $cmd;
+    }
+    
+    public function runCommand($message) {
+        $subcmd = \Geekbot\Utils::messageSplit($message->content)[1];
+        if ($subcmd == "help") {
+            $this->subCommands;
+        } else if(isset ($this->subCommands[$subcmd])) {
+            $this->subCommands[$subcmd]->runCommand($message);
+        } else {
+            $message-reply("please state a subcommand");
+        }
+    }
     
 }
+
