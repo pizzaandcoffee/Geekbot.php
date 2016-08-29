@@ -41,6 +41,15 @@ class Bot {
         if(Geekbot\Settings::envGet('sys.prefix') != "null"){
             $GLOBALS['prefix'] = Geekbot\Settings::envGet('sys.prefix');
         }
+
+        if(\Geekbot\Settings::envGet('log.toFile') == true){
+            define('GEEKBOT_LOG_TO_FILE', true);
+            if(!file_exists(__DIR__.\Geekbot\Settings::envGet('log.location'))){
+                fopen(__DIR__.\Geekbot\Settings::envGet('log.location'), 'w');
+            }
+        } else {
+            define('GEEKBOT_LOG_TO_FILE', false);
+        }
         
         $this->initSocket();
     }
@@ -122,6 +131,11 @@ class Bot {
         }
         $reply .= $message->author->username . ' - ';
         $reply .= $message->content;
+        if(GEEKBOT_LOG_TO_FILE){
+            $logfile = fopen(__DIR__.\Geekbot\Settings::envGet('log.location'), 'a');
+            fwrite($logfile, $reply."\n");
+            fclose($logfile);
+        }
         return $reply;
     }
 }
