@@ -1,5 +1,7 @@
 # The API
 
+-- **OUTDATED DUE TO CODE RESTRUCTURING, WILL BE UPDATED AS SOON AS IT'S FINISHED** -- 
+
 We created Geekbot to make bot development for discord easier. For this we made an API with useful tools for you to use.
 
 When an argument is called `$message` the message object is meant.

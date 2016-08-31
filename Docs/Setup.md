@@ -2,13 +2,12 @@
 
 ## 1. Getting the Source
 
-You can get the source code by either cloning this repository 
+You can get the source code by cloning this repository 
 
 ```bash
 git clone https://github.com/runebaas/Geekbot
 ```
 
-or downloading the latest stable release (see tags)
 
 ## 2. Filling out the .env file
 
@@ -16,21 +15,70 @@ First of all, copy the `.env.example` to `.env`
 
 Now open `.env` with your favorite text editor.
 
-#### required options
+Here you'll see a lot of option, we'll go through them one by one
 
-* `token` - the discord access token, you can get one [here](https://discordapp.com/login?redirect_to=/developers/applications/me)
-* `botid` - the user id of the bot, this is used for several internal things, e.g. double execution and infinite loop prevention
-* `database` - here you can choose between the built in json based database (recommended) or redis
-* `playing` - which game is your bot playing?
-* `timezone` - what timezone are you using? please refer to the [php documentation](http://php.net/manual/en/timezones.php) to find your timezone
-* `invite` - is the bot allowed to react to !invite? (returns an invite url)
+#### Required 
 
-#### optional options
+These are absolutely required to run geekbot
 
-* `clientid` - only if `invite` is true. This is the client id of your bot application
-* `mallogin` - used for the myanimelist.net api, only needed if mal module is installed
-* `ytkey` - your youtube api key, only needed if the youtube module is installed
-* `prefix` - to prevent public server bot collision. if you set this to `gb` you would have to enter `gb!command` to execute a command instead of `!command`
+Option | Description | Default 
+--- | --- | ---
+`sys.token` | the discord access token, you can get one [here](https://discordapp.com/login?redirect_to=/developers/applications/me) | (empty) 
+`sys.botid` | the user id of the bot, this is used for several internal things, e.g. double execution and infinite loop prevention | (empty) 
+`sys.ownerid` | the user id of the bot owner (you). overrides several permission settings | (empty) 
+
+#### System
+
+These are also required but can be left as default
+
+Option | Description | Default 
+--- | --- | ---
+`sys.playing` | Value is set to the game the bot is playing in discord | Ping Pong
+`sys.timezone` | The Timezone used for various tasks, must be [unix compatible](http://php.net/manual/en/timezones.php) | Europe/London
+`sys.invite` | Specify with true or false if the bot can return an invite link | false
+`sys.clientid` | If the clientid of your bot, used to create an invite link | (empty)
+`sys.prefix` | a prefix to execute bot commands to avoid collision with other bots, commented out by default | gb
+
+#### Logging
+
+Chatloging, defaults can be kept
+
+Option | Description | Default 
+--- | --- | ---
+`log.toFile` | Specify with true or false if you want to log the chatlog to a file | false
+`log.location` | Specify the location of the logfile. starts in /System/ | /../Storage/ChatLog.txt
+
+#### Database
+
+Database configuration, defaults can be kept
+
+There are two databases supported by geekbot, one is redis (for production) and one is a json wrapper for redis (for development)
+
+Option | Description | Default 
+--- | --- | ---
+`sys.database` | choose your database, options are `redis` and `json` | json
+`json.path` | Where do you want the database to be? starts in /System/ | /../Storage/db
+`redis.host` | host address of your redis server | localhost
+`redis.port` | port on which your redis server is running | 6379
+
+#### API
+
+Configuration for the RESTful geekbot api. This feature is still in the works
+
+Option | Description | Default 
+--- | --- | ---
+`api.enable` | do you want to enable the api? | false
+`api.port` | on which port should the api server run? | 666
+`api.auth` | Authentication key for the api | (empty)
+
+#### Module Settings
+
+Settings for individual modules
+
+Option | Description | Default | Module
+--- | --- | --- | ---
+`mal.login` | login for myanimelist, username and password seperated by a `:` | user:pass | myanimelist
+`youtube.key` | your youtube api key | (empty) | youtube 
 
 ## 3. Dependencies
 
@@ -46,7 +94,7 @@ Congratulations, you now have a bare Geekbot install!
 to run Geekbot type this into your terminal 
 
 ```bash
-php bot.php
+php run.php
 ```
 
 Geekbot has no daemon support yet, you can either run it in `tmux` or `screen` if you want to run it in the background.
