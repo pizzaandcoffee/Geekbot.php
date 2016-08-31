@@ -66,24 +66,26 @@ interface subCommand extends messageCommand {
     public function getParent();
 }
 
-abstract class ParentCommand implements messageCommand{
-    
-    public $subCommands;
-    
-    public function addCommad($cmd){
-        $this->subCommands[$cmd->getName] = $cmd;
-    }
-    
-    public function runCommand($message) {
-        $subcmd = \Geekbot\Utils::messageSplit($message->content)[1];
-        if ($subcmd == "help") {
-            $this->subCommands;
-        } else if(isset ($this->subCommands[$subcmd])) {
-            $this->subCommands[$subcmd]->runCommand($message);
-        } else {
-            $message-reply("please state a subcommand");
-        }
-    }
-    
-}
+//Broke everything...
+
+//abstract class ParentCommand implements messageCommand{
+//
+//    public $subCommands;
+//
+//    public function addCommad($cmd){
+//        $this->subCommands[$cmd->getName] = $cmd;
+//    }
+//
+//    public function runCommand($message) {
+//        $subcmd = \Geekbot\Utils::messageSplit($message->content)[1];
+//        if ($subcmd == "help") {
+//            $this->subCommands;
+//        } else if(isset ($this->subCommands[$subcmd])) {
+//            $this->subCommands[$subcmd]->runCommand($message);
+//        } else {
+//            $message-reply("please state a subcommand");
+//        }
+//    }
+//
+//}
 
