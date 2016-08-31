@@ -1,0 +1,5 @@
+#exclude everything except these two files
+/*
+!/.gitignore
+!/fortunes
+!/reactions.json

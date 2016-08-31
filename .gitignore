@@ -1,6 +1,5 @@
 /test
 /System/db
-/Storage/db
 .idea
 /composer.lock
 /vendor
@@ -10,5 +9,4 @@
 StackTrace.txt
 /Commands/modules/
 .gitignore
-modules_be_here
-/Storage/ChatLog.txt
+
