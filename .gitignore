@@ -7,6 +7,5 @@
 /.env
 .c9
 StackTrace.txt
-/Commands/modules/
 .gitignore
 
